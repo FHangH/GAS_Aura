@@ -18,8 +18,8 @@ git commit -m "%message%"
 git push origin master
 
 :: 等待用户按回车键
-pause
 echo 提交完成
+pause
 
 :: 结束
 endlocal
