@@ -1,6 +1,6 @@
 // Copyright fangh.space
 
-#include "PlayerController/AuraPlayerController.h"
+#include "Gameplay/PlayerController/AuraPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "Untils/AuraLog.h"
 #include "EnhancedInputComponent.h"
@@ -19,6 +19,7 @@ void AAuraPlayerController::BeginPlay()
 	if (!AuraInputMappingContext || !IA_Move)
 	{
 		UE_LOG(Aura, Warning, TEXT("%hc: AuraInputMappingContext or IA_Move is nullptr"), *__FUNCTION__);
+		return;
 	}
 	
 	if (const auto InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
