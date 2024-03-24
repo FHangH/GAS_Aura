@@ -1,11 +1,18 @@
 // Copyright fangh.space
 
 #include "Character/AuraEnemy.h"
+#include "Gameplay/GAS/AuraAbilitySystemComponent.h"
+#include "Gameplay/GAS/AuraAttributeSet.h"
 #include "Untils/RenderDepth.h"
 
 AAuraEnemy::AAuraEnemy()
 {
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+
+	ASComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	ASComponent->SetIsReplicated(true);
+
+	AS = CreateDefaultSubobject<UAuraAttributeSet>(TEXT("AttributeSet"));
 }
 
 void AAuraEnemy::HighLightActor()
