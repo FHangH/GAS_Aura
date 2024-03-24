@@ -133,7 +133,7 @@ void AAuraPlayerController::CursorTrace()
 
 void AAuraPlayerController::TickHandle()
 {
-	UE_LOG(Aura, Warning, TEXT("%hc TickHandle - Rate: %f"), *__FUNCTION__, TickTimerRate);
+	//UE_LOG(Aura, Warning, TEXT("%hc TickHandle - Rate: %f"), *__FUNCTION__, TickTimerRate);
 
 	CursorTrace();
 }

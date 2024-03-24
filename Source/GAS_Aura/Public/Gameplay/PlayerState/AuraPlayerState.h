@@ -16,7 +16,7 @@ class GAS_AURA_API AAuraPlayerState : public APlayerState, public IAbilitySystem
 	GENERATED_BODY()
 
 	/* Property */
-private:
+protected:
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> ASComponent;
 	UPROPERTY()

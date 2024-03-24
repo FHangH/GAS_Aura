@@ -5,7 +5,6 @@
 #include "AbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Gameplay/PlayerState/AuraPlayerState.h"
-
 AAuraCharacter::AAuraCharacter()
 {
 	GetCharacterMovement()->bOrientRotationToMovement = true;
