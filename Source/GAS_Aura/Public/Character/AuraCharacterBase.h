@@ -12,7 +12,7 @@ class GAS_AURA_API AAuraCharacterBase : public ACharacter
 	GENERATED_BODY()
 
 	/* Property */
-private:
+protected:
 	UPROPERTY(EditAnywhere, Category="Aura")
 	TObjectPtr<USkeletalMeshComponent> WeaponMeshComponent;
 
