@@ -12,6 +12,11 @@ class GAS_AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterfac
 {
 	GENERATED_BODY()
 
+	/* Property */
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
+	bool bIsHighLight {false};
+	
 	/* Function */
 public:
 	virtual void HighLightActor() override;
