@@ -11,8 +11,19 @@ AAuraEnemy::AAuraEnemy()
 
 	ASComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	ASComponent->SetIsReplicated(true);
+	ASComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
 	AS = CreateDefaultSubobject<UAuraAttributeSet>(TEXT("AttributeSet"));
+}
+
+void AAuraEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (ASComponent)
+	{
+		ASComponent->InitAbilityActorInfo(this, this);
+	}
 }
 
 void AAuraEnemy::HighLightActor()

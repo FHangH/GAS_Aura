@@ -20,6 +20,12 @@ private:
 	/* Function */
 public:
 	AAuraEnemy();
+
+protected:
+	virtual void BeginPlay() override;
+	
+public:
+	// Enemy Interface
 	virtual void HighLightActor() override;
 	virtual void UnHighLightActor() override;
 };
