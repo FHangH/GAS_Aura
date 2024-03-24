@@ -1,7 +1,7 @@
 // Copyright fangh.space
 
-#include "Untils/RenderDepth.h"
 #include "Character/AuraEnemy.h"
+#include "Untils/RenderDepth.h"
 
 AAuraEnemy::AAuraEnemy()
 {
