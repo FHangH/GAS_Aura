@@ -5,7 +5,7 @@ setlocal enabledelayedexpansion
 chcp 65001
 
 :: 执行git push
-git push origin master
+git push origin free
 
 :: 等待用户按回车键
 echo 提交完成
