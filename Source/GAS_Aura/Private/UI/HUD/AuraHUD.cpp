@@ -3,18 +3,39 @@
 
 #include "UI/HUD/AuraHUD.h"
 #include "UI/Widget/AuraUserWidget.h"
+#include "UI/WidgetController/OverlayMainWidgetController.h"
 #include "Untils/AuraLog.h"
 
-void AAuraHUD::BeginPlay()
+UOverlayMainWidgetController* AAuraHUD::GetOverlayMainWidgetController(const FWidgetControllerParams& Params)
 {
-	Super::BeginPlay();
+	if (OverlayMainWidgetController) return OverlayMainWidgetController;
 
+	if (OverlayMainWidgetControllerClass)
+	{
+		OverlayMainWidgetController =
+			NewObject<UOverlayMainWidgetController>(this, OverlayMainWidgetControllerClass);
+		OverlayMainWidgetController->SetWidgetControllerParams(Params);
+		
+		return OverlayMainWidgetController;
+	}
+	
+	UE_LOG(Aura, Warning, TEXT("OverlayMainWidgetControllerClass is nullptr"));
+	return nullptr;
+}
+
+void AAuraHUD::InitOverlayMain(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
+{
 	if (OverlayMainWidgetClass)
 	{
 		OverlayMainWidget = CreateWidget<UAuraUserWidget>(GetWorld(), OverlayMainWidgetClass);
 		if (OverlayMainWidget)
 		{
 			const auto Widget = Cast<UUserWidget>(OverlayMainWidget);
+
+			const FWidgetControllerParams WidgetControllerParams {PC, PS, ASC, AS};
+			const auto WidgetController = GetOverlayMainWidgetController(WidgetControllerParams);
+			OverlayMainWidget->SetWidgetController(WidgetController);
+			
 			Widget->AddToViewport();
 		}
 	}

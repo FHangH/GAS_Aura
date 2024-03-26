@@ -4,7 +4,10 @@
 #include "Character/AuraCharacter.h"
 #include "AbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Gameplay/PlayerController/AuraPlayerController.h"
 #include "Gameplay/PlayerState/AuraPlayerState.h"
+#include "UI/HUD/AuraHUD.h"
+
 AAuraCharacter::AAuraCharacter()
 {
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -40,5 +43,11 @@ void AAuraCharacter::InitAbilityActorInfo()
 		AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
 		ASComponent = AuraPlayerState->GetAbilitySystemComponent();
 		AS = AuraPlayerState->GetAttributeSet();
+
+		if (const auto AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+		{
+			const auto AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD());
+			AuraHUD->InitOverlayMain(AuraPlayerController, AuraPlayerState, ASComponent, AS);
+		}
 	}
 }

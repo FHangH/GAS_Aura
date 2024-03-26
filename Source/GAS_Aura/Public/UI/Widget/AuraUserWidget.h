@@ -19,7 +19,7 @@ public:
 	/* Function */
 protected:
 	UFUNCTION(BlueprintNativeEvent, Category="Aura")
-	void WidgetControllerSet();
+	void OnWidgetControllerSet();
 
 public:
 	UFUNCTION(BlueprintCallable, Category="Aura")
