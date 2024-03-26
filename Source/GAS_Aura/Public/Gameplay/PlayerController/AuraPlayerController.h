@@ -32,7 +32,7 @@ private:
 	float TickTimerRate {TICK_60};
 
 	UPROPERTY(EditAnywhere, Category="Aura|Tick")
-	bool IsTickStart {false};
+	bool IsTickStart {true};
 
 	IEnemyInterface* LastActor {nullptr};
 	IEnemyInterface* ThisActor {nullptr};
