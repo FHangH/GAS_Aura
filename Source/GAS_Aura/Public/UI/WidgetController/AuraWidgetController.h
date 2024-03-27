@@ -52,5 +52,9 @@ protected:
 	/* Function */
 public:
 	UFUNCTION(BlueprintCallable, Category="Aura")
-	void SetWidgetControllerParams(const FWidgetControllerParams& Params);	
+	void SetWidgetControllerParams(const FWidgetControllerParams& Params);
+
+	virtual void BroadcastInitValues();
+
+	virtual void BindCallBackToDependencies();
 };

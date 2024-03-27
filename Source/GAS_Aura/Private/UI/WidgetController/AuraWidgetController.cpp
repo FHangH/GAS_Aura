@@ -10,3 +10,13 @@ void UAuraWidgetController::SetWidgetControllerParams(const FWidgetControllerPar
 	ASComponent = Params.ASComponent;
 	AS = Params.AS;
 }
+
+void UAuraWidgetController::BroadcastInitValues()
+{
+	
+}
+
+void UAuraWidgetController::BindCallBackToDependencies()
+{
+	
+}
