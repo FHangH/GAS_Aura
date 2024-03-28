@@ -2,7 +2,6 @@
 
 
 #include "UI/WidgetController/OverlayMainWidgetController.h"
-
 #include "Gameplay/GAS/AuraAttributeSet.h"
 
 void UOverlayMainWidgetController::BroadcastInitValues()
@@ -39,7 +38,6 @@ void UOverlayMainWidgetController::BindCallBackToDependencies()
 void UOverlayMainWidgetController::HealthChanged(const FOnAttributeChangeData& Data) const
 {
 	OnHealthChanged.Broadcast(Data.NewValue);
-	
 }
 
 void UOverlayMainWidgetController::MaxHealthChanged(const FOnAttributeChangeData& Data) const
