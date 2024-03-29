@@ -17,6 +17,10 @@ class GAS_AURA_API AAuraEffectActor : public AActor
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|GE", meta=(AllowPrivateAccess=true))
 	TSubclassOf<UGameplayEffect> InstantGameplayEffectClass;
+
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|GE", meta=(AllowPrivateAccess=true))
+	TSubclassOf<UGameplayEffect> DurationGameplayEffectClass;
 	
 	/* Function */
 public:	
