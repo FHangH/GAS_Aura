@@ -50,7 +50,7 @@ class GAS_AURA_API UAuraAttributeSet : public UAttributeSet
 public:
 	/* Property */
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Health, Category="Aura|AS")
-	FGameplayAttributeData Health {100.f};
+	FGameplayAttributeData Health {50.f};
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health)
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_MaxHealth, Category="Aura|AS")
@@ -58,7 +58,7 @@ public:
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxHealth)
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Mana, Category="Aura|AS")
-	FGameplayAttributeData Mana {50.f};
+	FGameplayAttributeData Mana {25.f};
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana)
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_MaxMana, Category="Aura|AS")
