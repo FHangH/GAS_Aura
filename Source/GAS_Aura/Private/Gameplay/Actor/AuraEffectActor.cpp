@@ -25,8 +25,14 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 		GEContextHandle.AddSourceObject(this);
 		
 		const auto GESpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, 1.f, GEContextHandle);
-		TargetASC->ApplyGameplayEffectSpecToSelf(*GESpecHandle.Data.Get());
-	}
+		const auto ActiveGEHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*GESpecHandle.Data.Get());
+		const auto bIsInfinite = GESpecHandle.Data.Get()->Def.Get()->DurationPolicy == EGameplayEffectDurationType::Infinite;
+
+		if (bIsInfinite && InfinityGE_RemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap)
+		{
+			ActiveGEHandles_Map.Add(ActiveGEHandle, TargetASC);
+		}
+ 	}
 }
 
 void AAuraEffectActor::OnBeginOverlap(AActor* TargetActor)
@@ -39,6 +45,10 @@ void AAuraEffectActor::OnBeginOverlap(AActor* TargetActor)
 	{
 		ApplyEffectToTarget(TargetActor, DurationGameplayEffectClass);
 	}
+	if (InfinityGE_ApplicationPolicy == EEffectApplicationPolicy::ApplyOnBeginOverlap)
+	{
+		ApplyEffectToTarget(TargetActor, InfinityGameplayEffectClass);
+	}
 }
 
 void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
@@ -50,5 +60,28 @@ void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 	if (DurationGE_ApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
 	{
 		ApplyEffectToTarget(TargetActor, DurationGameplayEffectClass);
+	}
+	if (InfinityGE_ApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
+	{
+		ApplyEffectToTarget(TargetActor, InfinityGameplayEffectClass);
+	}
+	if (InfinityGE_RemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap)
+	{
+		const auto TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+		if (!TargetASC) return;
+
+		TArray<FActiveGameplayEffectHandle> HandlesToRemove;
+		for (const auto& GEHandlePair : ActiveGEHandles_Map)
+		{
+			if (TargetASC == GEHandlePair.Value)
+			{
+				TargetASC->RemoveActiveGameplayEffect(GEHandlePair.Key, 1);
+				//ActiveGEHandles_Map.FindAndRemoveChecked(GEHandlePair.Key);
+			}
+		}
+		for (const auto& Handle : HandlesToRemove)
+		{
+			ActiveGEHandles_Map.FindAndRemoveChecked(Handle);
+		}
 	}
 }
