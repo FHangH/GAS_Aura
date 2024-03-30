@@ -58,6 +58,9 @@ private:
 
 	// All Active GE Handle Map
 	TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveGEHandles_Map;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Level", meta=(AllowPrivateAccess=true))
+	float ActorLevel {1.f};
 	
 	/* Function */
 public:

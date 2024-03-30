@@ -24,7 +24,7 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 		auto GEContextHandle = TargetASC->MakeEffectContext();
 		GEContextHandle.AddSourceObject(this);
 		
-		const auto GESpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, 1.f, GEContextHandle);
+		const auto GESpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, ActorLevel, GEContextHandle);
 		const auto ActiveGEHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*GESpecHandle.Data.Get());
 		const auto bIsInfinite = GESpecHandle.Data.Get()->Def.Get()->DurationPolicy == EGameplayEffectDurationType::Infinite;
 
