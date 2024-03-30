@@ -42,13 +42,44 @@
 	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+USTRUCT(BlueprintType)
+struct FEffectProperties
+{
+	GENERATED_USTRUCT_BODY()
+
+	FEffectProperties() {}
+
+	/*EffectContextHandle, ASC, Avatar, Controller, Character*/
+	FGameplayEffectContextHandle EffectContextHandle;
+	
+	// Source
+	UPROPERTY()
+	UAbilitySystemComponent* SourceASC {nullptr};
+	UPROPERTY()
+	AActor* SourceAvatarActor {nullptr};
+	UPROPERTY()
+	AController* SourceController {nullptr};
+	UPROPERTY()
+	ACharacter* SourceCharacter {nullptr};
+
+	// Target
+	UPROPERTY()
+	UAbilitySystemComponent* TargetASC {nullptr};
+	UPROPERTY()
+	AActor* TargetAvatarActor {nullptr};
+	UPROPERTY()
+	AController* TargetController {nullptr};
+	UPROPERTY()
+	ACharacter* TargetCharacter {nullptr};
+};
+
 UCLASS()
 class GAS_AURA_API UAuraAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
 
-public:
 	/* Property */
+public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Health, Category="Aura|AS")
 	FGameplayAttributeData Health {50.f};
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health)
@@ -65,10 +96,17 @@ public:
 	FGameplayAttributeData MaxMana {50.f};
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana)
 
+	UPROPERTY(BlueprintReadOnly, Category="Aura|AS")
+	FEffectProperties EffectProperties {};
+
 	/* Function */
+public:
 	UAuraAttributeSet();
+
+protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 	
 	UFUNCTION()
 	void OnRep_Health(const FGameplayAttributeData& OldValue) const;
@@ -78,4 +116,6 @@ public:
 	void OnRep_Mana(const FGameplayAttributeData& OldValue) const;
 	UFUNCTION()
 	void OnRep_MaxMana(const FGameplayAttributeData& OldValue) const;
+
+	static void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties);
 };
