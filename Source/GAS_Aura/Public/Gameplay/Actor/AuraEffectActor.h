@@ -8,6 +8,21 @@
 
 class UGameplayEffect;
 
+UENUM(BlueprintType)
+enum class EEffectApplicationPolicy : uint8
+{
+	ApplyOnBeginOverlap,
+	ApplyOnEndOverlap,
+	DoNotApply
+};
+
+UENUM(BlueprintType)
+enum class EEffectRemovalPolicy : uint8
+{
+	RemoveOnEndOverlap,
+	DoNotRemove
+};
+
 UCLASS()
 class GAS_AURA_API AAuraEffectActor : public AActor
 {
@@ -15,15 +30,32 @@ class GAS_AURA_API AAuraEffectActor : public AActor
 
 	/* Property */
 private:
+	// Enum Apply GE Policy
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Policy|Apply", meta=(AllowPrivateAccess=true))
+	EEffectApplicationPolicy InstantGE_ApplicationPolicy {EEffectApplicationPolicy::DoNotApply};
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Policy|Apply", meta=(AllowPrivateAccess=true))
+	EEffectApplicationPolicy DurationGE_ApplicationPolicy {EEffectApplicationPolicy::DoNotApply};;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Policy|Apply", meta=(AllowPrivateAccess=true))
+	EEffectApplicationPolicy InfinityGE_ApplicationPolicy {EEffectApplicationPolicy::DoNotApply};;
+
+	// Enum Remove GE Policy
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Policy|Remove", meta=(AllowPrivateAccess=true))
+	EEffectRemovalPolicy InstantGE_RemovalPolicy {EEffectRemovalPolicy::RemoveOnEndOverlap};
+
+	// GameplayEffect Class
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|GE", meta=(AllowPrivateAccess=true))
 	TSubclassOf<UGameplayEffect> InstantGameplayEffectClass;
-
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|GE", meta=(AllowPrivateAccess=true))
 	TSubclassOf<UGameplayEffect> DurationGameplayEffectClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|GE", meta=(AllowPrivateAccess=true))
+	TSubclassOf<UGameplayEffect> InfinityGameplayEffectClass;
 	
 	/* Function */
-public:	
+public:
 	AAuraEffectActor();
 
 protected:
@@ -31,4 +63,10 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category="Aura")
 	void ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass);
+
+	UFUNCTION(BlueprintCallable, Category="Aura")
+	void OnBeginOverlap(AActor* TargetActor);
+
+	UFUNCTION(BlueprintCallable, Category="Aura")
+	void OnEndOverlap(AActor* TargetActor);
 };
