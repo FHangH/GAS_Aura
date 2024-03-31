@@ -2,7 +2,10 @@
 
 
 #include "UI/WidgetController/OverlayMainWidgetController.h"
+
+#include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Gameplay/GAS/AuraAttributeSet.h"
+#include "Untils/AuraLog.h"
 
 void UOverlayMainWidgetController::BroadcastInitValues()
 {
@@ -32,6 +35,17 @@ void UOverlayMainWidgetController::BindCallBackToDependencies()
 			AuraAs->GetManaAttribute()).AddUObject(this, &ThisClass::ManaChanged);
 		ASComponent->GetGameplayAttributeValueChangeDelegate(
 			AuraAs->GetMaxManaAttribute()).AddUObject(this, &ThisClass::MaxManaChanged);
+
+		Cast<UAuraAbilitySystemComponent>(ASComponent)->EffectAssetTagDelegate.AddLambda
+		(
+			[](const FGameplayTagContainer& AssetTags)
+			{
+				for (const auto& Tag : AssetTags)
+				{
+					UE_LOG(Aura, Warning, TEXT("GE Tag: %s"), *Tag.ToString());
+				}
+			}
+		);
 	}
 }
 
