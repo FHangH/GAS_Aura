@@ -3,10 +3,32 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
+#include "Engine/DataTable.h"
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "OverlayMainWidgetController.generated.h"
 
+class UAuraUserWidget;
 struct FOnAttributeChangeData;
+
+USTRUCT(BlueprintType)
+struct FUIWidgetRow : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura")
+	FGameplayTag MessageTag {};
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura")
+	FText MessageText {};
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura")
+	TSubclassOf<UAuraUserWidget> MessageWidgetClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura")
+	TObjectPtr<UTexture2D> Image {nullptr};
+};
+
 // Delegate
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChangedSignature, float, NewHealth);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMaxHealthChangedSignature, float, NewMaxHealth);
@@ -30,6 +52,10 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate")
 	FOnMaxManaChangedSignature OnMaxManaChanged;
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|DataTable")
+	TObjectPtr<UDataTable> MessageWidgetDataTable;
+
 	/* Function */
 public:
 	virtual void BroadcastInitValues() override;
@@ -40,4 +66,10 @@ protected:
 	void MaxHealthChanged(const FOnAttributeChangeData& Data) const;
 	void ManaChanged(const FOnAttributeChangeData& Data) const;
 	void MaxManaChanged(const FOnAttributeChangeData& Data) const;
+
+	template<typename T>
+	static T* GetDataTableRowByTag(const UDataTable* DataTable, const FGameplayTag& Tag)
+	{
+		return DataTable->FindRow<T>(Tag.GetTagName(), TEXT(""));
+	}
 };

@@ -2,10 +2,8 @@
 
 
 #include "UI/WidgetController/OverlayMainWidgetController.h"
-
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Gameplay/GAS/AuraAttributeSet.h"
-#include "Untils/AuraLog.h"
 
 void UOverlayMainWidgetController::BroadcastInitValues()
 {
@@ -38,11 +36,11 @@ void UOverlayMainWidgetController::BindCallBackToDependencies()
 
 		Cast<UAuraAbilitySystemComponent>(ASComponent)->EffectAssetTagDelegate.AddLambda
 		(
-			[](const FGameplayTagContainer& AssetTags)
+			[this](const FGameplayTagContainer& AssetTags)
 			{
 				for (const auto& Tag : AssetTags)
 				{
-					UE_LOG(Aura, Warning, TEXT("GE Tag: %s"), *Tag.ToString());
+					auto Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
 				}
 			}
 		);
