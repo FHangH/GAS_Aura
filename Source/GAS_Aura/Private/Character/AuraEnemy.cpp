@@ -20,9 +20,15 @@ void AAuraEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
+	InitAbilityActorInfo();
+}
+
+void AAuraEnemy::InitAbilityActorInfo()
+{
 	if (ASComponent)
 	{
 		ASComponent->InitAbilityActorInfo(this, this);
+		Cast<UAuraAbilitySystemComponent>(ASComponent)->AbilityActorInfoSet();
 	}
 }
 
