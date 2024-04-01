@@ -33,23 +33,8 @@ void UOverlayMainWidgetController::BindCallBackToDependencies()
 			AuraAs->GetManaAttribute()).AddUObject(this, &ThisClass::OnManaChanged);
 		ASComponent->GetGameplayAttributeValueChangeDelegate(
 			AuraAs->GetMaxManaAttribute()).AddUObject(this, &ThisClass::OnMaxManaChanged);
-		
-		Cast<UAuraAbilitySystemComponent>(ASComponent)->EffectAssetTagDelegate.AddLambda
-		(
-			[this](const FGameplayTagContainer& AssetTags)
-			{
-				const auto MessageTag = FGameplayTag::RequestGameplayTag(FName{"Message"});
-				
-				for (const auto& Tag : AssetTags)
-				{
-					if (!Tag.MatchesTag(MessageTag)) continue;
-					if (const auto Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag))
-					{
-						OnMessageWidgetRowDelegate.Broadcast(*Row);
-					}
-				}
-			}
-		);
+
+		Cast<UAuraAbilitySystemComponent>(ASComponent)->EffectAssetTagDelegate.AddUObject(this, &ThisClass::OnEffectAssetTag);
 	}
 }
 
@@ -71,4 +56,18 @@ void UOverlayMainWidgetController::OnManaChanged(const FOnAttributeChangeData& D
 void UOverlayMainWidgetController::OnMaxManaChanged(const FOnAttributeChangeData& Data) const
 {
 	OnMaxHealthChangedDelegate.Broadcast(Data.NewValue);
+}
+
+void UOverlayMainWidgetController::OnEffectAssetTag(const FGameplayTagContainer& AssetTags) const
+{
+	const auto MessageTag = FGameplayTag::RequestGameplayTag(FName{"Message"});
+	
+	for (const auto& Tag : AssetTags)
+	{
+		if (!Tag.MatchesTag(MessageTag)) continue;
+		if (const auto Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag))
+		{
+			OnMessageWidgetRowDelegate.Broadcast(*Row);
+		}
+	}
 }

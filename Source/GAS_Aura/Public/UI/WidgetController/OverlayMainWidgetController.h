@@ -49,7 +49,7 @@ public:
 	FOnAttributeChangedSignature OnManaChangedDelegate;
 	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate")
 	FOnAttributeChangedSignature OnMaxManaChangedDelegate;
-
+	
 	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate")
 	FOnMessageWidgetRowSignature OnMessageWidgetRowDelegate;
 
@@ -67,6 +67,8 @@ protected:
 	void OnMaxHealthChanged(const FOnAttributeChangeData& Data) const;
 	void OnManaChanged(const FOnAttributeChangeData& Data) const;
 	void OnMaxManaChanged(const FOnAttributeChangeData& Data) const;
+	
+	void OnEffectAssetTag(const FGameplayTagContainer& AssetTags) const;
 
 	template<typename T>
 	static T* GetDataTableRowByTag(const UDataTable* DataTable, const FGameplayTag& Tag)
