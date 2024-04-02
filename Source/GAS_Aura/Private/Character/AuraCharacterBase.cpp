@@ -1,4 +1,6 @@
 #include "Character/AuraCharacterBase.h"
+#include "AbilitySystemComponent.h"
+#include "Untils/AuraLog.h"
 
 AAuraCharacterBase::AAuraCharacterBase()
 {
@@ -23,4 +25,19 @@ void AAuraCharacterBase::BeginPlay()
 void AAuraCharacterBase::InitAbilityActorInfo()
 {
 	
+}
+
+void AAuraCharacterBase::InitializePrimaryAttributes() const
+{
+	if (!DefaultPrimaryAttributesClass)
+	{
+		UE_LOG(Aura, Warning, TEXT("AuraCharacterBase DefaultPrimaryAttributesClass Is Null"));
+		return;
+	}
+	if (ASComponent)
+	{
+		const auto GEContextHandle = ASComponent->MakeEffectContext();
+		const auto GESpecHandle = ASComponent->MakeOutgoingSpec(DefaultPrimaryAttributesClass, 1.f, GEContextHandle);
+		ASComponent->ApplyGameplayEffectSpecToTarget(*GESpecHandle.Data.Get(), ASComponent);
+	}
 }

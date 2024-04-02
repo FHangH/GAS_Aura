@@ -80,22 +80,41 @@ class GAS_AURA_API UAuraAttributeSet : public UAttributeSet
 
 	/* Property */
 public:
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Health, Category="Aura|AS")
+	// Primary Attribute
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Strength, Category="Aura|AS|Primary")
+	FGameplayAttributeData Strength {};
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Strength)
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Intelligence, Category="Aura|AS|Primary")
+	FGameplayAttributeData Intelligence {};
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Intelligence)
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Resilience, Category="Aura|AS|Primary")
+	FGameplayAttributeData Resilience {};
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Resilience)
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Vigor, Category="Aura|AS|Primary")
+	FGameplayAttributeData Vigor {};
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Vigor)
+	
+	// Vital Attribute
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Health, Category="Aura|AS|Vital")
 	FGameplayAttributeData Health {50.f};
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health)
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_MaxHealth, Category="Aura|AS")
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_MaxHealth, Category="Aura|AS|Vital")
 	FGameplayAttributeData MaxHealth {100.f};
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxHealth)
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Mana, Category="Aura|AS")
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Mana, Category="Aura|AS|Vital")
 	FGameplayAttributeData Mana {25.f};
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana)
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_MaxMana, Category="Aura|AS")
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_MaxMana, Category="Aura|AS|Vital")
 	FGameplayAttributeData MaxMana {50.f};
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana)
 
+	// EffectContextHandle, ASC, Avatar, Controller, Character
 	UPROPERTY(BlueprintReadOnly, Category="Aura|AS")
 	FEffectProperties EffectProperties {};
 
@@ -107,6 +126,15 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+
+	UFUNCTION()
+	void OnRep_Strength(const FGameplayAttributeData& OldValue) const;
+	UFUNCTION()
+	void OnRep_Intelligence(const FGameplayAttributeData& OldValue) const;
+	UFUNCTION()
+	void OnRep_Resilience(const FGameplayAttributeData& OldValue) const;
+	UFUNCTION()
+	void OnRep_Vigor(const FGameplayAttributeData& OldValue) const;
 	
 	UFUNCTION()
 	void OnRep_Health(const FGameplayAttributeData& OldValue) const;
