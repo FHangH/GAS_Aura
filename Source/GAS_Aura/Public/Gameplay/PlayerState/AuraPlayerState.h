@@ -17,7 +17,7 @@ class GAS_AURA_API AAuraPlayerState : public APlayerState, public IAbilitySystem
 
 	/* Property */
 protected:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category="Aura")
 	TObjectPtr<UAbilitySystemComponent> ASComponent;
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AS;

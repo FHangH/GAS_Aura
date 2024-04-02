@@ -52,5 +52,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 			const auto AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD());
 			AuraHUD->InitOverlayMain(AuraPlayerController, AuraPlayerState, ASComponent, AS);
 		}
+
+		InitializePrimaryAttributes();
 	}
 }
