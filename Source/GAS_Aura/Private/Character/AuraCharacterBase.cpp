@@ -27,17 +27,33 @@ void AAuraCharacterBase::InitAbilityActorInfo()
 	
 }
 
-void AAuraCharacterBase::InitializePrimaryAttributes() const
+void AAuraCharacterBase::ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const
 {
-	if (!DefaultPrimaryAttributesClass)
-	{
-		UE_LOG(Aura, Warning, TEXT("AuraCharacterBase DefaultPrimaryAttributesClass Is Null"));
-		return;
-	}
 	if (ASComponent)
 	{
 		const auto GEContextHandle = ASComponent->MakeEffectContext();
-		const auto GESpecHandle = ASComponent->MakeOutgoingSpec(DefaultPrimaryAttributesClass, 1.f, GEContextHandle);
+		const auto GESpecHandle = ASComponent->MakeOutgoingSpec(GameplayEffectClass, Level, GEContextHandle);
 		ASComponent->ApplyGameplayEffectSpecToTarget(*GESpecHandle.Data.Get(), ASComponent);
+	}
+}
+
+void AAuraCharacterBase::InitializeDefaultAttributes() const
+{
+	if (DefaultPrimaryAttributesClass)
+	{
+		ApplyEffectToSelf(DefaultPrimaryAttributesClass, 1.f);
+	}
+	else
+	{
+		UE_LOG(Aura, Warning, TEXT("AuraCharacterBase DefaultPrimaryAttributesClass Is Null"));
+	}
+	
+	if (DefaultSecondaryAttributesClass)
+	{
+		ApplyEffectToSelf(DefaultSecondaryAttributesClass, 1.f);
+	}
+	else
+	{
+		UE_LOG(Aura, Warning, TEXT("AuraCharacterBase DefaultSecondaryAttributesClass Is Null"));
 	}
 }

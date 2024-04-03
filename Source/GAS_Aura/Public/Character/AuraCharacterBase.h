@@ -27,9 +27,11 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AS;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|AsClass")
 	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributesClass;
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|AsClass")
+	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributesClass;
+	
 	/* Function */
 public:
 	AAuraCharacterBase();
@@ -39,5 +41,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo();
-	void InitializePrimaryAttributes() const;
+
+	void ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const;
+	void InitializeDefaultAttributes() const;
 };
