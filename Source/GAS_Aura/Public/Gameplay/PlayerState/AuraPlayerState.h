@@ -19,12 +19,24 @@ class GAS_AURA_API AAuraPlayerState : public APlayerState, public IAbilitySystem
 protected:
 	UPROPERTY(VisibleAnywhere, Category="Aura")
 	TObjectPtr<UAbilitySystemComponent> ASComponent;
+
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AS;
 
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_Level, Category="Aura")
+	int32 Level {1};
+	
 	/* Function */
 public:
 	AAuraPlayerState();
+
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	UAttributeSet* GetAttributeSet() const { return AS; }
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	// Inline Get
+	FORCEINLINE UAttributeSet* GetAttributeSet() const { return AS; }
+	FORCEINLINE int32 GetPlayerLevel() const { return Level; }
+
+	UFUNCTION()
+	void OnRep_Level(const int32 OldLevel) const;
 };

@@ -3,6 +3,7 @@
 
 #include "Character/AuraCharacter.h"
 #include "AbilitySystemComponent.h"
+#include "EditorDirectories.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Gameplay/PlayerController/AuraPlayerController.h"
@@ -35,6 +36,12 @@ void AAuraCharacter::OnRep_PlayerState()
 
 	// Init Client
 	InitAbilityActorInfo();
+}
+
+int32 AAuraCharacter::GetPlayerLevel()
+{
+	const auto AuraPS = GetPlayerState<AAuraPlayerState>();
+	return AuraPS ? AuraPS->GetPlayerLevel() : 0;
 }
 
 void AAuraCharacter::InitAbilityActorInfo()

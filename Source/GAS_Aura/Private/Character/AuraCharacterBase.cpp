@@ -31,7 +31,8 @@ void AAuraCharacterBase::ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> Ga
 {
 	if (ASComponent)
 	{
-		const auto GEContextHandle = ASComponent->MakeEffectContext();
+		auto GEContextHandle = ASComponent->MakeEffectContext();
+		GEContextHandle.AddSourceObject(this);
 		const auto GESpecHandle = ASComponent->MakeOutgoingSpec(GameplayEffectClass, Level, GEContextHandle);
 		ASComponent->ApplyGameplayEffectSpecToTarget(*GESpecHandle.Data.Get(), ASComponent);
 	}
@@ -55,5 +56,14 @@ void AAuraCharacterBase::InitializeDefaultAttributes() const
 	else
 	{
 		UE_LOG(Aura, Warning, TEXT("AuraCharacterBase DefaultSecondaryAttributesClass Is Null"));
+	}
+
+	if (DefaultVitalAttributesClass)
+	{
+		ApplyEffectToSelf(DefaultVitalAttributesClass, 1.f);
+	}
+	else
+	{
+		UE_LOG(Aura, Warning, TEXT("AuraCharacterBase DefaultVitalAttributesClass Is Null"));
 	}
 }

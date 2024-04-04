@@ -55,7 +55,7 @@ void UOverlayMainWidgetController::OnManaChanged(const FOnAttributeChangeData& D
 
 void UOverlayMainWidgetController::OnMaxManaChanged(const FOnAttributeChangeData& Data) const
 {
-	OnMaxHealthChangedDelegate.Broadcast(Data.NewValue);
+	OnMaxManaChangedDelegate.Broadcast(Data.NewValue);
 }
 
 void UOverlayMainWidgetController::OnEffectAssetTag(const FGameplayTagContainer& AssetTags) const

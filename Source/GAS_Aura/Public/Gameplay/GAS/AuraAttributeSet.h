@@ -140,11 +140,11 @@ public:
 	
 	// Vital Attributes
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Health, Category="Aura|AS|Vital")
-	FGameplayAttributeData Health {50.f};
+	FGameplayAttributeData Health {};
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health)
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Mana, Category="Aura|AS|Vital")
-	FGameplayAttributeData Mana {25.f};
+	FGameplayAttributeData Mana {};
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana)
 	
 	// EffectContextHandle, ASC, Avatar, Controller, Character

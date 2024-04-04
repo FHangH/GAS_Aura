@@ -34,8 +34,8 @@ private:
 	UPROPERTY(EditAnywhere, Category="Aura|Tick")
 	bool IsTickStart {true};
 
-	TObjectPtr<IEnemyInterface> LastActor;
-	TObjectPtr<IEnemyInterface> ThisActor;
+	IEnemyInterface* LastActor;
+	IEnemyInterface* ThisActor;
 
 	/* Function */
 public:

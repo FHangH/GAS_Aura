@@ -16,6 +16,9 @@ class GAS_AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterfac
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
 	bool bIsHighLight {false};
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
+	int32 Level {1};
 	
 	/* Function */
 public:
@@ -29,4 +32,7 @@ public:
 	// Enemy Interface
 	virtual void HighLightActor() override;
 	virtual void UnHighLightActor() override;
+
+	// Combat Interface
+	virtual int32 GetPlayerLevel() override;
 };
