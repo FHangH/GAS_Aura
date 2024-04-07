@@ -3,7 +3,6 @@
 
 #include "Character/AuraCharacter.h"
 #include "AbilitySystemComponent.h"
-#include "EditorDirectories.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Gameplay/PlayerController/AuraPlayerController.h"
