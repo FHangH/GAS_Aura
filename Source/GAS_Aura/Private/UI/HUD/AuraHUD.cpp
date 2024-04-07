@@ -3,6 +3,7 @@
 
 #include "UI/HUD/AuraHUD.h"
 #include "UI/Widget/AuraUserWidget.h"
+#include "UI/WidgetController/AttributeMenuWidgetController.h"
 #include "UI/WidgetController/OverlayMainWidgetController.h"
 #include "Untils/AuraLog.h"
 
@@ -21,6 +22,24 @@ UOverlayMainWidgetController* AAuraHUD::GetOverlayMainWidgetController(const FWi
 	}
 	
 	UE_LOG(Aura, Warning, TEXT("OverlayMainWidgetControllerClass is nullptr"));
+	return nullptr;
+}
+
+UAttributeMenuWidgetController* AAuraHUD::GetAttributeMenuWidgetController(const FWidgetControllerParams& Params)
+{
+	if (AttributeMenuWidgetController) return AttributeMenuWidgetController;
+
+	if (AttributeMenuWidgetControllerClass)
+	{
+		AttributeMenuWidgetController =
+			NewObject<UAttributeMenuWidgetController>(this, AttributeMenuWidgetControllerClass);
+		AttributeMenuWidgetController->SetWidgetControllerParams(Params);
+		AttributeMenuWidgetController->BindCallBackToDependencies();
+		
+		return AttributeMenuWidgetController;
+	}
+	
+	UE_LOG(Aura, Warning, TEXT("AttributeMenuWidgetControllerClass is nullptr"));
 	return nullptr;
 }
 
