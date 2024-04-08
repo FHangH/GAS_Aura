@@ -54,6 +54,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Aura")
 	void SetWidgetControllerParams(const FWidgetControllerParams& Params);
 
+	UFUNCTION(BlueprintCallable, Category="Aura")
 	virtual void BroadcastInitValues();
 
 	virtual void BindCallBackToDependencies();
