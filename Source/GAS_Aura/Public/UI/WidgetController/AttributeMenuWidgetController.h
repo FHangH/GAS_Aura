@@ -6,6 +6,8 @@
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "AttributeMenuWidgetController.generated.h"
 
+struct FGameplayAttribute;
+struct FGameplayTag;
 class UDataAsset_AttributeInfo;
 struct FAuraAttributeInfo;
 
@@ -29,4 +31,7 @@ protected:
 public:
 	virtual void BindCallBackToDependencies() override;
 	virtual void BroadcastInitValues() override;
+
+private:
+	void BroadcastAttributeInfo(const FGameplayTag& AttributeTag, const FGameplayAttribute& Attribute) const;
 };
