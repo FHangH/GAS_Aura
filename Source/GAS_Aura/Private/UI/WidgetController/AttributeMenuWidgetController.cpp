@@ -4,11 +4,22 @@
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
 #include "Gameplay/GAS/AuraAttributeSet.h"
 #include "Gameplay/GAS/Data/DataAsset_AttributeInfo.h"
-#include "Untils/AuraGameplayTags.h"
 #include "Untils/AuraLog.h"
 
 void UAttributeMenuWidgetController::BindCallBackToDependencies()
 {
+	const auto AuraAS = CastChecked<UAuraAttributeSet>(AS);
+
+	for (const auto& Item : AuraAS->Map_TagsToAttributes)
+	{
+		ASComponent->GetGameplayAttributeValueChangeDelegate(Item.Value()).AddLambda
+		(
+			[this, Item](const FOnAttributeChangeData& Data)
+			{
+				BroadcastAttributeInfo(Item.Key, Item.Value());
+			}
+		);
+	}
 }
 
 void UAttributeMenuWidgetController::BroadcastInitValues()
@@ -20,7 +31,17 @@ void UAttributeMenuWidgetController::BroadcastInitValues()
 	}
 
 	const auto AuraAS = CastChecked<UAuraAttributeSet>(AS);
-	auto Info = DA_AttributeInfo->FindAttributeInfoForTag(FAuraGameplayTags::Get().Attributes_Primary_Strength, true);
-	Info.AttributeValue = AuraAS->GetStrength();
+
+	for (const auto& Item : AuraAS->Map_TagsToAttributes)
+	{
+		BroadcastAttributeInfo(Item.Key, Item.Value());
+	}
+}
+
+void UAttributeMenuWidgetController::BroadcastAttributeInfo(const FGameplayTag& AttributeTag,
+															const FGameplayAttribute& Attribute) const
+{
+	auto Info = DA_AttributeInfo->FindAttributeInfoForTag(AttributeTag, true);
+	Info.AttributeValue = Attribute.GetNumericValue(AS);
 	AttributeInfoSignature.Broadcast(Info);
 }

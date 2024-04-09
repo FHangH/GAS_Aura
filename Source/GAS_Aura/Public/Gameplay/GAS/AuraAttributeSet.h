@@ -151,6 +151,17 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="Aura|AS")
 	FEffectProperties EffectProperties {};
 
+	// Use GameplayTag Call back Delegate To return Attributes Property
+	/*
+	* 1. using FAttributeFuncPtr = TBaseStaticDelegateInstance<FGameplayAttribute(), FDefaultDelegateUserPolicy>::FFuncPtr;
+		TMap<FGameplayTag, FAttributeFuncPtr> Map_TagsToAttributes;
+		
+	* 2. template <class T>
+		using TAttributeFuncPtr = typename TBaseStaticDelegateInstance<T, FDefaultDelegateUserPolicy>::FFuncPtr;
+		TMap<FGameplayTag, TAttributeFuncPtr<FGameplayAttribute()>> Map_TagsToAttributes;
+	 */
+	TMap<FGameplayTag, FGameplayAttribute(*)()> Map_TagsToAttributes;
+	
 	/* Function */
 public:
 	UAuraAttributeSet();
