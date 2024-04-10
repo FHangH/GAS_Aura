@@ -1,5 +1,6 @@
 #include "Character/AuraCharacterBase.h"
 #include "AbilitySystemComponent.h"
+#include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Untils/AuraLog.h"
 
 AAuraCharacterBase::AAuraCharacterBase()
@@ -66,4 +67,14 @@ void AAuraCharacterBase::InitializeDefaultAttributes() const
 	{
 		UE_LOG(Aura, Warning, TEXT("AuraCharacterBase DefaultVitalAttributesClass Is Null"));
 	}
+}
+
+void AAuraCharacterBase::AddCharacterAbilities() const
+{
+	if (!HasAuthority()) return;
+
+	const auto ASC = CastChecked<UAuraAbilitySystemComponent>(ASComponent);
+	if (!ASC) return;
+
+	ASC->AddCharacterAbilities(StartUpAbilities);
 }
