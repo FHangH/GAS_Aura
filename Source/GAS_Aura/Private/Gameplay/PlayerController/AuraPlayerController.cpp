@@ -156,7 +156,6 @@ void AAuraPlayerController::TickHandle()
 	//UE_LOG(Aura, Warning, TEXT("%hc TickHandle - Rate: %f"), *__FUNCTION__, TickTimerRate);
 
 	CursorTrace();
-
 	AutoRun();
 }
 
@@ -277,6 +276,7 @@ void AAuraPlayerController::AutoRun()
 			SplineComponent->FindLocationClosestToWorldLocation(GetCharacter()->GetActorLocation(), ESplineCoordinateSpace::World);
 		const auto Direction =
 			SplineComponent->FindDirectionClosestToWorldLocation(LocationOnSpline, ESplineCoordinateSpace::World);
+		
 		GetCharacter()->AddMovementInput(Direction);
 
 		const auto DistanceToDestination = (LocationOnSpline - CachedDestination).Length();
