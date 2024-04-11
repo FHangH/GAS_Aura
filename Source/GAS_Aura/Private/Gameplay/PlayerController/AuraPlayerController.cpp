@@ -3,9 +3,10 @@
 #include "Gameplay/PlayerController/AuraPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "Untils/AuraLog.h"
-#include "EnhancedInputComponent.h"
+#include "GameplayTagContainer.h"
 #include "InputActionValue.h"
 #include "GameFramework/Character.h"
+#include "Input/AuraInputComponent.h"
 #include "Interaction/EnemyInterface.h"
 
 AAuraPlayerController::AAuraPlayerController()
@@ -53,9 +54,11 @@ void AAuraPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	if (const auto EInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
+	AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
+	if (AuraInputComponent)
 	{
-		EInputComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
+		AuraInputComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
+		AuraInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputPressed, &ThisClass::AbilityInputReleased, &ThisClass::AbilityInputHeld);
 	}
 }
 
@@ -131,6 +134,7 @@ void AAuraPlayerController::CursorTrace()
 	}
 }
 
+// Tick Timer Manager
 void AAuraPlayerController::TickHandle()
 {
 	//UE_LOG(Aura, Warning, TEXT("%hc TickHandle - Rate: %f"), *__FUNCTION__, TickTimerRate);
@@ -160,4 +164,20 @@ void AAuraPlayerController::ClearTickTimerHandle()
 	{
 		GetWorld()->GetTimerManager().ClearTimer(PlayerControllerTickTimerHandle);
 	}
+}
+
+// Bind All Actions Use InputTag With DataAsset_AuraInputConfig
+void AAuraPlayerController::AbilityInputPressed(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, *InputTag.ToString());
+}
+
+void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(2, 3.f, FColor::Blue, *InputTag.ToString());
+}
+
+void AAuraPlayerController::AbilityInputHeld(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(3, 3.f, FColor::Green, *InputTag.ToString());
 }
