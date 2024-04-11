@@ -1,20 +1,24 @@
 // Copyright fangh.space
 
 #include "Gameplay/PlayerController/AuraPlayerController.h"
-
 #include "AbilitySystemBlueprintLibrary.h"
 #include "EnhancedInputSubsystems.h"
 #include "Untils/AuraLog.h"
 #include "GameplayTagContainer.h"
 #include "InputActionValue.h"
+#include "NavigationPath.h"
+#include "NavigationSystem.h"
+#include "Components/SplineComponent.h"
 #include "GameFramework/Character.h"
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Input/AuraInputComponent.h"
 #include "Interaction/EnemyInterface.h"
+#include "Untils/AuraGameplayTags.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
 	bReplicates = true;
+	SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("SplineComp"));
 }
 
 UAuraAbilitySystemComponent* AAuraPlayerController::GetASComponent()
@@ -152,6 +156,8 @@ void AAuraPlayerController::TickHandle()
 	//UE_LOG(Aura, Warning, TEXT("%hc TickHandle - Rate: %f"), *__FUNCTION__, TickTimerRate);
 
 	CursorTrace();
+
+	AutoRun();
 }
 
 void AAuraPlayerController::InitTickTimerHandle()
@@ -181,18 +187,102 @@ void AAuraPlayerController::ClearTickTimerHandle()
 // Bind All Actions Use InputTag With DataAsset_AuraInputConfig
 void AAuraPlayerController::AbilityInputPressed(FGameplayTag InputTag)
 {
-	if (!GetASComponent()) return;
-	GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, *InputTag.ToString());
+	if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
+	{
+		bTargeting = ThisActor ? true : false;
+		bAutoRunning = false;
+	}
 }
 
 void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 {
 	if (!GetASComponent()) return;
-	GetASComponent()->AbilityInputTagReleased(InputTag);
+
+	if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
+	{
+		GetASComponent()->AbilityInputTagReleased(InputTag);
+		return;
+	}
+
+	if (bTargeting)
+	{
+		GetASComponent()->AbilityInputTagReleased(InputTag);
+	}
+	else // When FollowTime <= ShortPressThreshold, Character Auto Run To Target Location
+	{
+		if (FollowTime <= ShortPressThreshold && GetCharacter())
+		{
+			const auto NavPath =
+				UNavigationSystemV1::FindPathToLocationSynchronously(
+					this, GetCharacter()->GetActorLocation(), CachedDestination);
+			
+			if (!NavPath) return;
+			SplineComponent->ClearSplinePoints();
+			
+			for (const auto& PointLocation : NavPath->PathPoints)
+			{
+				SplineComponent->AddSplinePoint(PointLocation, ESplineCoordinateSpace::World);
+				// TODO DrawDebugSphere
+				DrawDebugSphere(GetWorld(), PointLocation, 8.f, 8, FColor::Green, false, 5.f);
+			}
+			// Ignore NavPath Last Point，Prevents mouse clicks from being located outside the navigation Mesh
+			CachedDestination = NavPath->PathPoints[NavPath->PathPoints.Num() - 1];
+			bAutoRunning = true;
+		}
+		FollowTime = 0.f;
+		bTargeting = false;
+	}
 }
 
 void AAuraPlayerController::AbilityInputHeld(FGameplayTag InputTag)
 {
 	if (!GetASComponent()) return;
-	GetASComponent()->AbilityInputTagHeld(InputTag);
+
+	// Not LMB => Execute GA
+	if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
+	{
+		GetASComponent()->AbilityInputTagHeld(InputTag);
+		return;
+	}
+
+	// LMB && bTargeting Enemy => Execute GA
+	if (bTargeting)
+	{
+		GetASComponent()->AbilityInputTagHeld(InputTag);
+	}
+	else // Move Character To Target Location and Add FollowTime
+	{
+		FollowTime += GetWorld()->GetDeltaSeconds();
+
+		FHitResult HitResult;
+		if (GetHitResultUnderCursor(ECC_Visibility, false, HitResult))
+		{
+			CachedDestination = HitResult.ImpactPoint;
+		}
+
+		if (GetCharacter())
+		{
+			const auto WorldDirection = (CachedDestination - GetCharacter()->GetActorLocation()).GetSafeNormal();
+			GetCharacter()->AddMovementInput(WorldDirection);
+		}
+	}
+}
+
+void AAuraPlayerController::AutoRun()
+{
+	if (!bAutoRunning) return;
+	if (GetCharacter())
+	{
+		const auto LocationOnSpline =
+			SplineComponent->FindLocationClosestToWorldLocation(GetCharacter()->GetActorLocation(), ESplineCoordinateSpace::World);
+		const auto Direction =
+			SplineComponent->FindDirectionClosestToWorldLocation(LocationOnSpline, ESplineCoordinateSpace::World);
+		GetCharacter()->AddMovementInput(Direction);
+
+		const auto DistanceToDestination = (LocationOnSpline - CachedDestination).Length();
+		if (DistanceToDestination <= AutoRunAcceptanceRadius)
+		{
+			bAutoRunning = false;
+		}
+	}
 }
