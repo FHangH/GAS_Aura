@@ -7,6 +7,7 @@
 #include "Untils/TickRate.h"
 #include "AuraPlayerController.generated.h"
 
+class USplineComponent;
 class UAuraAbilitySystemComponent;
 class UAuraInputComponent;
 struct FInputActionValue;
@@ -39,16 +40,31 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|GAS", meta=(AllowPrivateAccess=true))
 	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
 
+	// Tick Timer
 	FTimerHandle PlayerControllerTickTimerHandle;
-
+	
 	UPROPERTY(EditAnywhere, Category="Aura|Tick")
 	float TickTimerRate {TICK_60};
-
+	
 	UPROPERTY(EditAnywhere, Category="Aura|Tick")
 	bool IsTickStart {true};
 
+	// Mouse Trace Target Actor
 	IEnemyInterface* LastActor {nullptr};
 	IEnemyInterface* ThisActor {nullptr};
+
+	// Top Down Move For Mouse Click
+	FVector CachedDestination {FVector::Zero()};
+	float FollowTime {0.f};
+	float ShortPressThreshold {0.5f};
+	bool bAutoRunning {false};
+	bool bTargeting {false};
+	
+	UPROPERTY(EditAnywhere, Category="Aura|TopDownMove")
+	float AutoRunAcceptanceRadius {50.f};
+
+	UPROPERTY(VisibleAnywhere, Category="Aura|TopDownMove")
+	TObjectPtr<USplineComponent> SplineComponent;
 
 	/* Function */
 public:
@@ -77,4 +93,6 @@ private:
 	void AbilityInputPressed(FGameplayTag InputTag);
 	void AbilityInputReleased(FGameplayTag InputTag);
 	void AbilityInputHeld(FGameplayTag InputTag);
+
+	void AutoRun();
 };
