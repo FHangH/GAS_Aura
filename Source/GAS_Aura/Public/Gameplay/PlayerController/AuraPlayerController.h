@@ -7,6 +7,7 @@
 #include "Untils/TickRate.h"
 #include "AuraPlayerController.generated.h"
 
+class UAuraAbilitySystemComponent;
 class UAuraInputComponent;
 struct FInputActionValue;
 struct FTimerHandle;
@@ -35,6 +36,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|Input", meta=(AllowPrivateAccess=true))
 	TObjectPtr<UAuraInputComponent> AuraInputComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|GAS", meta=(AllowPrivateAccess=true))
+	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
+
 	FTimerHandle PlayerControllerTickTimerHandle;
 
 	UPROPERTY(EditAnywhere, Category="Aura|Tick")
@@ -49,6 +53,9 @@ private:
 	/* Function */
 public:
 	AAuraPlayerController();
+
+	UFUNCTION(BlueprintPure, Category="Aura")
+	UAuraAbilitySystemComponent* GetASComponent();
 
 protected:
 	virtual void BeginPlay() override;

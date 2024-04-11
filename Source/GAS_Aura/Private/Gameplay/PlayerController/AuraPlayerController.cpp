@@ -1,17 +1,29 @@
 // Copyright fangh.space
 
 #include "Gameplay/PlayerController/AuraPlayerController.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "EnhancedInputSubsystems.h"
 #include "Untils/AuraLog.h"
 #include "GameplayTagContainer.h"
 #include "InputActionValue.h"
 #include "GameFramework/Character.h"
+#include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Input/AuraInputComponent.h"
 #include "Interaction/EnemyInterface.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
 	bReplicates = true;
+}
+
+UAuraAbilitySystemComponent* AAuraPlayerController::GetASComponent()
+{
+	return AuraAbilitySystemComponent =
+		AuraAbilitySystemComponent == nullptr ?
+			Cast<UAuraAbilitySystemComponent>(
+				UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetCharacter())) :
+			AuraAbilitySystemComponent;
 }
 
 void AAuraPlayerController::BeginPlay()
@@ -169,15 +181,18 @@ void AAuraPlayerController::ClearTickTimerHandle()
 // Bind All Actions Use InputTag With DataAsset_AuraInputConfig
 void AAuraPlayerController::AbilityInputPressed(FGameplayTag InputTag)
 {
+	if (!GetASComponent()) return;
 	GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, *InputTag.ToString());
 }
 
 void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 {
-	GEngine->AddOnScreenDebugMessage(2, 3.f, FColor::Blue, *InputTag.ToString());
+	if (!GetASComponent()) return;
+	GetASComponent()->AbilityInputTagReleased(InputTag);
 }
 
 void AAuraPlayerController::AbilityInputHeld(FGameplayTag InputTag)
 {
-	GEngine->AddOnScreenDebugMessage(3, 3.f, FColor::Green, *InputTag.ToString());
+	if (!GetASComponent()) return;
+	GetASComponent()->AbilityInputTagHeld(InputTag);
 }
