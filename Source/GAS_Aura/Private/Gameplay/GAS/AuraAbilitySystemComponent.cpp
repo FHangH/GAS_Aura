@@ -2,6 +2,7 @@
 
 
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
+#include "Gameplay/GAS/AuraGameplayAbility.h"
 
 void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 {
@@ -10,11 +11,43 @@ void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 
 void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartUpAbilities)
 {
-	for (const auto& Item : StartUpAbilities)
+	for (const auto& GAClass : StartUpAbilities)
 	{
-		auto GASpec = FGameplayAbilitySpec{Item};
-		//GiveAbility(GASpec);
-		GiveAbilityAndActivateOnce(GASpec);
+		auto GASpec = FGameplayAbilitySpec{GAClass, 1};
+		
+		if (const auto AuraGA = Cast<UAuraGameplayAbility>(GASpec.Ability))
+		{
+			GASpec.DynamicAbilityTags.AddTag(AuraGA->StartUpInputTag);
+			GiveAbility(GASpec);
+		}
+	}
+}
+
+void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputTag)
+{
+	if (!InputTag.IsValid()) return;
+
+	for (auto& GASpec : GetActivatableAbilities())
+	{
+		if (!GASpec.DynamicAbilityTags.HasTagExact(InputTag)) continue;
+
+		AbilitySpecInputPressed(GASpec);
+		if (!GASpec.IsActive())
+		{
+			TryActivateAbility(GASpec.Handle);
+		}
+	}
+}
+
+void UAuraAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& InputTag)
+{
+	if (!InputTag.IsValid()) return;
+
+	for (auto& GASpec : GetActivatableAbilities())
+	{
+		if (!GASpec.DynamicAbilityTags.HasTagExact(InputTag)) continue;
+		
+		AbilitySpecInputReleased(GASpec);
 	}
 }
 

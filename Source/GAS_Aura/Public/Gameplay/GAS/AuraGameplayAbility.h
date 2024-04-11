@@ -10,4 +10,9 @@ UCLASS()
 class GAS_AURA_API UAuraGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
+
+	/* Property */
+public:
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	FGameplayTag StartUpInputTag;
 };

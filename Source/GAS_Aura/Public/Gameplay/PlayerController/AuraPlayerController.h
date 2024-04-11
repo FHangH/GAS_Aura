@@ -7,11 +7,15 @@
 #include "Untils/TickRate.h"
 #include "AuraPlayerController.generated.h"
 
+class UAuraAbilitySystemComponent;
+class UAuraInputComponent;
+struct FInputActionValue;
+struct FTimerHandle;
+struct FGameplayTag;
+class UDataAsset_AuraInputConfig;
 class UInputMappingContext;
 class UInputAction;
 class IEnemyInterface;
-struct FInputActionValue;
-struct FTimerHandle;
 
 UCLASS()
 class GAS_AURA_API AAuraPlayerController : public APlayerController
@@ -26,6 +30,15 @@ private:
 	UPROPERTY(EditAnywhere, Category="Aura|Input")
 	TObjectPtr<UInputAction> IA_Move;
 
+	UPROPERTY(EditAnywhere, Category="Aura|Input")
+	TObjectPtr<UDataAsset_AuraInputConfig> InputConfig;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|Input", meta=(AllowPrivateAccess=true))
+	TObjectPtr<UAuraInputComponent> AuraInputComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|GAS", meta=(AllowPrivateAccess=true))
+	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
+
 	FTimerHandle PlayerControllerTickTimerHandle;
 
 	UPROPERTY(EditAnywhere, Category="Aura|Tick")
@@ -34,12 +47,15 @@ private:
 	UPROPERTY(EditAnywhere, Category="Aura|Tick")
 	bool IsTickStart {true};
 
-	IEnemyInterface* LastActor;
-	IEnemyInterface* ThisActor;
+	IEnemyInterface* LastActor {nullptr};
+	IEnemyInterface* ThisActor {nullptr};
 
 	/* Function */
 public:
 	AAuraPlayerController();
+
+	UFUNCTION(BlueprintPure, Category="Aura")
+	UAuraAbilitySystemComponent* GetASComponent();
 
 protected:
 	virtual void BeginPlay() override;
@@ -56,4 +72,9 @@ private:
 	void StartTickTimerHandle() const;
 	void StopTickTimerHandle() const;
 	void ClearTickTimerHandle();
+
+	// Bind All Actions Use InputTag With DataAsset_AuraInputConfig
+	void AbilityInputPressed(FGameplayTag InputTag);
+	void AbilityInputReleased(FGameplayTag InputTag);
+	void AbilityInputHeld(FGameplayTag InputTag);
 };
