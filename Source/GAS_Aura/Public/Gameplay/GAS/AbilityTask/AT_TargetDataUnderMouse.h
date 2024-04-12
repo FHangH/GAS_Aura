@@ -26,4 +26,5 @@ public:
 	static UAT_TargetDataUnderMouse* CreateTargetDataUnderMouse(UGameplayAbility* OwningAbility);
 
 	void SendMouseCursorData() const;
+	void OnTargetDataReplicatedCallback(const FGameplayAbilityTargetDataHandle& DataHandle, const FGameplayTag ActivationTag) const;
 };
