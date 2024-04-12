@@ -11,7 +11,7 @@ UOverlayMainWidgetController* AAuraHUD::GetOverlayMainWidgetController(const FWi
 {
 	if (OverlayMainWidgetController) return OverlayMainWidgetController;
 
-	if (OverlayMainWidgetControllerClass)
+	if (IsValid(OverlayMainWidgetControllerClass))
 	{
 		OverlayMainWidgetController =
 			NewObject<UOverlayMainWidgetController>(this, OverlayMainWidgetControllerClass);
@@ -29,7 +29,7 @@ UAttributeMenuWidgetController* AAuraHUD::GetAttributeMenuWidgetController(const
 {
 	if (AttributeMenuWidgetController) return AttributeMenuWidgetController;
 
-	if (AttributeMenuWidgetControllerClass)
+	if (IsValid(AttributeMenuWidgetControllerClass))
 	{
 		AttributeMenuWidgetController =
 			NewObject<UAttributeMenuWidgetController>(this, AttributeMenuWidgetControllerClass);
@@ -45,7 +45,7 @@ UAttributeMenuWidgetController* AAuraHUD::GetAttributeMenuWidgetController(const
 
 void AAuraHUD::InitOverlayMain(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
 {
-	if (OverlayMainWidgetClass)
+	if (IsValid(OverlayMainWidgetClass))
 	{
 		OverlayMainWidget = CreateWidget<UAuraUserWidget>(GetWorld(), OverlayMainWidgetClass);
 		if (OverlayMainWidget)

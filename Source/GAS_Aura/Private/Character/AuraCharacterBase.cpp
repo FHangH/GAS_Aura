@@ -28,6 +28,11 @@ void AAuraCharacterBase::InitAbilityActorInfo()
 	
 }
 
+FVector AAuraCharacterBase::GetCombatSocketLocation()
+{
+	return WeaponMeshComponent ? WeaponMeshComponent->GetSocketLocation(WeaponTipSocketName) : FVector{};
+}
+
 void AAuraCharacterBase::ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const
 {
 	if (ASComponent)
@@ -41,7 +46,7 @@ void AAuraCharacterBase::ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> Ga
 
 void AAuraCharacterBase::InitializeDefaultAttributes() const
 {
-	if (DefaultPrimaryAttributesClass)
+	if (IsValid(DefaultPrimaryAttributesClass))
 	{
 		ApplyEffectToSelf(DefaultPrimaryAttributesClass, 1.f);
 	}
@@ -50,7 +55,7 @@ void AAuraCharacterBase::InitializeDefaultAttributes() const
 		UE_LOG(Aura, Warning, TEXT("AuraCharacterBase DefaultPrimaryAttributesClass Is Null"));
 	}
 	
-	if (DefaultSecondaryAttributesClass)
+	if (IsValid(DefaultSecondaryAttributesClass))
 	{
 		ApplyEffectToSelf(DefaultSecondaryAttributesClass, 1.f);
 	}
@@ -59,7 +64,7 @@ void AAuraCharacterBase::InitializeDefaultAttributes() const
 		UE_LOG(Aura, Warning, TEXT("AuraCharacterBase DefaultSecondaryAttributesClass Is Null"));
 	}
 
-	if (DefaultVitalAttributesClass)
+	if (IsValid(DefaultVitalAttributesClass))
 	{
 		ApplyEffectToSelf(DefaultVitalAttributesClass, 1.f);
 	}
