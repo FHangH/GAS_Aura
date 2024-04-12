@@ -93,7 +93,6 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 
 void AAuraPlayerController::CursorTrace()
 {
-	FHitResult CursorHitResult;
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHitResult);
 	if (!CursorHitResult.bBlockingHit) return;
 
@@ -113,7 +112,8 @@ void AAuraPlayerController::CursorTrace()
 	 * E. LastActor is valid && ThisActor is valid && ThisActor == LastActor
 	 *		- Do nothing
 	 */
-	if (LastActor == nullptr)
+//region OldCode
+	/*if (LastActor == nullptr)
 	{
 		if (ThisActor!= nullptr)
 		{
@@ -145,6 +145,12 @@ void AAuraPlayerController::CursorTrace()
 				// Case E - Do nothing
 			}
 		}
+	}*/
+//endregion
+	if (LastActor != ThisActor)
+	{
+		if (LastActor) LastActor->UnHighLightActor();
+		if (ThisActor) ThisActor->HighLightActor();
 	}
 }
 
@@ -274,8 +280,6 @@ void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 			for (const auto& PointLocation : NavPath->PathPoints)
 			{
 				SplineComponent->AddSplinePoint(PointLocation, ESplineCoordinateSpace::World);
-				// TODO DrawDebugSphere
-				DrawDebugSphere(GetWorld(), PointLocation, 8.f, 8, FColor::Green, false, 5.f);
 			}
 			// Ignore NavPath Last Point，Prevents mouse clicks from being located outside the navigation Mesh
 			CachedDestination = NavPath->PathPoints[NavPath->PathPoints.Num() - 1];
@@ -307,10 +311,9 @@ void AAuraPlayerController::AbilityInputHeld(FGameplayTag InputTag)
 	{
 		FollowTime += GetWorld()->GetDeltaSeconds();
 
-		FHitResult HitResult;
-		if (GetHitResultUnderCursor(ECC_Visibility, false, HitResult))
+		if (CursorHitResult.bBlockingHit)
 		{
-			CachedDestination = HitResult.ImpactPoint;
+			CachedDestination = CursorHitResult.ImpactPoint;
 		}
 
 		if (GetCharacter())

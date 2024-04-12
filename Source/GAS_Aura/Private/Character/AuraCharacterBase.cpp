@@ -41,7 +41,7 @@ void AAuraCharacterBase::ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> Ga
 
 void AAuraCharacterBase::InitializeDefaultAttributes() const
 {
-	if (DefaultPrimaryAttributesClass)
+	if (IsValid(DefaultPrimaryAttributesClass))
 	{
 		ApplyEffectToSelf(DefaultPrimaryAttributesClass, 1.f);
 	}
@@ -50,7 +50,7 @@ void AAuraCharacterBase::InitializeDefaultAttributes() const
 		UE_LOG(Aura, Warning, TEXT("AuraCharacterBase DefaultPrimaryAttributesClass Is Null"));
 	}
 	
-	if (DefaultSecondaryAttributesClass)
+	if (IsValid(DefaultSecondaryAttributesClass))
 	{
 		ApplyEffectToSelf(DefaultSecondaryAttributesClass, 1.f);
 	}
@@ -59,7 +59,7 @@ void AAuraCharacterBase::InitializeDefaultAttributes() const
 		UE_LOG(Aura, Warning, TEXT("AuraCharacterBase DefaultSecondaryAttributesClass Is Null"));
 	}
 
-	if (DefaultVitalAttributesClass)
+	if (IsValid(DefaultVitalAttributesClass))
 	{
 		ApplyEffectToSelf(DefaultVitalAttributesClass, 1.f);
 	}

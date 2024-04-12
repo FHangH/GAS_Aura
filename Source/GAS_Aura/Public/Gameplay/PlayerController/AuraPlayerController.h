@@ -51,6 +51,7 @@ private:
 	bool IsTickStart_CursorTrace {true};
 
 	// Mouse Trace Target Actor
+	FHitResult CursorHitResult;
 	IEnemyInterface* LastActor {nullptr};
 	IEnemyInterface* ThisActor {nullptr};
 
