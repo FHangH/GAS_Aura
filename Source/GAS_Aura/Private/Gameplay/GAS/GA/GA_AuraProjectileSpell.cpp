@@ -10,8 +10,11 @@ void UGA_AuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle H
                                               const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+}
 
-	if (!HasAuthority(&ActivationInfo)) return;
+void UGA_AuraProjectileSpell::SpawnProjectile()
+{
+	if (!GetAvatarActorFromActorInfo()->HasAuthority()) return;
 	auto CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
 	
 	if (ProjectileClass && CombatInterface)
