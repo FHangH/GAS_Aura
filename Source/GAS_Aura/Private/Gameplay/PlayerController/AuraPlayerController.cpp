@@ -52,18 +52,16 @@ void AAuraPlayerController::BeginPlay()
 		InputMode.SetHideCursorDuringCapture(false);
 		SetInputMode(InputMode);
 	}
-
-	if (IsTickStart)
-	{
-		InitTickTimerHandle();
-	}
+	
+	TickHandle();
 }
 
 void AAuraPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 
-	ClearTickTimerHandle();
+	ClearTickTimerHandle_CursorTrace();
+	ClearTickTimerHandle_AutoRun();
 }
 
 void AAuraPlayerController::SetupInputComponent()
@@ -150,36 +148,91 @@ void AAuraPlayerController::CursorTrace()
 	}
 }
 
+void AAuraPlayerController::AutoRun()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Running"));
+	if (!bAutoRunning) return;
+	if (GetCharacter())
+	{
+		const auto LocationOnSpline =
+			SplineComponent->FindLocationClosestToWorldLocation(GetCharacter()->GetActorLocation(), ESplineCoordinateSpace::World);
+		const auto Direction =
+			SplineComponent->FindDirectionClosestToWorldLocation(LocationOnSpline, ESplineCoordinateSpace::World);
+		
+		GetCharacter()->AddMovementInput(Direction);
+
+		const auto DistanceToDestination = (LocationOnSpline - CachedDestination).Length();
+		if (DistanceToDestination <= AutoRunAcceptanceRadius)
+		{
+			bAutoRunning = false;
+			StopTickTimerHandle_AutoRun();
+		}
+	}
+}
+
 // Tick Timer Manager
 void AAuraPlayerController::TickHandle()
 {
-	//UE_LOG(Aura, Warning, TEXT("%hc TickHandle - Rate: %f"), *__FUNCTION__, TickTimerRate);
-
-	CursorTrace();
-	AutoRun();
+	if (IsTickStart_CursorTrace)
+	{
+		InitTickTimerHandle_CursorTrace();
+	}
+	if (IsTickStart_AutoRun)
+	{
+		InitTickTimerHandle_AutoRun();
+		StopTickTimerHandle_AutoRun();
+	}
 }
 
-void AAuraPlayerController::InitTickTimerHandle()
+// Tick Timer => CursorTrace
+void AAuraPlayerController::InitTickTimerHandle_CursorTrace()
 {
 	GetWorld()->GetTimerManager().SetTimer(
-		PlayerControllerTickTimerHandle, this, &AAuraPlayerController::TickHandle, TickTimerRate, true);
+		TickTimerHandle_CursorTrace, this, &AAuraPlayerController::CursorTrace, TickValue(TickTimerRate_CursorTrace), true);
 }
 
-void AAuraPlayerController::StartTickTimerHandle() const
+void AAuraPlayerController::StartTickTimerHandle_CursorTrace() const
 {
-	GetWorld()->GetTimerManager().UnPauseTimer(PlayerControllerTickTimerHandle);
+	GetWorld()->GetTimerManager().UnPauseTimer(TickTimerHandle_CursorTrace);
 }
 
-void AAuraPlayerController::StopTickTimerHandle() const
+void AAuraPlayerController::StopTickTimerHandle_CursorTrace() const
 {
-	GetWorld()->GetTimerManager().PauseTimer(PlayerControllerTickTimerHandle);
+	GetWorld()->GetTimerManager().PauseTimer(TickTimerHandle_CursorTrace);
 }
 
-void AAuraPlayerController::ClearTickTimerHandle()
+void AAuraPlayerController::ClearTickTimerHandle_CursorTrace()
 {
-	if (PlayerControllerTickTimerHandle.IsValid())
+	if (TickTimerHandle_CursorTrace.IsValid())
 	{
-		GetWorld()->GetTimerManager().ClearTimer(PlayerControllerTickTimerHandle);
+		GetWorld()->GetTimerManager().ClearTimer(TickTimerHandle_CursorTrace);
+	}
+}
+
+// Tick Timer => AutoRun
+void AAuraPlayerController::InitTickTimerHandle_AutoRun()
+{
+	GetWorld()->GetTimerManager().SetTimer(
+		TickTimerHandle_AutoRun, this, &AAuraPlayerController::AutoRun, TickValue(TickTimerRate_AutoRun), true);
+}
+
+void AAuraPlayerController::StartTickTimerHandle_AutoRun() const
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Start Run"));
+	GetWorld()->GetTimerManager().UnPauseTimer(TickTimerHandle_AutoRun);
+}
+
+void AAuraPlayerController::StopTickTimerHandle_AutoRun() const
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Stop Run"));
+	GetWorld()->GetTimerManager().PauseTimer(TickTimerHandle_AutoRun);
+}
+
+void AAuraPlayerController::ClearTickTimerHandle_AutoRun()
+{
+	if (TickTimerHandle_AutoRun.IsValid())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(TickTimerHandle_AutoRun);
 	}
 }
 
@@ -227,6 +280,7 @@ void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 			// Ignore NavPath Last Point，Prevents mouse clicks from being located outside the navigation Mesh
 			CachedDestination = NavPath->PathPoints[NavPath->PathPoints.Num() - 1];
 			bAutoRunning = true;
+			StartTickTimerHandle_AutoRun();
 		}
 		FollowTime = 0.f;
 		bTargeting = false;
@@ -263,26 +317,6 @@ void AAuraPlayerController::AbilityInputHeld(FGameplayTag InputTag)
 		{
 			const auto WorldDirection = (CachedDestination - GetCharacter()->GetActorLocation()).GetSafeNormal();
 			GetCharacter()->AddMovementInput(WorldDirection);
-		}
-	}
-}
-
-void AAuraPlayerController::AutoRun()
-{
-	if (!bAutoRunning) return;
-	if (GetCharacter())
-	{
-		const auto LocationOnSpline =
-			SplineComponent->FindLocationClosestToWorldLocation(GetCharacter()->GetActorLocation(), ESplineCoordinateSpace::World);
-		const auto Direction =
-			SplineComponent->FindDirectionClosestToWorldLocation(LocationOnSpline, ESplineCoordinateSpace::World);
-		
-		GetCharacter()->AddMovementInput(Direction);
-
-		const auto DistanceToDestination = (LocationOnSpline - CachedDestination).Length();
-		if (DistanceToDestination <= AutoRunAcceptanceRadius)
-		{
-			bAutoRunning = false;
 		}
 	}
 }

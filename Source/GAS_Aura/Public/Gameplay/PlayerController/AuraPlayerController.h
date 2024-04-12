@@ -40,14 +40,15 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|GAS", meta=(AllowPrivateAccess=true))
 	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
 
-	// Tick Timer
-	FTimerHandle PlayerControllerTickTimerHandle;
+	// CursorTrace Tick Timer
+	UPROPERTY(VisibleAnywhere, Category="Aura|Tick|CursorTrace")
+	FTimerHandle TickTimerHandle_CursorTrace;
 	
-	UPROPERTY(EditAnywhere, Category="Aura|Tick")
-	float TickTimerRate {TICK_60};
+	UPROPERTY(EditAnywhere, Category="Aura|Tick|CursorTrace")
+	ETICK_RATE TickTimerRate_CursorTrace {ETICK_RATE::ER_TICK_30};
 	
-	UPROPERTY(EditAnywhere, Category="Aura|Tick")
-	bool IsTickStart {true};
+	UPROPERTY(EditAnywhere, Category="Aura|Tick|CursorTrace")
+	bool IsTickStart_CursorTrace {true};
 
 	// Mouse Trace Target Actor
 	IEnemyInterface* LastActor {nullptr};
@@ -60,11 +61,21 @@ private:
 	bool bAutoRunning {false};
 	bool bTargeting {false};
 	
-	UPROPERTY(EditAnywhere, Category="Aura|TopDownMove")
+	UPROPERTY(EditAnywhere, Category="Aura|TopDownMove|AutoRun")
 	float AutoRunAcceptanceRadius {50.f};
 
 	UPROPERTY(VisibleAnywhere, Category="Aura|TopDownMove")
 	TObjectPtr<USplineComponent> SplineComponent;
+
+	// AutoRun Tick Timer
+	UPROPERTY(VisibleAnywhere, Category="Aura|Tick|AutoRun")
+	FTimerHandle TickTimerHandle_AutoRun;
+	
+	UPROPERTY(EditAnywhere, Category="Aura|Tick|AutoRun")
+	ETICK_RATE TickTimerRate_AutoRun {ETICK_RATE::ER_TICK_90};
+	
+	UPROPERTY(EditAnywhere, Category="Aura|Tick|AutoRun")
+	bool IsTickStart_AutoRun {true};
 
 	/* Function */
 public:
@@ -80,19 +91,24 @@ protected:
 
 	void Move(const FInputActionValue& InputActionValue);
 	void CursorTrace();
+	void AutoRun();
 
 private:
-	// Tick Timer Manager
+	// Tick Timer
 	void TickHandle();
-	void InitTickTimerHandle();
-	void StartTickTimerHandle() const;
-	void StopTickTimerHandle() const;
-	void ClearTickTimerHandle();
+	// CursorTrace
+	void InitTickTimerHandle_CursorTrace();
+	void StartTickTimerHandle_CursorTrace() const;
+	void StopTickTimerHandle_CursorTrace() const;
+	void ClearTickTimerHandle_CursorTrace();
+	// AutoRun
+	void InitTickTimerHandle_AutoRun();
+	void StartTickTimerHandle_AutoRun() const;
+	void StopTickTimerHandle_AutoRun() const;
+	void ClearTickTimerHandle_AutoRun();
 
 	// Bind All Actions Use InputTag With DataAsset_AuraInputConfig
 	void AbilityInputPressed(FGameplayTag InputTag);
 	void AbilityInputReleased(FGameplayTag InputTag);
 	void AbilityInputHeld(FGameplayTag InputTag);
-
-	void AutoRun();
 };
