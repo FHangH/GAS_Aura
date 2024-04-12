@@ -20,13 +20,13 @@ class GAS_AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystem
 
 	/* Property */
 protected:
-	UPROPERTY(EditAnywhere, Category="Aura")
+	UPROPERTY(EditAnywhere, Category="Aura|Weapon")
 	TObjectPtr<USkeletalMeshComponent> WeaponMeshComponent;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category="Aura")
 	TObjectPtr<UAbilitySystemComponent> ASComponent;
 	
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category="Aura")
 	TObjectPtr<UAttributeSet> AS;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|AsClass")
@@ -35,10 +35,12 @@ protected:
 	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributesClass;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|AsClass")
 	TSubclassOf<UGameplayEffect> DefaultVitalAttributesClass;
-
-private:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|GA", meta=(AllowPrivateAccess=true))
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|GAClass", meta=(AllowPrivateAccess=true))
 	TArray<TSubclassOf<UGameplayAbility>> StartUpAbilities;
+
+	UPROPERTY(EditAnywhere, Category="Aura|Weapon|Socket")
+	FName WeaponTipSocketName {};
 	
 	/* Function */
 public:
@@ -49,6 +51,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo();
+	virtual FVector GetCombatSocketLocation() override;
 
 	void ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const;
 	void InitializeDefaultAttributes() const;
