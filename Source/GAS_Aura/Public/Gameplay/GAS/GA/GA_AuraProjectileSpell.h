@@ -17,6 +17,9 @@ class GAS_AURA_API UGA_AuraProjectileSpell : public UAuraGameplayAbility
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura", meta=(AllowPrivateAccess=true))
 	TSubclassOf<AAuraProjectile> ProjectileClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura", meta=(AllowPrivateAccess=true))
+	TSubclassOf<UGameplayEffect> DamageEffectClass;
 	
 	/* Function */
 protected:

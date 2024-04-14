@@ -2,8 +2,12 @@
 
 
 #include "Gameplay/GAS/GA/GA_AuraProjectileSpell.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "Gameplay/Actor/AuraProjectile.h"
 #include "Interaction/CombatInterface.h"
+#include "Untils/AuraLog.h"
 
 void UGA_AuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                               const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
@@ -33,7 +37,20 @@ void UGA_AuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLoc
 			GetOwningActorFromActorInfo(),
 			Cast<APawn>(GetOwningActorFromActorInfo()),
 			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
-
+	
+        if (DamageEffectClass)
+        {
+	        if (const auto SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo()))
+        	{
+		        const auto SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
+        		Projectile->DamageEffectSpecHandle = SpecHandle;
+        	}
+        }
+        else
+        {
+	        UE_LOG(Aura, Warning, TEXT("Damage Effect Class is null in %s"), *GetName());
+        }
+		
 		if (!Projectile) return;
 		Projectile->FinishSpawning(Transform);
 	}
