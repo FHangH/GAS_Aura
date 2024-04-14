@@ -72,6 +72,8 @@ void AAuraPlayerController::SetupInputComponent()
 	if (AuraInputComponent)
 	{
 		AuraInputComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
+		AuraInputComponent->BindAction(IA_SHIFT, ETriggerEvent::Started, this, &AAuraPlayerController::ShiftPressed);
+		AuraInputComponent->BindAction(IA_SHIFT, ETriggerEvent::Completed, this, &AAuraPlayerController::ShiftReleased);
 		AuraInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputPressed, &ThisClass::AbilityInputReleased, &ThisClass::AbilityInputHeld);
 	}
 }
@@ -261,12 +263,10 @@ void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 		GetASComponent()->AbilityInputTagReleased(InputTag);
 		return;
 	}
+	GetASComponent()->AbilityInputTagReleased(InputTag);
 
-	if (bTargeting)
-	{
-		GetASComponent()->AbilityInputTagReleased(InputTag);
-	}
-	else // When FollowTime <= ShortPressThreshold, Character Auto Run To Target Location
+	// When FollowTime <= ShortPressThreshold, Character Auto Run To Target Location
+	if (!bTargeting && !bShiftKeyDown)
 	{
 		if (FollowTime <= ShortPressThreshold && GetCharacter())
 		{
@@ -303,7 +303,7 @@ void AAuraPlayerController::AbilityInputHeld(FGameplayTag InputTag)
 	}
 
 	// LMB && bTargeting Enemy => Execute GA
-	if (bTargeting)
+	if (bTargeting || bShiftKeyDown)
 	{
 		GetASComponent()->AbilityInputTagHeld(InputTag);
 	}

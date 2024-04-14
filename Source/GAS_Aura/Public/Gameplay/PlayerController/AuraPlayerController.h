@@ -32,6 +32,10 @@ private:
 	TObjectPtr<UInputAction> IA_Move;
 
 	UPROPERTY(EditAnywhere, Category="Aura|Input")
+	TObjectPtr<UInputAction> IA_SHIFT;
+	bool bShiftKeyDown {false};
+
+	UPROPERTY(EditAnywhere, Category="Aura|Input")
 	TObjectPtr<UDataAsset_AuraInputConfig> InputConfig;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|Input", meta=(AllowPrivateAccess=true))
@@ -91,6 +95,9 @@ protected:
 	virtual void SetupInputComponent() override;
 
 	void Move(const FInputActionValue& InputActionValue);
+	FORCEINLINE void ShiftPressed() {bShiftKeyDown = true;}
+	FORCEINLINE void ShiftReleased() {bShiftKeyDown = false;}
+	
 	void CursorTrace();
 	void AutoRun();
 

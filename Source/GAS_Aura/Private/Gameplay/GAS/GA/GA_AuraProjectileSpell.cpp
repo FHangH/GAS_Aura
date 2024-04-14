@@ -12,15 +12,20 @@ void UGA_AuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle H
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
-void UGA_AuraProjectileSpell::SpawnProjectile()
+void UGA_AuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation)
 {
 	if (!GetAvatarActorFromActorInfo()->HasAuthority()) return;
-	auto CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
+	const auto CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
 	
 	if (ProjectileClass && CombatInterface)
 	{
 		FTransform Transform;
+		auto Rotator =
+			(ProjectileTargetLocation - CombatInterface->GetCombatSocketLocation()).Rotation();
+		Rotator.Pitch = 0.f;
+		
 		Transform.SetLocation(CombatInterface->GetCombatSocketLocation());
+		Transform.SetRotation(Rotator.Quaternion());
 
 		const auto Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
 			ProjectileClass,
