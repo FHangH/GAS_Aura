@@ -5,6 +5,7 @@
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Gameplay/GAS/AuraAttributeSet.h"
 #include "UI/Widget/AuraUserWidget.h"
+#include "Untils/AuraAbilitySystemFuncLibrary.h"
 #include "Untils/RenderDepth.h"
 
 AAuraEnemy::AAuraEnemy()
@@ -52,6 +53,14 @@ void AAuraEnemy::InitAbilityActorInfo()
 		Cast<UAuraAbilitySystemComponent>(ASComponent)->AbilityActorInfoSet();
 
 		InitializeDefaultAttributes();
+	}
+}
+
+void AAuraEnemy::InitializeDefaultAttributes() const
+{
+	if (ASComponent)
+	{
+		UAuraAbilitySystemFuncLibrary::InitializeDefaultAttributes(this, CharacterClassType, Level, ASComponent);
 	}
 }
 
