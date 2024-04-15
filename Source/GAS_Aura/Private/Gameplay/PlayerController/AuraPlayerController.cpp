@@ -158,7 +158,6 @@ void AAuraPlayerController::CursorTrace()
 
 void AAuraPlayerController::AutoRun()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Running"));
 	if (!bAutoRunning) return;
 	if (GetCharacter())
 	{
@@ -226,13 +225,11 @@ void AAuraPlayerController::InitTickTimerHandle_AutoRun()
 
 void AAuraPlayerController::StartTickTimerHandle_AutoRun() const
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Start Run"));
 	GetWorld()->GetTimerManager().UnPauseTimer(TickTimerHandle_AutoRun);
 }
 
 void AAuraPlayerController::StopTickTimerHandle_AutoRun() const
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Stop Run"));
 	GetWorld()->GetTimerManager().PauseTimer(TickTimerHandle_AutoRun);
 }
 
