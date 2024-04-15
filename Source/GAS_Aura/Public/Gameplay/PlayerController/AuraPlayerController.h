@@ -49,7 +49,7 @@ private:
 	FTimerHandle TickTimerHandle_CursorTrace;
 	
 	UPROPERTY(EditAnywhere, Category="Aura|Tick|CursorTrace")
-	ETICK_RATE TickTimerRate_CursorTrace {ETICK_RATE::ER_TICK_30};
+	ETICK_RATE TickTimerRate_CursorTrace {ETICK_RATE::ER_TICK_10};
 	
 	UPROPERTY(EditAnywhere, Category="Aura|Tick|CursorTrace")
 	bool IsTickStart_CursorTrace {true};

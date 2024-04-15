@@ -62,7 +62,6 @@ void AAuraEnemy::OnHealthChanged(const FOnAttributeChangeData& Data) const
 
 void AAuraEnemy::OnMaxHealthChanged(const FOnAttributeChangeData& Data) const
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("MaxHP: %f"), Data.NewValue));
 	OnMaxHealthChangedDelegate.Broadcast(Data.NewValue);
 }
 
