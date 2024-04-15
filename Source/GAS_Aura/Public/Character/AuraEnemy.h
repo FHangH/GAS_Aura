@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
+#include "Gameplay/GAS/Data/DataAsset_CharacterClassInfo.h"
 #include "Interaction/EnemyInterface.h"
 #include "UI/WidgetController/OverlayMainWidgetController.h"
 #include "AuraEnemy.generated.h"
@@ -23,6 +24,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
 	int32 Level {1};
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
+	ECharacterClassType CharacterClassType {ECharacterClassType::ECT_Warrior};
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
 	TObjectPtr<UWidgetComponent> HealthBar;
 
@@ -38,6 +42,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
+
+	virtual void InitializeDefaultAttributes() const override;
 
 	void OnHealthChanged(const FOnAttributeChangeData& Data) const;
 	void OnMaxHealthChanged(const FOnAttributeChangeData& Data) const;
