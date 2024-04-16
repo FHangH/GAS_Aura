@@ -62,4 +62,8 @@ protected:
 public:
 	UAttributeSet* GetAttributeSet() const { return AS; }
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+	virtual void Die() override;
+
+	UFUNCTION(NetMulticast, Reliable, Category="Aura")
+	void Multicast_HandleDeath();
 };

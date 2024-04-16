@@ -37,8 +37,12 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
 	bool bHitReacting {false};
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
 	float BaseWalkSpeed {250.f};
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
+	float LifeSpan {5.f};
 	
 	/* Function */
 public:
@@ -60,4 +64,5 @@ public:
 
 	// Combat Interface
 	virtual int32 GetPlayerLevel() override;
+	virtual void Die() override;
 };

@@ -100,3 +100,33 @@ UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
 {
 	return HitReactMontage;
 }
+
+void AAuraCharacterBase::Die()
+{
+	if (WeaponMeshComponent)
+	{
+		WeaponMeshComponent->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+	}
+	Multicast_HandleDeath();
+}
+
+void AAuraCharacterBase::Multicast_HandleDeath_Implementation()
+{
+	if (WeaponMeshComponent)
+	{
+		WeaponMeshComponent->SetSimulatePhysics(true);
+		WeaponMeshComponent->SetEnableGravity(true);
+		WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	}
+	if (GetMesh())
+	{
+		GetMesh()->SetSimulatePhysics(true);
+		GetMesh()->SetEnableGravity(true);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+		GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+	}
+	if (GetCapsuleComponent())
+	{
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+}
