@@ -43,7 +43,7 @@ void UGA_AuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLoc
 	        if (const auto SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo()))
         	{
 		        const auto SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
-	        	const auto ScaledDamage = Damage.GetValueAtLevel(/*GetAbilityLevel()*/10.f);
+	        	const auto ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
 	        	
 	        	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, FAuraGameplayTags::Get().Damage, ScaledDamage);
         		Projectile->DamageEffectSpecHandle = SpecHandle;
@@ -51,7 +51,7 @@ void UGA_AuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLoc
         }
         else
         {
-	        UE_LOG(Aura, Warning, TEXT("Damage Effect Class is null in %s"), *GetName());
+	        UE_LOG(Aura, Warning, TEXT("DamageEffectClass is null in %s"), *GetName());
         }
 		
 		if (!Projectile) return;
