@@ -44,6 +44,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Aura|Montage")
 	TObjectPtr<UAnimMontage> HitReactMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Material")
+	TObjectPtr<UMaterialInstance> BodyDissolveMaterialInstance;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Material")
+	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
 	
 	/* Function */
 public:
@@ -66,4 +71,10 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable, Category="Aura")
 	void Multicast_HandleDeath();
+	
+	void Dissolve();
+	UFUNCTION(BlueprintNativeEvent, Category="Aura|Material")
+	void StartBodyDissolveTimeLine(UMaterialInstanceDynamic* DynamicMatIns);
+	UFUNCTION(BlueprintNativeEvent, Category="Aura|Material")
+	void StartWeaponDissolveTimeLine(UMaterialInstanceDynamic* DynamicMatIns);
 };
