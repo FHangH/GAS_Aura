@@ -2,7 +2,7 @@
 
 /**
  * This defines a set of helper functions for accessing and initializing attributes, to avoid having to manually write these functions.
- * It would creates the following functions, for attribute Health
+ * It would Creates the following functions, for attribute Health
  *
  *	static FGameplayAttribute UMyHealthSet::GetHealthAttribute();
  *	FORCEINLINE float UMyHealthSet::GetHealth() const;
@@ -146,6 +146,11 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Mana, Category="Aura|AS|Vital")
 	FGameplayAttributeData Mana {};
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana)
+
+	// Meta Attributes => Only Server, No Replicate, Temporary Attribute Used To CalculateDamage
+	UPROPERTY(BlueprintReadOnly, Category="Aura|AS|Meta")
+	FGameplayAttributeData IncomingDamage;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage)
 	
 	// EffectContextHandle, ASC, Avatar, Controller, Character
 	UPROPERTY(BlueprintReadOnly, Category="Aura|AS")
