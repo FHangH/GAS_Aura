@@ -2,10 +2,12 @@
 
 #include "Character/AuraEnemy.h"
 #include "Components/WidgetComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Gameplay/GAS/AuraAttributeSet.h"
 #include "UI/Widget/AuraUserWidget.h"
 #include "Untils/AuraAbilitySystemFuncLibrary.h"
+#include "Untils/AuraGameplayTags.h"
 #include "Untils/RenderDepth.h"
 
 AAuraEnemy::AAuraEnemy()
@@ -20,6 +22,8 @@ AAuraEnemy::AAuraEnemy()
 
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
 	HealthBar->SetupAttachment(RootComponent);
+
+	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 }
 
 void AAuraEnemy::BeginPlay()
@@ -35,10 +39,14 @@ void AAuraEnemy::BeginPlay()
 
 	if (const auto AuraAS = Cast<UAuraAttributeSet>(AS); AuraAS && ASComponent)
 	{
+		UAuraAbilitySystemFuncLibrary::GiveStartupAbilities(this, ASComponent);
+		
 		ASComponent->GetGameplayAttributeValueChangeDelegate(
 			AuraAS->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
 		ASComponent->GetGameplayAttributeValueChangeDelegate(
 			AuraAS->GetMaxHealthAttribute()).AddUObject(this, &ThisClass::OnMaxHealthChanged);
+		ASComponent->RegisterGameplayTagEvent(
+			FAuraGameplayTags::Get().Effects_HitReact).AddUObject(this, &ThisClass::HitReactTagChanged);
 
 		OnHealthChangedDelegate.Broadcast(AuraAS->GetHealth());
 		OnMaxHealthChangedDelegate.Broadcast(AuraAS->GetMaxHealth());
@@ -72,6 +80,12 @@ void AAuraEnemy::OnHealthChanged(const FOnAttributeChangeData& Data) const
 void AAuraEnemy::OnMaxHealthChanged(const FOnAttributeChangeData& Data) const
 {
 	OnMaxHealthChangedDelegate.Broadcast(Data.NewValue);
+}
+
+void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallBackTag, int32 NewCount)
+{
+	bHitReacting = NewCount > 0;
+	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSpeed;
 }
 
 void AAuraEnemy::HighLightActor()

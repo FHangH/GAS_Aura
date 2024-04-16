@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "DataAsset_CharacterClassInfo.generated.h"
 
+class UGameplayAbility;
 class UGameplayEffect;
 
 UENUM(BlueprintType)
@@ -40,6 +41,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Aura Common")
 	TSubclassOf<UGameplayEffect> GE_VitalAttributes;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura Common")
+	TArray<TSubclassOf<UGameplayAbility>> CommonAbilities;
 
 	FCharacterClassDefaultInfo GetClassDefaultInfo(const ECharacterClassType ECT);
 };
