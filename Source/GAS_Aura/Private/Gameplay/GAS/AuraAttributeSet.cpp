@@ -5,7 +5,9 @@
 #include "Net/UnrealNetwork.h"
 #include "GameplayEffectExtension.h"
 #include "GameFramework/Character.h"
+#include "Gameplay/PlayerController/AuraPlayerController.h"
 #include "Interaction/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Untils/AuraGameplayTags.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
@@ -95,7 +97,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			const auto NewHealth = GetHealth() - LocalIncomingDamage;
 			SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
 
-			if (const auto bFatal = NewHealth <= 0)
+			if (NewHealth <= 0)
 			{
 				if (auto CombatInterface = Cast<ICombatInterface>(EffectProperties.TargetAvatarActor))
 				{
@@ -108,6 +110,8 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
 				EffectProperties.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 			}
+
+			ShowFloatingText(EffectProperties, LocalIncomingDamage);
 		}
 	}
 }
@@ -201,7 +205,9 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 	EffectProperties.EffectContextHandle = Data.EffectSpec.GetContext();
 	EffectProperties.SourceASC = Data.EffectSpec.GetContext().GetOriginalInstigatorAbilitySystemComponent();
 
-	if (EffectProperties.SourceASC && EffectProperties.SourceASC->AbilityActorInfo.IsValid() && EffectProperties.SourceASC->AbilityActorInfo->AvatarActor.IsValid())
+	if (EffectProperties.SourceASC &&
+		EffectProperties.SourceASC->AbilityActorInfo.IsValid() &&
+		EffectProperties.SourceASC->AbilityActorInfo->AvatarActor.IsValid())
 	{
 		EffectProperties.SourceAvatarActor = EffectProperties.SourceASC->AbilityActorInfo->AvatarActor.Get();
 		EffectProperties.SourceController = EffectProperties.SourceASC->AbilityActorInfo->PlayerController.Get();
@@ -225,5 +231,17 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 		EffectProperties.TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
 		EffectProperties.TargetCharacter = Cast<ACharacter>(EffectProperties.TargetAvatarActor);
 		EffectProperties.TargetASC = Data.Target.AbilityActorInfo->AbilitySystemComponent.Get();
+	}
+}
+
+void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& EffectProp, const float Damage)
+{
+	if (EffectProp.SourceCharacter != EffectProp.TargetCharacter)
+	{
+		const auto AuraPC = Cast<AAuraPlayerController>(
+			UGameplayStatics::GetPlayerController(EffectProp.SourceCharacter, 0));
+
+		if (!AuraPC) return;
+		AuraPC->Client_ShowDamageNumber(Damage, EffectProp.TargetCharacter);
 	}
 }

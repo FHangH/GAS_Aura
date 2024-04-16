@@ -215,4 +215,5 @@ protected:
 	void OnRep_Mana(const FGameplayAttributeData& OldValue) const;
 	
 	static void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties);
+	static void ShowFloatingText(const FEffectProperties& EffectProp, const float Damage);
 };

@@ -13,6 +13,7 @@
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Input/AuraInputComponent.h"
 #include "Interaction/EnemyInterface.h"
+#include "UI/Widget/DamageTextWidgetComponent.h"
 #include "Untils/AuraGameplayTags.h"
 
 AAuraPlayerController::AAuraPlayerController()
@@ -174,6 +175,25 @@ void AAuraPlayerController::AutoRun()
 			bAutoRunning = false;
 			StopTickTimerHandle_AutoRun();
 		}
+	}
+}
+
+void AAuraPlayerController::Client_ShowDamageNumber_Implementation(const float DamageAmount, ACharacter* TargetCharacter)
+{
+	if (!TargetCharacter) return;
+	if (IsValid(DamageTextComponentClass))
+	{
+		auto DamageTextComp = NewObject<UDamageTextWidgetComponent>(TargetCharacter, DamageTextComponentClass);
+		if (!DamageTextComp) return;
+		
+		DamageTextComp->RegisterComponent();
+		DamageTextComp->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		DamageTextComp->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		DamageTextComp->SetDamageText(DamageAmount);
+	}
+	else
+	{
+		UE_LOG(Aura, Warning, TEXT("DamageTextComponentClass is nullptr in %s"), *GetName());
 	}
 }
 
