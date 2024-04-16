@@ -2,11 +2,11 @@
 
 
 #include "Gameplay/GAS/GA/GA_AuraProjectileSpell.h"
-
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "Gameplay/Actor/AuraProjectile.h"
 #include "Interaction/CombatInterface.h"
+#include "Untils/AuraGameplayTags.h"
 #include "Untils/AuraLog.h"
 
 void UGA_AuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -43,6 +43,9 @@ void UGA_AuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLoc
 	        if (const auto SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo()))
         	{
 		        const auto SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
+	        	const auto ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+	        	
+	        	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, FAuraGameplayTags::Get().Damage, ScaledDamage);
         		Projectile->DamageEffectSpecHandle = SpecHandle;
         	}
         }
