@@ -7,6 +7,7 @@
 #include "Untils/TickRate.h"
 #include "AuraPlayerController.generated.h"
 
+class UDamageTextWidgetComponent;
 class USplineComponent;
 class UAuraAbilitySystemComponent;
 class UAuraInputComponent;
@@ -82,6 +83,10 @@ private:
 	UPROPERTY(EditAnywhere, Category="Aura|Tick|AutoRun")
 	bool IsTickStart_AutoRun {true};
 
+	// DamageText Widget Component
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|WidgetComponent", meta=(AllowPrivateAccess=true))
+	TSubclassOf<UDamageTextWidgetComponent> DamageTextComponentClass;
+
 	/* Function */
 public:
 	AAuraPlayerController();
@@ -100,6 +105,10 @@ protected:
 	
 	void CursorTrace();
 	void AutoRun();
+
+public:
+	UFUNCTION(Client, Reliable, Category="Aura")
+	void Client_ShowDamageNumber(const float DamageAmount, ACharacter* TargetCharacter);
 
 private:
 	// Tick Timer
