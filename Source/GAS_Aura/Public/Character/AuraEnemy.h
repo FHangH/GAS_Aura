@@ -34,6 +34,11 @@ private:
 	FOnAttributeChangedSignature OnHealthChangedDelegate;
 	UPROPERTY(BlueprintAssignable, Category="Aura|Enemy")
 	FOnAttributeChangedSignature OnMaxHealthChangedDelegate;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
+	bool bHitReacting {false};
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
+	float BaseWalkSpeed {250.f};
 	
 	/* Function */
 public:
@@ -42,11 +47,11 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
-
 	virtual void InitializeDefaultAttributes() const override;
 
 	void OnHealthChanged(const FOnAttributeChangeData& Data) const;
 	void OnMaxHealthChanged(const FOnAttributeChangeData& Data) const;
+	void HitReactTagChanged(const FGameplayTag CallBackTag, int32 NewCount);
 	
 public:
 	// Enemy Interface

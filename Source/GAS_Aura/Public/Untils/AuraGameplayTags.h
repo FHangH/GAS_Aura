@@ -43,7 +43,7 @@ public:
  FGameplayTag InputTag_4;
 
  FGameplayTag Damage;
- 
+ FGameplayTag Effects_HitReact;
  /* Function */
 public:
  static const FAuraGameplayTags& Get() { return GameplayTags; }

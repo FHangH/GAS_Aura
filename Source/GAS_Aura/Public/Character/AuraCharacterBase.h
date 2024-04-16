@@ -41,12 +41,14 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Aura|Weapon|Socket")
 	FName WeaponTipSocketName {};
+
+	UPROPERTY(EditAnywhere, Category="Aura|Montage")
+	TObjectPtr<UAnimMontage> HitReactMontage;
 	
 	/* Function */
 public:
 	AAuraCharacterBase();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	UAttributeSet* GetAttributeSet() const { return AS; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -56,4 +58,8 @@ protected:
 	void ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const;
 	virtual void InitializeDefaultAttributes() const;
 	void AddCharacterAbilities() const;
+
+public:
+	UAttributeSet* GetAttributeSet() const { return AS; }
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 };
