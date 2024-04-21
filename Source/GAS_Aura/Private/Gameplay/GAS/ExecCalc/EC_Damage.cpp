@@ -4,6 +4,9 @@
 #include "Gameplay/GAS/ExecCalc/EC_Damage.h"
 #include "AbilitySystemComponent.h"
 #include "Gameplay/GAS/AuraAttributeSet.h"
+#include "Gameplay/GAS/Data/DataAsset_CharacterClassInfo.h"
+#include "Interaction/CombatInterface.h"
+#include "Untils/AuraAbilitySystemFuncLibrary.h"
 #include "Untils/AuraGameplayTags.h"
 
 struct AuraDamageStatics
@@ -38,9 +41,14 @@ void UEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPara
 {
 	const auto SourceASC = ExecutionParams.GetSourceAbilitySystemComponent();
 	const auto TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
-	
+
 	const auto SourceAvatar = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
 	const auto TargetAvatar = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
+	if (!SourceAvatar || !TargetAvatar) return;
+
+	const auto SourceCombatInterface = Cast<ICombatInterface>(SourceAvatar);
+	const auto TargetCombatInterface = Cast<ICombatInterface>(TargetAvatar);
+	if (!SourceCombatInterface || !TargetCombatInterface) return;
 
 	const auto GESpec = ExecutionParams.GetOwningSpec();
 
@@ -74,11 +82,23 @@ void UEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPara
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		DamageStatics().ArmorPenetrationDef, EvaluateParams, SourceArmorPenetration);
 	SourceArmorPenetration = FMath::Max(0.f, SourceArmorPenetration);
+
+	// Get ArmorPenetration, EffectiveArmor Coefficient From CharacterClassInfo
+	const auto CharacterClassInfo = UAuraAbilitySystemFuncLibrary::GetCharacterClassInfo(SourceAvatar);
+	const auto ArmorPenetrationCurve = CharacterClassInfo->DamageCalculationCoefficient->FindCurve(FName{"ArmorPenetration"}, FString{});
+	const auto EffectiveArmorCurve = CharacterClassInfo->DamageCalculationCoefficient->FindCurve(FName{"EffectiveArmor"}, FString{});
+
+	if (!ArmorPenetrationCurve || !EffectiveArmorCurve) return;
+	const auto ArmorPenetrationCoefficient = ArmorPenetrationCurve->Eval(SourceCombatInterface->GetPlayerLevel());
+	const auto EffectiveArmorCoefficient = EffectiveArmorCurve->Eval(TargetCombatInterface->GetPlayerLevel());
 	
 	// ArmorPenetration ignores a percentage of the target's armor
-	const auto EffectiveArmor = TargetArmor *= (100 - SourceArmorPenetration * 0.25f) / 100.f;
+	const auto EffectiveArmor = TargetArmor * (100 - SourceArmorPenetration * ArmorPenetrationCoefficient) / 100.f;
 	// Armor ignores a percentage of the IncomingDamage
-	Damage *= (100.f - EffectiveArmor * 0.333f) / 100.f;
+	Damage *= (100.f - EffectiveArmor * EffectiveArmorCoefficient) / 100.f;
+
+	GEngine->AddOnScreenDebugMessage(
+		-1, 5.f, FColor::Green, FString::Printf(TEXT("Damage: %f"), Damage));
 	
 	const FGameplayModifierEvaluatedData Modifier(
 		UAuraAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, Damage);
