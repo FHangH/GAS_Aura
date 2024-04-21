@@ -9,11 +9,13 @@
 struct AuraDamageStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(ArmorPenetration);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(BlockChance);
 	
 	AuraDamageStatics()
 	{
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Armor, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArmorPenetration, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, BlockChance, Target, false);
 	}
 };
@@ -27,6 +29,7 @@ static const AuraDamageStatics& DamageStatics()
 UEC_Damage::UEC_Damage()
 {
 	RelevantAttributesToCapture.Add(DamageStatics().ArmorDef);
+	RelevantAttributesToCapture.Add(DamageStatics().ArmorPenetrationDef);
 	RelevantAttributesToCapture.Add(DamageStatics().BlockChanceDef);
 }
 
@@ -60,6 +63,22 @@ void UEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPara
 	// If Blocked => Halve the Damage
 	const auto bIsBlocked = FMath::FRandRange(1.f, 100.f) < TargetBlockChance;
 	Damage = bIsBlocked ? Damage / 2.f : Damage;
+
+	// Capture Armor Penetration On Source and Armor On Target
+	float TargetArmor = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+		DamageStatics().ArmorDef, EvaluateParams, TargetArmor);
+	TargetArmor = FMath::Max(0.f, TargetArmor);
+
+	float SourceArmorPenetration = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+		DamageStatics().ArmorPenetrationDef, EvaluateParams, SourceArmorPenetration);
+	SourceArmorPenetration = FMath::Max(0.f, SourceArmorPenetration);
+	
+	// ArmorPenetration ignores a percentage of the target's armor
+	const auto EffectiveArmor = TargetArmor *= (100 - SourceArmorPenetration * 0.25f) / 100.f;
+	// Armor ignores a percentage of the IncomingDamage
+	Damage *= (100.f - EffectiveArmor * 0.333f) / 100.f;
 	
 	const FGameplayModifierEvaluatedData Modifier(
 		UAuraAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, Damage);
