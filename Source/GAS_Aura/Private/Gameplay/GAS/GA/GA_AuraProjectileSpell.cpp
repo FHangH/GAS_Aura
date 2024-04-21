@@ -42,8 +42,19 @@ void UGA_AuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLoc
         {
 	        if (const auto SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo()))
         	{
-		        const auto SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
-	        	const auto ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+	        	auto EffectContextHandle = SourceASC->MakeEffectContext();
+	        	EffectContextHandle.SetAbility(this);
+	        	EffectContextHandle.AddSourceObject(Projectile);
+				TArray<TWeakObjectPtr<AActor>> Actors;
+	        	Actors.Add(Projectile);
+	        	EffectContextHandle.AddActors(Actors);
+	        	FHitResult HitResult;
+	        	HitResult.Location = ProjectileTargetLocation;
+	        	EffectContextHandle.AddHitResult(HitResult);
+	        	
+	        	
+		        const auto SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
+	        	const auto ScaledDamage = Damage.GetValueAtLevel(/*GetAbilityLevel()*/10.f);
 	        	
 	        	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, FAuraGameplayTags::Get().Damage, ScaledDamage);
         		Projectile->DamageEffectSpecHandle = SpecHandle;

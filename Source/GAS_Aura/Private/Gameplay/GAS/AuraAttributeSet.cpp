@@ -99,7 +99,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 			if (NewHealth <= 0)
 			{
-				if (auto CombatInterface = Cast<ICombatInterface>(EffectProperties.TargetAvatarActor))
+				if (const auto CombatInterface = Cast<ICombatInterface>(EffectProperties.TargetAvatarActor))
 				{
 					CombatInterface->Die();
 				}
@@ -203,7 +203,7 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 {
 	// Source = Causer of the effect, Target = Target of the effect (Owner of this attribute set)
 	EffectProperties.EffectContextHandle = Data.EffectSpec.GetContext();
-	EffectProperties.SourceASC = Data.EffectSpec.GetContext().GetOriginalInstigatorAbilitySystemComponent();
+	EffectProperties.SourceASC = EffectProperties.EffectContextHandle.GetOriginalInstigatorAbilitySystemComponent();
 
 	if (EffectProperties.SourceASC &&
 		EffectProperties.SourceASC->AbilityActorInfo.IsValid() &&
