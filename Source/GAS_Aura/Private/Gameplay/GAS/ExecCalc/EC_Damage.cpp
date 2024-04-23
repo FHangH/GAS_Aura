@@ -60,7 +60,6 @@ void UEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPara
 	if (!SourceCombatInterface || !TargetCombatInterface) return;
 
 	const auto GESpec = ExecutionParams.GetOwningSpec();
-
 	const auto SourceTag = GESpec.CapturedSourceTags.GetAggregatedTags();
 	const auto TargetTag = GESpec.CapturedTargetTags.GetAggregatedTags();
 

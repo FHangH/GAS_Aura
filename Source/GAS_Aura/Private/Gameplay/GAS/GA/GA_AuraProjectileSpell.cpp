@@ -52,7 +52,6 @@ void UGA_AuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLoc
 	        	HitResult.Location = ProjectileTargetLocation;
 	        	EffectContextHandle.AddHitResult(HitResult);
 	        	
-	        	
 		        const auto SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
 	        	const auto ScaledDamage = Damage.GetValueAtLevel(/*GetAbilityLevel()*/10.f);
 	        	
