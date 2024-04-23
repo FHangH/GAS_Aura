@@ -7,6 +7,7 @@
 #include "Gameplay/GAS/Data/DataAsset_CharacterClassInfo.h"
 #include "Interaction/CombatInterface.h"
 #include "Untils/AuraAbilitySystemFuncLibrary.h"
+#include "Untils/AuraAbilityTypes.h"
 #include "Untils/AuraGameplayTags.h"
 
 struct AuraDamageStatics
@@ -67,6 +68,9 @@ void UEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPara
 	EvaluateParams.SourceTags = SourceTag;
 	EvaluateParams.TargetTags = TargetTag;
 
+	// Get Custom Effect Context => IsBlocked, IsCriticalHit for FloatingText Show Type
+	auto EffectContextHandle = GESpec.GetContext();
+	
 	// Get Damage Set by Caller Magnitude
 	float Damage = GESpec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Damage);
 
@@ -79,6 +83,7 @@ void UEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPara
 	// If Blocked => Halve the Damage
 	const auto bIsBlocked = FMath::FRandRange(1.f, 100.f) < TargetBlockChance;
 	Damage = bIsBlocked ? Damage / 2.f : Damage;
+	UAuraAbilitySystemFuncLibrary::SetIsBlockedHit(EffectContextHandle, bIsBlocked);
 
 	// Capture Armor Penetration On Source and Armor On Target
 	float TargetArmor = 0.f;
@@ -130,6 +135,7 @@ void UEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPara
 	const auto EffectiveCriticalHitChance = SourceCriticalHitChance - TargetCriticalHitResistance * CriticalHitResistanceCoefficient;
 	const auto bIsCriticalHit = FMath::FRandRange(1.f, 100.f) < EffectiveCriticalHitChance;
 	Damage = bIsCriticalHit ? 2.f * Damage + SourceCriticalHitDamage : Damage;
+	UAuraAbilitySystemFuncLibrary::SetIsCriticalHit(EffectContextHandle, bIsCriticalHit);
 
 	// Set Last Modifier
 	const FGameplayModifierEvaluatedData Modifier(

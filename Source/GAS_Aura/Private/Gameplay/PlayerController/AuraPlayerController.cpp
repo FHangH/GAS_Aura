@@ -183,7 +183,7 @@ void AAuraPlayerController::Client_ShowDamageNumber_Implementation(const float D
 	if (!TargetCharacter) return;
 	if (IsValid(DamageTextComponentClass))
 	{
-		auto DamageTextComp = NewObject<UDamageTextWidgetComponent>(TargetCharacter, DamageTextComponentClass);
+		const auto DamageTextComp = NewObject<UDamageTextWidgetComponent>(TargetCharacter, DamageTextComponentClass);
 		if (!DamageTextComp) return;
 		
 		DamageTextComp->RegisterComponent();

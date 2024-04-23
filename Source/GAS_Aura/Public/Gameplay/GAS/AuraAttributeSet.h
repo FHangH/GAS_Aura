@@ -215,5 +215,5 @@ protected:
 	void OnRep_Mana(const FGameplayAttributeData& OldValue) const;
 	
 	static void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties);
-	static void ShowFloatingText(const FEffectProperties& EffectProp, const float Damage);
+	static void ShowFloatingText(const FEffectProperties& EffectProp, const float Damage, const bool IsBlockedHit, const bool IsCriticalHit);
 };
