@@ -15,9 +15,9 @@ struct FInputActionValue;
 struct FTimerHandle;
 struct FGameplayTag;
 class UDataAsset_AuraInputConfig;
-class UInputMappingContext;
 class UInputAction;
 class IEnemyInterface;
+class UInputMappingContext;
 
 UCLASS()
 class GAS_AURA_API AAuraPlayerController : public APlayerController
@@ -108,7 +108,7 @@ protected:
 
 public:
 	UFUNCTION(Client, Reliable, Category="Aura")
-	void Client_ShowDamageNumber(const float DamageAmount, ACharacter* TargetCharacter);
+	void Client_ShowDamageNumber(const float DamageAmount, ACharacter* TargetCharacter, const bool IsBlockedHit, const bool IsCriticalHit);
 
 private:
 	// Tick Timer

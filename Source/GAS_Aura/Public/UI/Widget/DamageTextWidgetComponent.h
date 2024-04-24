@@ -15,5 +15,5 @@ public:
 	UDamageTextWidgetComponent();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Aura|WidgetComponent")
-	void SetDamageText(const float Damage);
+	void SetDamageText(const float Damage, const bool IsBlockedHit, const bool IsCriticalHit);
 };

@@ -178,7 +178,8 @@ void AAuraPlayerController::AutoRun()
 	}
 }
 
-void AAuraPlayerController::Client_ShowDamageNumber_Implementation(const float DamageAmount, ACharacter* TargetCharacter)
+void AAuraPlayerController::Client_ShowDamageNumber_Implementation(
+	const float DamageAmount, ACharacter* TargetCharacter, const bool IsBlockedHit, const bool IsCriticalHit)
 {
 	if (!TargetCharacter) return;
 	if (IsValid(DamageTextComponentClass))
@@ -189,7 +190,7 @@ void AAuraPlayerController::Client_ShowDamageNumber_Implementation(const float D
 		DamageTextComp->RegisterComponent();
 		DamageTextComp->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 		DamageTextComp->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-		DamageTextComp->SetDamageText(DamageAmount);
+		DamageTextComp->SetDamageText(DamageAmount, IsBlockedHit, IsCriticalHit);
 	}
 	else
 	{

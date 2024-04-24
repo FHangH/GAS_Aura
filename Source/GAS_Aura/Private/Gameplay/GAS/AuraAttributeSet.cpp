@@ -245,6 +245,6 @@ void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& EffectProp, co
 			UGameplayStatics::GetPlayerController(EffectProp.SourceCharacter, 0));
 
 		if (!AuraPC) return;
-		AuraPC->Client_ShowDamageNumber(Damage, EffectProp.TargetCharacter);
+		AuraPC->Client_ShowDamageNumber(Damage, EffectProp.TargetCharacter, IsBlockedHit, IsCriticalHit);
 	}
 }
