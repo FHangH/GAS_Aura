@@ -15,7 +15,4 @@ class GAS_AURA_API UAuraGameplayAbility : public UGameplayAbility
 public:
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	FGameplayTag StartUpInputTag;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura")
-	FScalableFloat Damage;
 };

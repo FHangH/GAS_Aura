@@ -6,7 +6,6 @@
 #include "AbilitySystemComponent.h"
 #include "Gameplay/Actor/AuraProjectile.h"
 #include "Interaction/CombatInterface.h"
-#include "Untils/AuraGameplayTags.h"
 #include "Untils/AuraLog.h"
 
 void UGA_AuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -24,8 +23,7 @@ void UGA_AuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLoc
 	if (ProjectileClass && CombatInterface)
 	{
 		FTransform Transform;
-		auto Rotator =
-			(ProjectileTargetLocation - CombatInterface->GetCombatSocketLocation()).Rotation();
+		auto Rotator = (ProjectileTargetLocation - CombatInterface->GetCombatSocketLocation()).Rotation();
 		Rotator.Pitch = 0.f;
 		
 		Transform.SetLocation(CombatInterface->GetCombatSocketLocation());
@@ -53,9 +51,11 @@ void UGA_AuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLoc
 	        	EffectContextHandle.AddHitResult(HitResult);
 	        	
 		        const auto SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
-	        	const auto ScaledDamage = Damage.GetValueAtLevel(/*GetAbilityLevel()*/10.f);
-	        	
-	        	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, FAuraGameplayTags::Get().Damage, ScaledDamage);
+				for (const auto& Pair : DamageTypes)
+				{
+					const auto ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
+					UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
+				}
         		Projectile->DamageEffectSpecHandle = SpecHandle;
         	}
         }
@@ -66,5 +66,9 @@ void UGA_AuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLoc
 		
 		if (!Projectile) return;
 		Projectile->FinishSpawning(Transform);
+	}
+	else
+	{
+		UE_LOG(Aura, Warning, TEXT("ProjectileClass is null in %s"), *GetName());
 	}
 }

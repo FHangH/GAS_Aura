@@ -34,6 +34,11 @@ public:
  FGameplayTag Attributes_Secondary_HealthRegeneration;
  FGameplayTag Attributes_Secondary_ManaRegeneration;
 
+ FGameplayTag Attributes_Resistance_Fire;
+ FGameplayTag Attributes_Resistance_Lightning;
+ FGameplayTag Attributes_Resistance_Arcane;
+ FGameplayTag Attributes_Resistance_Physical;
+
  // InputAction Tags
  FGameplayTag InputTag_LMB; // Left Mouse Button
  FGameplayTag InputTag_RMB; // Right Mouse Button
@@ -43,6 +48,12 @@ public:
  FGameplayTag InputTag_4;
 
  FGameplayTag Damage;
+ FGameplayTag Damage_Fire;
+ FGameplayTag Damage_Lightning;
+ FGameplayTag Damage_Arcane;
+ FGameplayTag Damage_Physical;
+ TMap<FGameplayTag, FGameplayTag> DamageTypesToResistance;
+ 
  FGameplayTag Effects_HitReact;
  /* Function */
 public:

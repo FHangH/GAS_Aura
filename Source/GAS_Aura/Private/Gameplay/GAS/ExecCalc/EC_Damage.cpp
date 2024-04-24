@@ -72,7 +72,12 @@ void UEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPara
 	auto EffectContextHandle = GESpec.GetContext();
 	
 	// Get Damage Set by Caller Magnitude
-	float Damage = GESpec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Damage);
+	float Damage = 0.f;
+	for (const auto& Pair : FAuraGameplayTags::Get().DamageTypesToResistance)
+	{
+		float DamageTypeValue = GESpec.GetSetByCallerMagnitude(Pair.Key);
+		Damage += DamageTypeValue;
+	}
 
 	// Capture BlockChance On Target and Determinate if it is Blocked
 	float TargetBlockChance = 0.f;
