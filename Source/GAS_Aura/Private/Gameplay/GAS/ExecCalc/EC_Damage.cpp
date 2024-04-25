@@ -9,6 +9,7 @@
 #include "Untils/AuraAbilitySystemFuncLibrary.h"
 #include "Untils/AuraAbilityTypes.h"
 #include "Untils/AuraGameplayTags.h"
+#include "Untils/AuraLog.h"
 
 struct AuraDamageStatics
 {
@@ -18,6 +19,12 @@ struct AuraDamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitChance);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitResistance);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitDamage);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(FireResistance);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(LightningResistance);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(ArcaneResistance);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(PhysicalResistance);
+
+	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> Map_TagsToCaptureDef;
 	
 	AuraDamageStatics()
 	{
@@ -27,6 +34,22 @@ struct AuraDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitChance, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitResistance, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitDamage, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, FireResistance, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, LightningResistance, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArcaneResistance, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, PhysicalResistance, Target, false);
+
+		const auto Tags = FAuraGameplayTags::Get();
+		Map_TagsToCaptureDef.Add(Tags.Attributes_Secondary_Armor, ArmorDef);
+		Map_TagsToCaptureDef.Add(Tags.Attributes_Secondary_ArmorPenetration, ArmorPenetrationDef);
+		Map_TagsToCaptureDef.Add(Tags.Attributes_Secondary_BlockChance, BlockChanceDef);
+		Map_TagsToCaptureDef.Add(Tags.Attributes_Secondary_CriticalHitChance, CriticalHitChanceDef);
+		Map_TagsToCaptureDef.Add(Tags.Attributes_Secondary_CriticalHitResistance, CriticalHitResistanceDef);
+		Map_TagsToCaptureDef.Add(Tags.Attributes_Secondary_CriticalHitDamage, CriticalHitDamageDef);
+		Map_TagsToCaptureDef.Add(Tags.Attributes_Resistance_Fire, FireResistanceDef);
+		Map_TagsToCaptureDef.Add(Tags.Attributes_Resistance_Lightning, LightningResistanceDef);
+		Map_TagsToCaptureDef.Add(Tags.Attributes_Resistance_Arcane, ArcaneResistanceDef);
+		Map_TagsToCaptureDef.Add(Tags.Attributes_Resistance_Physical, PhysicalResistanceDef);
 	}
 };
 
@@ -44,6 +67,10 @@ UEC_Damage::UEC_Damage()
 	RelevantAttributesToCapture.Add(DamageStatics().CriticalHitChanceDef);
 	RelevantAttributesToCapture.Add(DamageStatics().CriticalHitResistanceDef);
 	RelevantAttributesToCapture.Add(DamageStatics().CriticalHitDamageDef);
+	RelevantAttributesToCapture.Add(DamageStatics().FireResistanceDef);
+	RelevantAttributesToCapture.Add(DamageStatics().LightningResistanceDef);
+	RelevantAttributesToCapture.Add(DamageStatics().ArcaneResistanceDef);
+	RelevantAttributesToCapture.Add(DamageStatics().PhysicalResistanceDef);
 }
 
 void UEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -75,7 +102,20 @@ void UEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPara
 	float Damage = 0.f;
 	for (const auto& Pair : FAuraGameplayTags::Get().DamageTypesToResistance)
 	{
-		float DamageTypeValue = GESpec.GetSetByCallerMagnitude(Pair.Key);
+		const auto DamageTypeTag = Pair.Key;
+		const auto ResistanceTag = Pair.Value;
+		if (!AuraDamageStatics().Map_TagsToCaptureDef.Contains(ResistanceTag))
+		{
+			UE_LOG(Aura, Warning, TEXT("Map_TagsToCaptureDef does not contain ResistanceTag: %s"), *ResistanceTag.ToString());
+		}
+		const auto CaptureDef = AuraDamageStatics().Map_TagsToCaptureDef[ResistanceTag];
+
+		float DamageTypeValue = GESpec.GetSetByCallerMagnitude(DamageTypeTag);
+		float Resistance = 0.f;
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(CaptureDef, EvaluateParams, Resistance);
+		Resistance = FMath::Clamp(Resistance, 0.f, 100.f);
+
+		DamageTypeValue *= (100.f - Resistance) / 100.f;
 		Damage += DamageTypeValue;
 	}
 

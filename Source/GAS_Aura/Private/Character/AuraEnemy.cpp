@@ -39,8 +39,10 @@ void AAuraEnemy::BeginPlay()
 
 	if (const auto AuraAS = Cast<UAuraAttributeSet>(AS); AuraAS && ASComponent)
 	{
-		UAuraAbilitySystemFuncLibrary::GiveStartupAbilities(this, ASComponent);
-		
+		if (HasAuthority())
+		{
+			UAuraAbilitySystemFuncLibrary::GiveStartupAbilities(this, ASComponent);
+		}
 		ASComponent->GetGameplayAttributeValueChangeDelegate(
 			AuraAS->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
 		ASComponent->GetGameplayAttributeValueChangeDelegate(
@@ -60,7 +62,10 @@ void AAuraEnemy::InitAbilityActorInfo()
 		ASComponent->InitAbilityActorInfo(this, this);
 		Cast<UAuraAbilitySystemComponent>(ASComponent)->AbilityActorInfoSet();
 
-		InitializeDefaultAttributes();
+		if (HasAuthority())
+		{
+			InitializeDefaultAttributes();
+		}
 	}
 }
 

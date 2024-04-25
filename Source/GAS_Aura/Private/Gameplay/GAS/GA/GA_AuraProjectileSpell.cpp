@@ -24,7 +24,6 @@ void UGA_AuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLoc
 	{
 		FTransform Transform;
 		auto Rotator = (ProjectileTargetLocation - CombatInterface->GetCombatSocketLocation()).Rotation();
-		Rotator.Pitch = 0.f;
 		
 		Transform.SetLocation(CombatInterface->GetCombatSocketLocation());
 		Transform.SetRotation(Rotator.Quaternion());
