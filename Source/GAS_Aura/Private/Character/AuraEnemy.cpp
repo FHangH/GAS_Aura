@@ -1,6 +1,9 @@
 // Copyright fangh.space
 
 #include "Character/AuraEnemy.h"
+#include "AI/AuraAIController.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
@@ -8,6 +11,7 @@
 #include "UI/Widget/AuraUserWidget.h"
 #include "Untils/AuraAbilitySystemFuncLibrary.h"
 #include "Untils/AuraGameplayTags.h"
+#include "Untils/AuraLog.h"
 #include "Untils/RenderDepth.h"
 
 AAuraEnemy::AAuraEnemy()
@@ -53,6 +57,22 @@ void AAuraEnemy::BeginPlay()
 		OnHealthChangedDelegate.Broadcast(AuraAS->GetHealth());
 		OnMaxHealthChangedDelegate.Broadcast(AuraAS->GetMaxHealth());
 	}
+}
+
+void AAuraEnemy::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if (!HasAuthority()) return;
+	AuraAIController = Cast<AAuraAIController>(NewController);
+
+	if (!AuraAIController || !BehaviorTree)
+	{
+		UE_LOG(Aura, Warning, TEXT("AuraAIController Or BehaviorTree is not set for %s"), *GetName());
+		return;
+	}
+	AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+	AuraAIController->RunBehaviorTree(BehaviorTree);
 }
 
 void AAuraEnemy::InitAbilityActorInfo()

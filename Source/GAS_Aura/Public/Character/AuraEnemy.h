@@ -10,6 +10,8 @@
 #include "AuraEnemy.generated.h"
 
 class UWidgetComponent;
+class UBehaviorTree;
+class AAuraAIController;
 
 UCLASS()
 class GAS_AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
@@ -21,20 +23,6 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
 	bool bIsHighLight {false};
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
-	int32 Level {1};
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
-	ECharacterClassType CharacterClassType {ECharacterClassType::ECT_Warrior};
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
-	TObjectPtr<UWidgetComponent> HealthBar;
-
-	UPROPERTY(BlueprintAssignable, Category="Aura|Enemy")
-	FOnAttributeChangedSignature OnHealthChangedDelegate;
-	UPROPERTY(BlueprintAssignable, Category="Aura|Enemy")
-	FOnAttributeChangedSignature OnMaxHealthChangedDelegate;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
 	bool bHitReacting {false};
 
@@ -43,6 +31,26 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
 	float LifeSpan {5.f};
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy")
+	int32 Level {1};
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy")
+	ECharacterClassType CharacterClassType {ECharacterClassType::ECT_Warrior};
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|Enemy")
+	TObjectPtr<UWidgetComponent> HealthBar;
+
+	UPROPERTY(BlueprintAssignable, Category="Aura|Enemy")
+	FOnAttributeChangedSignature OnHealthChangedDelegate;
+	UPROPERTY(BlueprintAssignable, Category="Aura|Enemy")
+	FOnAttributeChangedSignature OnMaxHealthChangedDelegate;
+	
+	UPROPERTY(EditAnywhere, Category="Aura|Enemy|AI")
+	TObjectPtr<UBehaviorTree> BehaviorTree;
+	UPROPERTY(BlueprintReadOnly, Category="Aura|Enemy|AI")
+	TObjectPtr<AAuraAIController> AuraAIController;
 	
 	/* Function */
 public:
@@ -50,9 +58,13 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void PossessedBy(AController* NewController) override;
+
+	// Override IEnemyInterface
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeDefaultAttributes() const override;
 
+	// Delegate
 	void OnHealthChanged(const FOnAttributeChangeData& Data) const;
 	void OnMaxHealthChanged(const FOnAttributeChangeData& Data) const;
 	void HitReactTagChanged(const FGameplayTag CallBackTag, int32 NewCount);
