@@ -12,6 +12,15 @@ class GAS_AURA_API UBTService_FindNearestPlayer : public UBTService_BlueprintBas
 	GENERATED_BODY()
 
 	/* Property */
+private:
+	UPROPERTY()
+	TObjectPtr<APawn> OwingPawn;
+
+	TArray<TObjectPtr<AActor>> ActorsWithTag;
+
+	UPROPERTY()
+	TObjectPtr<AActor> ClosestActor;
+	
 public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Aura")
 	FBlackboardKeySelector TargetToFollowSelector;

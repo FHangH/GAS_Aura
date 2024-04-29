@@ -61,6 +61,13 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Level", meta=(AllowPrivateAccess=true))
 	float ActorLevel {1.f};
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura")
+	bool bDestroyOnEffectApplication {false};
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura")
+	bool bApplyEffectsToEnemies {false};
 	
 	/* Function */
 public:
