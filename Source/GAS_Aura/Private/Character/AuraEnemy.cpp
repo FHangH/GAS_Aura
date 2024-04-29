@@ -69,7 +69,7 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	if (!HasAuthority()) return;
+	if (!HasAuthority() || !NewController) return;
 	AuraAIController = Cast<AAuraAIController>(NewController);
 
 	if (!AuraAIController || !BehaviorTree)
@@ -79,6 +79,8 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 	}
 	AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
 	AuraAIController->RunBehaviorTree(BehaviorTree);
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName{"HitReacting"}, false);
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName{"RangedAttacker"}, CharacterClassType != ECharacterClassType::ECT_Warrior);
 }
 
 void AAuraEnemy::InitAbilityActorInfo()
@@ -115,8 +117,11 @@ void AAuraEnemy::OnMaxHealthChanged(const FOnAttributeChangeData& Data) const
 
 void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallBackTag, int32 NewCount)
 {
+	if (!AuraAIController) return;
+	
 	bHitReacting = NewCount > 0;
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSpeed;
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName{"HitReacting"}, bHitReacting);
 }
 
 void AAuraEnemy::HighLightActor()
