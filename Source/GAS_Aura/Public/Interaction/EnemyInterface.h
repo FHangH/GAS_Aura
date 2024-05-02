@@ -21,9 +21,9 @@ public:
 	virtual void HighLightActor() = 0;
 	virtual void UnHighLightActor() = 0;
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Enemy")
 	void SetCombatTarget(AActor* InCombatTarget);
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Enemy")
 	AActor* GetCombatTarget() const;
 };

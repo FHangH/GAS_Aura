@@ -18,12 +18,14 @@ class GAS_AURA_API ICombatInterface
 
 public:
 	virtual int32 GetPlayerLevel();
-	virtual FVector GetCombatSocketLocation();
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interface")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interface|Combat")
+	FVector GetCombatSocketLocation();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interface|Combat")
 	void UpdateFacingTarget(const FVector& TargetLocation);
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
 	UAnimMontage* GetHitReactMontage();
 
 	virtual void Die() = 0;
