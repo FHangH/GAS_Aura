@@ -51,7 +51,7 @@ void AAuraEnemy::BeginPlay()
 	{
 		if (HasAuthority())
 		{
-			UAuraAbilitySystemFuncLibrary::GiveStartupAbilities(this, ASComponent);
+			UAuraAbilitySystemFuncLibrary::GiveStartupAbilities(this, ASComponent, CharacterClassType);
 		}
 		ASComponent->GetGameplayAttributeValueChangeDelegate(
 			AuraAS->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);

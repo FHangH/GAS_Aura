@@ -53,4 +53,7 @@ void FAuraGameplayTags::InitNativeGameplayTags()
 	
 	// Hit React
 	GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Effects.HitReact"});
+
+	// Ability
+	GameplayTags.Ability_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Ability.Attack"});
 }

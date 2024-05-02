@@ -292,7 +292,12 @@ void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 				UNavigationSystemV1::FindPathToLocationSynchronously(
 					this, GetCharacter()->GetActorLocation(), CachedDestination);
 			
-			if (!NavPath) return;
+			if (!NavPath)
+			{
+				FollowTime = 0.f;
+				bTargeting = false;
+				return;
+			}
 			SplineComponent->ClearSplinePoints();
 			
 			for (const auto& PointLocation : NavPath->PathPoints)

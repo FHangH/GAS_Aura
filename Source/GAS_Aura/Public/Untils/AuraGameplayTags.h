@@ -47,14 +47,20 @@ public:
  FGameplayTag InputTag_3;
  FGameplayTag InputTag_4;
 
+ // Damage Tags
  FGameplayTag Damage;
  FGameplayTag Damage_Fire;
  FGameplayTag Damage_Lightning;
  FGameplayTag Damage_Arcane;
  FGameplayTag Damage_Physical;
  TMap<FGameplayTag, FGameplayTag> DamageTypesToResistance;
- 
+
+ // HitReact Tag
  FGameplayTag Effects_HitReact;
+
+ // Ability Tags
+ FGameplayTag Ability_Attack;
+ 
  /* Function */
 public:
  static const FAuraGameplayTags& Get() { return GameplayTags; }

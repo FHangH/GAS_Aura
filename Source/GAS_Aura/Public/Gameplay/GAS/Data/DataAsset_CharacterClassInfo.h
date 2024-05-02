@@ -24,6 +24,9 @@ struct FCharacterClassDefaultInfo
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	TSubclassOf<UGameplayEffect> GE_PrimaryAttributes;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 };
 
 UCLASS(BlueprintType)
