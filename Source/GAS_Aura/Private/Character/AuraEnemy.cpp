@@ -142,6 +142,16 @@ void AAuraEnemy::UnHighLightActor()
 	WeaponMeshComponent->SetCustomDepthStencilValue(RENDER_DEPTH_NULL);
 }
 
+void AAuraEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)
+{
+	CombatTarget = InCombatTarget;
+}
+
+AActor* AAuraEnemy::GetCombatTarget_Implementation() const
+{
+	return CombatTarget;
+}
+
 int32 AAuraEnemy::GetPlayerLevel()
 {
 	return Level;

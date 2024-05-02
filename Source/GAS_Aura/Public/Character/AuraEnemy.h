@@ -32,6 +32,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
 	float LifeSpan {5.f};
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
+	TObjectPtr<AActor> CombatTarget;
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy")
 	int32 Level {1};
@@ -60,7 +63,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
 
-	// Override IEnemyInterface
+	// Override AuraCharacterBase
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeDefaultAttributes() const override;
 
@@ -73,6 +76,8 @@ public:
 	// Enemy Interface
 	virtual void HighLightActor() override;
 	virtual void UnHighLightActor() override;
+	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
+	virtual AActor* GetCombatTarget_Implementation() const override;
 
 	// Combat Interface
 	virtual int32 GetPlayerLevel() override;
