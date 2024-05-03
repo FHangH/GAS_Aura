@@ -41,6 +41,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Aura|Weapon|Socket")
 	FName WeaponTipSocketName {};
+	UPROPERTY(EditAnywhere, Category="Aura|Weapon|Socket")
+	FName LeftHandSocketName {};
+	UPROPERTY(EditAnywhere, Category="Aura|Weapon|Socket")
+	FName RightHandSocketName {};
 
 	UPROPERTY(EditAnywhere, Category="Aura|Montage")
 	TObjectPtr<UAnimMontage> HitReactMontage;
@@ -51,6 +55,9 @@ protected:
 	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
 
 	bool bIsDead { false };
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Montage|Attack")
+	TArray<FTaggedMontage> AttackMontages;
 	
 	/* Function */
 public:
@@ -60,12 +67,14 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo();
+	
 	// Combat Interface
-	virtual FVector GetCombatSocketLocation_Implementation() const override;
+	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) const override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual void Die() override;
 	virtual bool IsDead_Implementation() const override;
 	virtual AActor* GetAvatar_Implementation() override;
+	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
 
 	void ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const;
 	virtual void InitializeDefaultAttributes() const;

@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "Gameplay/Actor/AuraProjectile.h"
 #include "Interaction/CombatInterface.h"
+#include "Untils/AuraGameplayTags.h"
 #include "Untils/AuraLog.h"
 
 void UGA_AuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -23,7 +24,9 @@ void UGA_AuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLoc
 	if (ProjectileClass && CombatInterface)
 	{
 		FTransform Transform;
-		const auto SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo());
+		const auto SocketLocation =
+			ICombatInterface::Execute_GetCombatSocketLocation(
+				GetAvatarActorFromActorInfo(), FAuraGameplayTags::Get().Montage_Attack_Weapon);
 		const auto Rotator = (ProjectileTargetLocation - SocketLocation).Rotation();
 		
 		Transform.SetLocation(SocketLocation);
