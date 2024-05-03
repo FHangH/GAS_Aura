@@ -117,7 +117,7 @@ void AAuraEnemy::OnMaxHealthChanged(const FOnAttributeChangeData& Data) const
 
 void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallBackTag, int32 NewCount)
 {
-	if (!AuraAIController) return;
+	if (!AuraAIController || !AuraAIController->GetBlackboardComponent()) return;
 	
 	bHitReacting = NewCount > 0;
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSpeed;

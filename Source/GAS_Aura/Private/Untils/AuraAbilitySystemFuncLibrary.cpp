@@ -152,8 +152,9 @@ void UAuraAbilitySystemFuncLibrary::SetIsCriticalHit(FGameplayEffectContextHandl
 	}
 }
 
-void UAuraAbilitySystemFuncLibrary::GetLivePlayersWithRadius(const UObject* WorldContextObject,
-	TArray<AActor*>& OutOverlappingPlayers, const TArray<AActor*>& ActorsToIgnore, const float Radius, const FVector& SphereOrigin)
+void UAuraAbilitySystemFuncLibrary::GetLivePlayersWithRadius(
+	const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingPlayers, const TArray<AActor*>& ActorsToIgnore,
+	const float Radius, const FVector& SphereOrigin)
 {
 	FCollisionQueryParams SphereParams;
 	SphereParams.AddIgnoredActors(ActorsToIgnore);

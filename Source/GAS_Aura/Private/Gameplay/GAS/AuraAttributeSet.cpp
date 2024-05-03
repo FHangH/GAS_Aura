@@ -7,7 +7,6 @@
 #include "GameFramework/Character.h"
 #include "Gameplay/PlayerController/AuraPlayerController.h"
 #include "Interaction/CombatInterface.h"
-#include "Kismet/GameplayStatics.h"
 #include "Untils/AuraAbilitySystemFuncLibrary.h"
 #include "Untils/AuraGameplayTags.h"
 
@@ -273,9 +272,17 @@ void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& EffectProp, co
 {
 	if (EffectProp.SourceCharacter != EffectProp.TargetCharacter)
 	{
-		const auto AuraPC = Cast<AAuraPlayerController>(EffectProp.SourceCharacter->Controller);
+		const auto AuraSourcePC = Cast<AAuraPlayerController>(EffectProp.SourceCharacter->Controller);
+		const auto AuraTargetPC = Cast<AAuraPlayerController>(EffectProp.TargetCharacter->Controller);
 
-		if (!AuraPC) return;
-		AuraPC->Client_ShowDamageNumber(Damage, EffectProp.TargetCharacter, IsBlockedHit, IsCriticalHit);
+		if (AuraSourcePC)
+		{
+			AuraSourcePC->Client_ShowDamageNumber(Damage, EffectProp.TargetCharacter, IsBlockedHit, IsCriticalHit);
+			return;
+		}
+		if (AuraTargetPC)
+		{
+			AuraTargetPC->Client_ShowDamageNumber(Damage, EffectProp.TargetCharacter, IsBlockedHit, IsCriticalHit);
+		}
 	}
 }

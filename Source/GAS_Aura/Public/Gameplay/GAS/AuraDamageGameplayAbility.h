@@ -18,4 +18,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|Damage")
 	TMap<FGameplayTag, FScalableFloat> DamageTypes;
+
+	/* Function */
+public:
+	UFUNCTION(BlueprintCallable, Category="Aura")
+	void CauseDamage(AActor* TargetActor);
 };
