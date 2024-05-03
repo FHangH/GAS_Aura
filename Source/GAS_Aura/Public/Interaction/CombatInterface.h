@@ -20,7 +20,7 @@ public:
 	virtual int32 GetPlayerLevel();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interface|Combat")
-	FVector GetCombatSocketLocation();
+	FVector GetCombatSocketLocation() const;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interface|Combat")
 	void UpdateFacingTarget(const FVector& TargetLocation);
@@ -29,4 +29,10 @@ public:
 	UAnimMontage* GetHitReactMontage();
 
 	virtual void Die() = 0;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
+	bool IsDead() const;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
+	AActor* GetAvatar();
 };

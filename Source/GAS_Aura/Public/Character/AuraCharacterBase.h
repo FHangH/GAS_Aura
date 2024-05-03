@@ -49,6 +49,8 @@ protected:
 	TObjectPtr<UMaterialInstance> BodyDissolveMaterialInstance;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Material")
 	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
+
+	bool bIsDead { false };
 	
 	/* Function */
 public:
@@ -58,7 +60,12 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo();
-	virtual FVector GetCombatSocketLocation_Implementation() override;
+	// Combat Interface
+	virtual FVector GetCombatSocketLocation_Implementation() const override;
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+	virtual void Die() override;
+	virtual bool IsDead_Implementation() const override;
+	virtual AActor* GetAvatar_Implementation() override;
 
 	void ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const;
 	virtual void InitializeDefaultAttributes() const;
@@ -66,9 +73,7 @@ protected:
 
 public:
 	UAttributeSet* GetAttributeSet() const { return AS; }
-	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
-	virtual void Die() override;
-
+	
 	UFUNCTION(NetMulticast, Reliable, Category="Aura")
 	void Multicast_HandleDeath();
 	

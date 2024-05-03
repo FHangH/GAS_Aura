@@ -40,9 +40,33 @@ void AAuraCharacterBase::InitAbilityActorInfo()
 	
 }
 
-FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation()
+FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation() const 
 {
 	return WeaponMeshComponent ? WeaponMeshComponent->GetSocketLocation(WeaponTipSocketName) : FVector{};
+}
+
+UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
+{
+	return HitReactMontage;
+}
+
+void AAuraCharacterBase::Die()
+{
+	if (WeaponMeshComponent)
+	{
+		WeaponMeshComponent->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+	}
+	Multicast_HandleDeath();
+}
+
+bool AAuraCharacterBase::IsDead_Implementation() const
+{
+	return bIsDead;
+}
+
+AActor* AAuraCharacterBase::GetAvatar_Implementation()
+{
+	return this;
 }
 
 void AAuraCharacterBase::ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const
@@ -96,20 +120,6 @@ void AAuraCharacterBase::AddCharacterAbilities() const
 	ASC->AddCharacterAbilities(StartUpAbilities);
 }
 
-UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
-{
-	return HitReactMontage;
-}
-
-void AAuraCharacterBase::Die()
-{
-	if (WeaponMeshComponent)
-	{
-		WeaponMeshComponent->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
-	}
-	Multicast_HandleDeath();
-}
-
 void AAuraCharacterBase::Multicast_HandleDeath_Implementation()
 {
 	if (WeaponMeshComponent)
@@ -130,6 +140,7 @@ void AAuraCharacterBase::Multicast_HandleDeath_Implementation()
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 
+	bIsDead = true;
 	Dissolve();
 }
 
