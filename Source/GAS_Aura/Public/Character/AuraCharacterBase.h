@@ -20,10 +20,10 @@ class GAS_AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystem
 
 	/* Property */
 protected:
-	UPROPERTY(EditAnywhere, Category="Aura|Weapon")
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Weapon")
 	TObjectPtr<USkeletalMeshComponent> WeaponMeshComponent;
 
-	UPROPERTY(VisibleAnywhere, Category="Aura")
+	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> ASComponent;
 	
 	UPROPERTY(VisibleAnywhere, Category="Aura")

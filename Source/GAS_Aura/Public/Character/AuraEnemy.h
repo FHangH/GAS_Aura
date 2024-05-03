@@ -42,7 +42,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy")
 	ECharacterClassType CharacterClassType {ECharacterClassType::ECT_Warrior};
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|Enemy")
+	UPROPERTY(BlueprintReadOnly, Category="Aura|Enemy")
 	TObjectPtr<UWidgetComponent> HealthBar;
 
 	UPROPERTY(BlueprintAssignable, Category="Aura|Enemy")
