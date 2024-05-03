@@ -40,6 +40,9 @@ void AAuraEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Setup AI Walk Speed
+	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+
 	InitAbilityActorInfo();
 
 	if (const auto AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject()))
