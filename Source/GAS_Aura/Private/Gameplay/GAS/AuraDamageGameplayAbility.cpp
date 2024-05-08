@@ -4,6 +4,7 @@
 #include "Gameplay/GAS/AuraDamageGameplayAbility.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "Interaction/CombatInterface.h"
 #include "Untils/AuraLog.h"
 
 void UAuraDamageGameplayAbility::CauseDamage(AActor* TargetActor)
@@ -28,4 +29,10 @@ void UAuraDamageGameplayAbility::CauseDamage(AActor* TargetActor)
 		
 		ASC->ApplyGameplayEffectSpecToTarget(*DamageSpecHandle.Data.Get(), TargetASC);
 	}
+}
+
+FTaggedMontage UAuraDamageGameplayAbility::GetRandomTaggedMontage(const TArray<FTaggedMontage>& TaggedMontages)
+{
+	if (TaggedMontages.IsEmpty()) return FTaggedMontage{};
+	return TaggedMontages[FMath::RandRange(0, TaggedMontages.Num() - 1)];
 }
