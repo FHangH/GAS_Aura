@@ -18,6 +18,7 @@ AAuraProjectile::AAuraProjectile()
 	PrimaryActorTick.bCanEverTick = false;
 
 	bReplicates = true;
+	InitialLifeSpan = LifeTime;
 
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	RootComponent = SphereComponent;
@@ -38,6 +39,7 @@ void AAuraProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
+	InitialLifeSpan = LifeTime;
 	SetLifeSpan(LifeTime);
 
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnSphereStartOverlap);
