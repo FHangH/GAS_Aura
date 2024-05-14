@@ -8,6 +8,7 @@
 #include "Interaction/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
 
+class UNiagaraSystem;
 class UGameplayAbility;
 class UGameplayEffect;
 class UAttributeSet;
@@ -36,7 +37,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|AsClass")
 	TSubclassOf<UGameplayEffect> DefaultVitalAttributesClass;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|GAClass", meta=(AllowPrivateAccess=true))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|GAClass")
 	TArray<TSubclassOf<UGameplayAbility>> StartUpAbilities;
 
 	UPROPERTY(EditAnywhere, Category="Aura|Weapon|Socket")
@@ -54,10 +55,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Material")
 	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
 
-	bool bIsDead { false };
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Montage|Attack")
 	TArray<FTaggedMontage> AttackMontages;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura|Niagra")	
+	TObjectPtr<UNiagaraSystem> BloodEffect;
+	
+	bool bIsDead { false };
 	
 	/* Function */
 public:
@@ -75,6 +79,7 @@ protected:
 	virtual bool IsDead_Implementation() const override;
 	virtual AActor* GetAvatar_Implementation() override;
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
+	virtual UNiagaraSystem* GetBloodEffect_Implementation() const override;
 
 	void ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const;
 	virtual void InitializeDefaultAttributes() const;
