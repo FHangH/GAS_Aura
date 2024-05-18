@@ -5,6 +5,7 @@
 #include "AbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Untils/AuraCollision.h"
 #include "Untils/AuraGameplayTags.h"
 #include "Untils/AuraLog.h"
@@ -176,6 +177,10 @@ void AAuraCharacterBase::Multicast_HandleDeath_Implementation()
 	{
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+	if (DeathSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
+	}
 
 	bIsDead = true;
 	Dissolve();
@@ -185,13 +190,13 @@ void AAuraCharacterBase::Dissolve()
 {
 	if (IsValid(BodyDissolveMaterialInstance) && GetMesh())
 	{
-		auto DynamicMatIns = UMaterialInstanceDynamic::Create(BodyDissolveMaterialInstance, this);
+		const auto DynamicMatIns = UMaterialInstanceDynamic::Create(BodyDissolveMaterialInstance, this);
 		GetMesh()->SetMaterial(0, DynamicMatIns);
 		StartBodyDissolveTimeLine(DynamicMatIns);
 	}
 	if (IsValid(WeaponDissolveMaterialInstance) && WeaponMeshComponent)
 	{
-		auto DynamicMatIns = UMaterialInstanceDynamic::Create(WeaponDissolveMaterialInstance, this);
+		const auto DynamicMatIns = UMaterialInstanceDynamic::Create(WeaponDissolveMaterialInstance, this);
 		WeaponMeshComponent->SetMaterial(0, DynamicMatIns);
 		StartWeaponDissolveTimeLine(DynamicMatIns);
 	}

@@ -21,12 +21,14 @@ class GAS_AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystem
 
 	/* Property */
 protected:
+	// Components
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|Weapon")
 	TObjectPtr<USkeletalMeshComponent> WeaponMeshComponent;
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> ASComponent;
-	
+
+	// Attributes
 	UPROPERTY(VisibleAnywhere, Category="Aura")
 	TObjectPtr<UAttributeSet> AS;
 
@@ -36,10 +38,12 @@ protected:
 	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributesClass;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|AsClass")
 	TSubclassOf<UGameplayEffect> DefaultVitalAttributesClass;
-	
+
+	// Abilities
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|GAClass")
 	TArray<TSubclassOf<UGameplayAbility>> StartUpAbilities;
 
+	// SocketNames
 	UPROPERTY(EditAnywhere, Category="Aura|Weapon|Socket")
 	FName WeaponTipSocketName {};
 	UPROPERTY(EditAnywhere, Category="Aura|Weapon|Socket")
@@ -47,20 +51,28 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Aura|Weapon|Socket")
 	FName RightHandSocketName {};
 
+	// Montages
 	UPROPERTY(EditAnywhere, Category="Aura|Montage")
 	TObjectPtr<UAnimMontage> HitReactMontage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Montage|Attack")
+	TArray<FTaggedMontage> AttackMontages;
+
+	// Dynamic Materials
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Material")
 	TObjectPtr<UMaterialInstance> BodyDissolveMaterialInstance;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Material")
 	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Montage|Attack")
-	TArray<FTaggedMontage> AttackMontages;
-
+	// Niagara System
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura|Niagra")	
 	TObjectPtr<UNiagaraSystem> BloodEffect;
+
+	// Sounds
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura|Sound")	
+	TObjectPtr<USoundBase> DeathSound;
 	
+	// Status
 	bool bIsDead { false };
 	
 	/* Function */
