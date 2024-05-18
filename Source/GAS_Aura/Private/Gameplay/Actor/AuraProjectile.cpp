@@ -58,16 +58,27 @@ void AAuraProjectile::Destroyed()
 {
 	if (!bIsHit && !HasAuthority())
     {
-		if (ImpactEffect && ImpactSound)
+		if (ImpactSound)
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), GetActorRotation());
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
-			if (LoopingSoundComponent) LoopingSoundComponent->Stop();
 		}
 		else
 		{
-			UE_LOG(Aura, Warning, TEXT("No Impact Effect or Sound set on %s"), *GetName());
+			UE_LOG(Aura, Warning, TEXT("No Impact Effect set on %s"), *GetName());
 		}
+		
+		if (ImpactEffect)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
+		}
+		else
+		{
+			UE_LOG(Aura, Warning, TEXT("No Impact Sound set on %s"), *GetName());
+		}
+		
+		if (LoopingSoundComponent) LoopingSoundComponent->Stop();
+
+		bIsHit = true;
     }
 	Super::Destroyed();
 }
@@ -87,18 +98,29 @@ void AAuraProjectile::OnSphereStartOverlap(UPrimitiveComponent* OverlappedCompon
 		return;
 	}
 	
-	if (ImpactEffect && ImpactSound)
+	if (!bIsHit)
 	{
-		if (!bIsHit)
+		if (ImpactSound)
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), GetActorRotation());
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
-			if (LoopingSoundComponent) LoopingSoundComponent->Stop();
 		}
-	}
-	else
-	{
-		UE_LOG(Aura, Warning, TEXT("No Impact Effect or Sound set on %s"), *GetName());
+		else
+		{
+			UE_LOG(Aura, Warning, TEXT("No Impact Effect set on %s"), *GetName());
+		}
+		
+		if (ImpactEffect)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
+		}
+		else
+		{
+			UE_LOG(Aura, Warning, TEXT("No Impact Sound set on %s"), *GetName());
+		}
+		
+		if (LoopingSoundComponent) LoopingSoundComponent->Stop();
+
+		bIsHit = true;
 	}
 
 	if (HasAuthority())
