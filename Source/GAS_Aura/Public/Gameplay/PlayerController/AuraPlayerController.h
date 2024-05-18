@@ -34,6 +34,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="Aura|Input")
 	TObjectPtr<UInputAction> IA_SHIFT;
+	
 	bool bShiftKeyDown {false};
 
 	UPROPERTY(EditAnywhere, Category="Aura|Input")

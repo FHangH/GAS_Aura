@@ -26,7 +26,7 @@ void UGA_AuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLoc
 		FTransform Transform;
 		const auto SocketLocation =
 			ICombatInterface::Execute_GetCombatSocketLocation(
-				GetAvatarActorFromActorInfo(), FAuraGameplayTags::Get().Montage_Attack_Weapon);
+				GetAvatarActorFromActorInfo(), FAuraGameplayTags::Get().CombatSocket_Weapon);
 		const auto Rotator = (ProjectileTargetLocation - SocketLocation).Rotation();
 		
 		Transform.SetLocation(SocketLocation);
