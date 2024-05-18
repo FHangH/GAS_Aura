@@ -20,36 +20,46 @@ class GAS_AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterfac
 
 	/* Property */
 private:
+	// Highlight Status
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
 	bool bIsHighLight {false};
 
+	// Hit Reacting
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
 	bool bHitReacting {false};
 
+	// Walk Speed
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
 	float BaseWalkSpeed {250.f};
 
+	// Life
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
 	float LifeSpan {5.f};
 
+	// Combat Target
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
 	TObjectPtr<AActor> CombatTarget;
 
 protected:
+	// Level
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy")
 	int32 Level {1};
 
+	// Type
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy")
 	ECharacterClassType CharacterClassType {ECharacterClassType::ECT_Warrior};
 
+	// Heath UI
 	UPROPERTY(BlueprintReadOnly, Category="Aura|Enemy")
 	TObjectPtr<UWidgetComponent> HealthBar;
 
+	// Delegate
 	UPROPERTY(BlueprintAssignable, Category="Aura|Enemy")
 	FOnAttributeChangedSignature OnHealthChangedDelegate;
 	UPROPERTY(BlueprintAssignable, Category="Aura|Enemy")
 	FOnAttributeChangedSignature OnMaxHealthChangedDelegate;
-	
+
+	// AI Tree
 	UPROPERTY(EditAnywhere, Category="Aura|Enemy|AI")
 	TObjectPtr<UBehaviorTree> BehaviorTree;
 	UPROPERTY(BlueprintReadOnly, Category="Aura|Enemy|AI")
