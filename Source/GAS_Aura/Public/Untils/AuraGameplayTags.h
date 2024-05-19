@@ -65,6 +65,7 @@ public:
  FGameplayTag CombatSocket_Weapon;
  FGameplayTag CombatSocket_LeftHand;
  FGameplayTag CombatSocket_RightHand;
+ FGameplayTag CombatSocket_Tail;
 
  // Montage Tags
  FGameplayTag Montage_Attack_1;

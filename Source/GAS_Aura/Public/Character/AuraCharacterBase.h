@@ -50,6 +50,8 @@ protected:
 	FName LeftHandSocketName {};
 	UPROPERTY(EditAnywhere, Category="Aura|Weapon|Socket")
 	FName RightHandSocketName {};
+	UPROPERTY(EditAnywhere, Category="Aura|Weapon|Socket")
+	FName TailSocketName {};
 
 	// Montages
 	UPROPERTY(EditAnywhere, Category="Aura|Montage")
