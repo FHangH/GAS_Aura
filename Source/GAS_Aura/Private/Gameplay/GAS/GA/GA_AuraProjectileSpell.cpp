@@ -6,7 +6,6 @@
 #include "AbilitySystemComponent.h"
 #include "Gameplay/Actor/AuraProjectile.h"
 #include "Interaction/CombatInterface.h"
-#include "Untils/AuraGameplayTags.h"
 #include "Untils/AuraLog.h"
 
 void UGA_AuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -16,7 +15,7 @@ void UGA_AuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle H
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
-void UGA_AuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation)
+void UGA_AuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation, const FGameplayTag& SocketTag)
 {
 	if (!GetAvatarActorFromActorInfo()->HasAuthority()) return;
 	const auto CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
@@ -25,8 +24,9 @@ void UGA_AuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLoc
 	{
 		FTransform Transform;
 		const auto SocketLocation =
-			ICombatInterface::Execute_GetCombatSocketLocation(
-				GetAvatarActorFromActorInfo(), FAuraGameplayTags::Get().CombatSocket_Weapon);
+			CombatInterface->Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), SocketTag);
+			/*ICombatInterface::Execute_GetCombatSocketLocation(
+				GetAvatarActorFromActorInfo(), SocketTag);*/
 		const auto Rotator = (ProjectileTargetLocation - SocketLocation).Rotation();
 		
 		Transform.SetLocation(SocketLocation);
