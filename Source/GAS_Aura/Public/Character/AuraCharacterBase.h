@@ -29,7 +29,7 @@ protected:
 	TObjectPtr<UAbilitySystemComponent> ASComponent;
 
 	// Attributes
-	UPROPERTY(VisibleAnywhere, Category="Aura")
+	UPROPERTY(BlueprintReadOnly, Category="Aura")
 	TObjectPtr<UAttributeSet> AS;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|AsClass")
