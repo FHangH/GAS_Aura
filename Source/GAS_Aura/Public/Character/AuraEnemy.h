@@ -21,11 +21,11 @@ class GAS_AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterfac
 	/* Property */
 private:
 	// Highlight Status
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
+	UPROPERTY(BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
 	bool bIsHighLight {false};
 
 	// Hit Reacting
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
+	UPROPERTY(BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
 	bool bHitReacting {false};
 
 	// Walk Speed
@@ -37,7 +37,7 @@ private:
 	float LifeSpan {5.f};
 
 	// Combat Target
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
+	UPROPERTY(BlueprintReadWrite, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
 	TObjectPtr<AActor> CombatTarget;
 
 protected:
