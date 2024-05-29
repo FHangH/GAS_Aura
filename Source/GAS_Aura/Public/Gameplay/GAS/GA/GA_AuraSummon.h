@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	float SpawnSpread {90.f};
 
+	UPROPERTY(EditDefaultsOnly, Category="Aura")
+	bool bDebugSpawnLocations {false};
+
 	/* Function */
 public:
 	UFUNCTION(BlueprintPure, Category="Aura")

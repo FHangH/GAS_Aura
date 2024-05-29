@@ -48,6 +48,8 @@ TArray<FVector> UGA_AuraSummon::GetSpawnLocations()
 
 void UGA_AuraSummon::DebugSpawnLocations(const FVector& SpawnLocation, const FVector& StartLocation, const FVector& SpawnDirection) const
 {
+	if (!bDebugSpawnLocations) return;
+	
 #if UE_EDITOR
 	// Debug Really Spawn Location
 	DrawDebugSphere(GetWorld(), SpawnLocation, 18.f, 12, FColor::Cyan, false, 3.f);
