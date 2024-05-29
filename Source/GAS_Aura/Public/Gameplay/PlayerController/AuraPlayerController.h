@@ -40,20 +40,20 @@ private:
 	UPROPERTY(EditAnywhere, Category="Aura|Input")
 	TObjectPtr<UDataAsset_AuraInputConfig> InputConfig;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|Input", meta=(AllowPrivateAccess=true))
+	UPROPERTY(BlueprintReadOnly, Category="Aura|Input", meta=(AllowPrivateAccess=true))
 	TObjectPtr<UAuraInputComponent> AuraInputComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura|GAS", meta=(AllowPrivateAccess=true))
+	UPROPERTY(BlueprintReadOnly, Category="Aura|GAS", meta=(AllowPrivateAccess=true))
 	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
 
 	// CursorTrace Tick Timer
-	UPROPERTY(VisibleAnywhere, Category="Aura|Tick|CursorTrace")
+	UPROPERTY(BlueprintReadWrite, Category="Aura|Tick|CursorTrace", meta=(AllowPrivateAccess=true))
 	FTimerHandle TickTimerHandle_CursorTrace;
 	
-	UPROPERTY(EditAnywhere, Category="Aura|Tick|CursorTrace")
+	UPROPERTY(BlueprintReadWrite, Category="Aura|Tick|CursorTrace", meta=(AllowPrivateAccess=true))
 	ETICK_RATE TickTimerRate_CursorTrace {ETICK_RATE::ER_TICK_10};
 	
-	UPROPERTY(EditAnywhere, Category="Aura|Tick|CursorTrace")
+	UPROPERTY(BlueprintReadWrite, Category="Aura|Tick|CursorTrace", meta=(AllowPrivateAccess=true))
 	bool IsTickStart_CursorTrace {true};
 
 	// Mouse Trace Target Actor
@@ -71,11 +71,11 @@ private:
 	UPROPERTY(EditAnywhere, Category="Aura|TopDownMove|AutoRun")
 	float AutoRunAcceptanceRadius {50.f};
 
-	UPROPERTY(VisibleAnywhere, Category="Aura|TopDownMove")
+	UPROPERTY(VisibleDefaultsOnly, Category="Aura|TopDownMove")
 	TObjectPtr<USplineComponent> SplineComponent;
 
 	// AutoRun Tick Timer
-	UPROPERTY(VisibleAnywhere, Category="Aura|Tick|AutoRun")
+	UPROPERTY(BlueprintReadWrite, Category="Aura|Tick|AutoRun", meta=(AllowPrivateAccess=true))
 	FTimerHandle TickTimerHandle_AutoRun;
 	
 	UPROPERTY(EditAnywhere, Category="Aura|Tick|AutoRun")
