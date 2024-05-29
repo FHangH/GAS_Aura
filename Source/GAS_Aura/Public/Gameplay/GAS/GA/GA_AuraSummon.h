@@ -32,4 +32,6 @@ public:
 public:
 	UFUNCTION(BlueprintPure, Category="Aura")
 	TArray<FVector> GetSpawnLocations();
+
+	void DebugSpawnLocations(const FVector& SpawnLocation, const FVector& StartLocation, const FVector& SpawnDirection) const;
 };

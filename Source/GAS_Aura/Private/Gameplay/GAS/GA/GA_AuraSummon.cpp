@@ -23,25 +23,46 @@ TArray<FVector> UGA_AuraSummon::GetSpawnLocations()
 	for (int32 i = 0; i < NumMinions; ++i)
 	{
 		const auto Direction = LeftOfSpread.RotateAngleAxis(i * DeltaSpread, FVector::UpVector);
-		const auto ChosenSpawnLocation = Location + Direction * FMath::FRandRange(MinSpawnDistance, MaxSpawnDistance);
+		auto ChosenSpawnLocation = Location + Direction * FMath::FRandRange(MinSpawnDistance, MaxSpawnDistance);
+
+		// Check if the spawn location is valid
+		FHitResult HitResult;
+		GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			ChosenSpawnLocation + FVector{0.f, 0.f, 400.f},
+			ChosenSpawnLocation - FVector{0.f, 0.f, 400.f},
+			ECC_Visibility);
+
+		if (HitResult.bBlockingHit)
+		{
+			ChosenSpawnLocation = HitResult.ImpactPoint;
+		}
 		SpawnLocations.Add(ChosenSpawnLocation);
-		
-		// Debug Really Spawn Location
-		DrawDebugSphere(GetWorld(), ChosenSpawnLocation, 18.f, 12, FColor::Cyan, false, 3.f);
 
-		// Debug Spawn Location Direction
-		UKismetSystemLibrary::DrawDebugArrow(
-			GetAvatarActorFromActorInfo(),
-			Location,
-			Location + Direction * MaxSpawnDistance,
-			4.f,
-			FLinearColor::Green,
-			3.f);
-
-		// Debug Spawn Location Range
-		DrawDebugSphere(GetWorld(), Location + Direction * MinSpawnDistance, 5.f, 12, FColor::Red, false, 3.f);
-		DrawDebugSphere(GetWorld(), Location + Direction * MaxSpawnDistance, 5.f, 12, FColor::Red, false, 3.f);
+		// DrawDebug
+		DebugSpawnLocations(ChosenSpawnLocation, Location, Direction);
 	}
 	
 	return SpawnLocations;
+}
+
+void UGA_AuraSummon::DebugSpawnLocations(const FVector& SpawnLocation, const FVector& StartLocation, const FVector& SpawnDirection) const
+{
+#if UE_EDITOR
+	// Debug Really Spawn Location
+	DrawDebugSphere(GetWorld(), SpawnLocation, 18.f, 12, FColor::Cyan, false, 3.f);
+
+	// Debug Spawn Location Direction
+	UKismetSystemLibrary::DrawDebugArrow(
+		GetAvatarActorFromActorInfo(),
+		StartLocation,
+		StartLocation + SpawnDirection * MaxSpawnDistance,
+		4.f,
+		FLinearColor::Green,
+		3.f);
+
+	// Debug Spawn Location Range
+	DrawDebugSphere(GetWorld(), StartLocation + SpawnDirection * MinSpawnDistance, 5.f, 12, FColor::Red, false, 3.f);
+	DrawDebugSphere(GetWorld(), StartLocation + SpawnDirection * MaxSpawnDistance, 5.f, 12, FColor::Red, false, 3.f);
+#endif
 }
