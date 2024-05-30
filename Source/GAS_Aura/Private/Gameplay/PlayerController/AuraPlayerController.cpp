@@ -57,6 +57,20 @@ void AAuraPlayerController::BeginPlay()
 	TickHandle();
 }
 
+void AAuraPlayerController::Tick(float DeltaSeconds)
+{
+	if (IsNativeTick_CursorTrace)
+	{
+		CursorTrace();
+	}
+	if (IsNativeTick_AutoRun)
+	{
+		AutoRun();
+
+		UE_LOG(Aura, Warning, TEXT("AutoRun Frame: %f"), 1 / DeltaSeconds);
+	}
+}
+
 void AAuraPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
@@ -203,12 +217,29 @@ void AAuraPlayerController::TickHandle()
 {
 	if (IsTickStart_CursorTrace)
 	{
-		InitTickTimerHandle_CursorTrace();
+		if (TickTimerRate_CursorTrace == ETICK_RATE::ER_TICK_Ultra)
+		{
+			IsNativeTick_CursorTrace = true;
+		}
+		else
+		{
+			IsNativeTick_CursorTrace = false;
+			InitTickTimerHandle_CursorTrace();
+		}
 	}
+	
 	if (IsTickStart_AutoRun)
 	{
-		InitTickTimerHandle_AutoRun();
-		StopTickTimerHandle_AutoRun();
+		if (TickTimerRate_AutoRun == ETICK_RATE::ER_TICK_Ultra)
+		{
+			IsNativeTick_AutoRun = true;
+		}
+		else
+		{
+			IsNativeTick_AutoRun = false;
+			InitTickTimerHandle_AutoRun();
+			StopTickTimerHandle_AutoRun();
+		}
 	}
 }
 

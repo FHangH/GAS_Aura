@@ -50,11 +50,12 @@ private:
 	UPROPERTY(BlueprintReadWrite, Category="Aura|Tick|CursorTrace", meta=(AllowPrivateAccess=true))
 	FTimerHandle TickTimerHandle_CursorTrace;
 	
-	UPROPERTY(BlueprintReadWrite, Category="Aura|Tick|CursorTrace", meta=(AllowPrivateAccess=true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura|Tick|CursorTrace", meta=(AllowPrivateAccess=true))
 	ETICK_RATE TickTimerRate_CursorTrace {ETICK_RATE::ER_TICK_10};
 	
-	UPROPERTY(BlueprintReadWrite, Category="Aura|Tick|CursorTrace", meta=(AllowPrivateAccess=true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura|Tick|CursorTrace", meta=(AllowPrivateAccess=true))
 	bool IsTickStart_CursorTrace {true};
+	bool IsNativeTick_CursorTrace {false};
 
 	// Mouse Trace Target Actor
 	FHitResult CursorHitResult;
@@ -78,11 +79,12 @@ private:
 	UPROPERTY(BlueprintReadWrite, Category="Aura|Tick|AutoRun", meta=(AllowPrivateAccess=true))
 	FTimerHandle TickTimerHandle_AutoRun;
 	
-	UPROPERTY(EditAnywhere, Category="Aura|Tick|AutoRun")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura|Tick|AutoRun", meta=(AllowPrivateAccess=true))
 	ETICK_RATE TickTimerRate_AutoRun {ETICK_RATE::ER_TICK_90};
 	
-	UPROPERTY(EditAnywhere, Category="Aura|Tick|AutoRun")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura|Tick|AutoRun", meta=(AllowPrivateAccess=true))
 	bool IsTickStart_AutoRun {true};
+	bool IsNativeTick_AutoRun {false};
 
 	// DamageText Widget Component
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|WidgetComponent", meta=(AllowPrivateAccess=true))
@@ -97,6 +99,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void SetupInputComponent() override;
 
