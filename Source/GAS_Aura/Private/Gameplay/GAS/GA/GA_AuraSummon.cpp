@@ -46,6 +46,16 @@ TArray<FVector> UGA_AuraSummon::GetSpawnLocations()
 	return SpawnLocations;
 }
 
+TSubclassOf<APawn> UGA_AuraSummon::GetRandomMinionClass()
+{
+	if (MinionClasses.IsEmpty() || MinionClasses[0] == nullptr)
+	{
+		UE_LOG(Aura, Warning, TEXT("MinionClasses Array is empty"));
+		return nullptr;
+	}
+    return MinionClasses[FMath::RandRange(0, MinionClasses.Num() - 1)];
+}
+
 void UGA_AuraSummon::DebugSpawnLocations(const FVector& SpawnLocation, const FVector& StartLocation, const FVector& SpawnDirection) const
 {
 	if (!bDebugSpawnLocations) return;

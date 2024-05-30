@@ -36,5 +36,9 @@ public:
 	UFUNCTION(BlueprintPure, Category="Aura")
 	TArray<FVector> GetSpawnLocations();
 
+	UFUNCTION(BlueprintPure, Category="Aura")
+	TSubclassOf<APawn> GetRandomMinionClass();
+	
+	// Debug
 	void DebugSpawnLocations(const FVector& SpawnLocation, const FVector& StartLocation, const FVector& SpawnDirection) const;
 };
