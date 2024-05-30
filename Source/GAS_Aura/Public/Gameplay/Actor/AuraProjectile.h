@@ -17,8 +17,8 @@ class GAS_AURA_API AAuraProjectile : public AActor
 	GENERATED_BODY()
 
 	/* Property */
-private:
-	UPROPERTY(VisibleAnywhere, Category="Aura")
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Aura")
 	TObjectPtr<USphereComponent> SphereComponent;
 
 	UPROPERTY(VisibleAnywhere, Category="Aura")
