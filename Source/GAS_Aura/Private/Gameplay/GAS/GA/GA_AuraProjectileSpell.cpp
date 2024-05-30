@@ -9,13 +9,15 @@
 #include "Untils/AuraLog.h"
 
 void UGA_AuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-                                              const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+                                              const FGameplayAbilityActorInfo* ActorInfo,
+                                              const FGameplayAbilityActivationInfo ActivationInfo,
                                               const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
-void UGA_AuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation, const FGameplayTag& SocketTag)
+void UGA_AuraProjectileSpell::SpawnProjectile(
+	const FVector& ProjectileTargetLocation, const FGameplayTag& SocketTag, const bool bOverridePitch, const float PitchOverride)
 {
 	if (!GetAvatarActorFromActorInfo()->HasAuthority()) return;
 	const auto CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
@@ -25,12 +27,15 @@ void UGA_AuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLoc
 		FTransform Transform;
 		const auto SocketLocation =
 			CombatInterface->Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), SocketTag);
-			/*ICombatInterface::Execute_GetCombatSocketLocation(
-				GetAvatarActorFromActorInfo(), SocketTag);*/
-		const auto Rotator = (ProjectileTargetLocation - SocketLocation).Rotation();
+
+		auto Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
+		if (bOverridePitch)
+		{
+			Rotation.Pitch = PitchOverride;
+		}
 		
 		Transform.SetLocation(SocketLocation);
-		Transform.SetRotation(Rotator.Quaternion());
+		Transform.SetRotation(Rotation.Quaternion());
 
 		const auto Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
 			ProjectileClass,
