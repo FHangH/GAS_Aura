@@ -66,8 +66,6 @@ void AAuraPlayerController::Tick(float DeltaSeconds)
 	if (IsNativeTick_AutoRun)
 	{
 		AutoRun();
-
-		UE_LOG(Aura, Warning, TEXT("AutoRun Frame: %f"), 1 / DeltaSeconds);
 	}
 }
 
