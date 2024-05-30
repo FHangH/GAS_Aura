@@ -80,7 +80,7 @@ private:
 	FTimerHandle TickTimerHandle_AutoRun;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura|Tick|AutoRun", meta=(AllowPrivateAccess=true))
-	ETICK_RATE TickTimerRate_AutoRun {ETICK_RATE::ER_TICK_90};
+	ETICK_RATE TickTimerRate_AutoRun {ETICK_RATE::ER_TICK_Ultra};
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura|Tick|AutoRun", meta=(AllowPrivateAccess=true))
 	bool IsTickStart_AutoRun {true};

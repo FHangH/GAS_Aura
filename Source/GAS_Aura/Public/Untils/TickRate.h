@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-
 // Tick Frequency PerSecond
 #define TICK_0 0.f
 #define TICK_1 1.f

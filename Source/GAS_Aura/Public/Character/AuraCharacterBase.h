@@ -76,6 +76,9 @@ protected:
 	
 	// Status
 	bool bIsDead { false };
+
+	// Minions
+	int32 MinionsCount { 0 };
 	
 	/* Function */
 public:
@@ -95,6 +98,7 @@ protected:
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() const override;
 	virtual FTaggedMontage GetTaggedMontageByTag_Implementation(const FGameplayTag& MontageTag) override;
+	virtual int32 GetMinionCount_Implementation() const override;
 
 	void ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const;
 	virtual void InitializeDefaultAttributes() const;
