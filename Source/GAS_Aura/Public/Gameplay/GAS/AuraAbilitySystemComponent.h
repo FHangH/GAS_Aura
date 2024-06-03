@@ -24,6 +24,8 @@ public:
 
 	/* Function */
 public:
+	virtual void OnRep_ActivateAbilities() override;
+	
 	void AbilityActorInfoSet();
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartUpAbilities);
 	void AbilityInputTagHeld(const FGameplayTag& InputTag);
