@@ -4,6 +4,7 @@
 #include "UI/WidgetController/OverlayMainWidgetController.h"
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Gameplay/GAS/AuraAttributeSet.h"
+#include "Gameplay/GAS/Data/DataAsset_AbilityInfo.h"
 
 void UOverlayMainWidgetController::BroadcastInitValues()
 {
@@ -72,7 +73,16 @@ void UOverlayMainWidgetController::OnMaxManaChanged(const FOnAttributeChangeData
 void UOverlayMainWidgetController::OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraASC) const
 {
 	if (!AuraASC || !AuraASC->bStartupAbilitiesGiven) return;
+
+	FForEachAbilityDelegate ForEachAbilityDelegate;
+	ForEachAbilityDelegate.BindLambda([this, AuraASC](const FGameplayAbilitySpec& AbilitySpec)
+	{
+		auto DA_AbilityInfo = DataAsset_AbilityInfo->FindAbilityInfoForTag(AuraASC->GetAbilityTagFromSpec(AbilitySpec));
+		DA_AbilityInfo.InputTag = AuraASC->GetInputTagFromSpec(AbilitySpec);
+		AbilityInfoDelegate.Broadcast(DA_AbilityInfo);
+	});
 	
+	AuraASC->ForEachAbility(ForEachAbilityDelegate);
 }
 
 void UOverlayMainWidgetController::OnEffectAssetTag(const FGameplayTagContainer& AssetTags) const
