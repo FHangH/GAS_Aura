@@ -5,9 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Engine/DataTable.h"
+#include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "OverlayMainWidgetController.generated.h"
 
+struct FAuraAbilityInfo;
+class UAuraAbilitySystemComponent;
+class UDataAsset_AbilityInfo;
 class UAuraUserWidget;
 struct FOnAttributeChangeData;
 
@@ -32,6 +36,7 @@ struct FUIWidgetRow : public FTableRowBase
 // Delegate
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewValue);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMessageWidgetRowSignature, FUIWidgetRow, Row);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FAuraAbilityInfo&, AbilityInfo);
 
 UCLASS(BlueprintType, Blueprintable)
 class GAS_AURA_API UOverlayMainWidgetController : public UAuraWidgetController
@@ -53,9 +58,15 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate")
 	FOnMessageWidgetRowSignature OnMessageWidgetRowDelegate;
 
+	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate")
+	FAbilityInfoSignature AbilityInfoDelegate;
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|DataTable")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|DataAsset")
+	TObjectPtr<UDataAsset_AbilityInfo> DataAsset_AbilityInfo;
 
 	/* Function */
 public:
@@ -67,7 +78,7 @@ protected:
 	void OnMaxHealthChanged(const FOnAttributeChangeData& Data) const;
 	void OnManaChanged(const FOnAttributeChangeData& Data) const;
 	void OnMaxManaChanged(const FOnAttributeChangeData& Data) const;
-	
+	void OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraASC) const;
 	void OnEffectAssetTag(const FGameplayTagContainer& AssetTags) const;
 
 	template<typename T>

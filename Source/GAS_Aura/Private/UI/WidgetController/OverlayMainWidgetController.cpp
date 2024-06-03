@@ -4,6 +4,7 @@
 #include "UI/WidgetController/OverlayMainWidgetController.h"
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Gameplay/GAS/AuraAttributeSet.h"
+#include "Gameplay/GAS/Data/DataAsset_AbilityInfo.h"
 
 void UOverlayMainWidgetController::BroadcastInitValues()
 {
@@ -34,7 +35,18 @@ void UOverlayMainWidgetController::BindCallBackToDependencies()
 		ASComponent->GetGameplayAttributeValueChangeDelegate(
 			AuraAs->GetMaxManaAttribute()).AddUObject(this, &ThisClass::OnMaxManaChanged);
 
-		Cast<UAuraAbilitySystemComponent>(ASComponent)->EffectAssetTagDelegate.AddUObject(this, &ThisClass::OnEffectAssetTag);
+		if (auto AuraASC = Cast<UAuraAbilitySystemComponent>(ASComponent))
+		{
+			if (AuraASC->bStartupAbilitiesGiven)
+			{
+				OnInitializeStartupAbilities(AuraASC);
+			}
+			else
+			{
+				AuraASC->AbilityGivenDelegate.AddUObject(this, &ThisClass::OnInitializeStartupAbilities);
+			}
+			AuraASC->EffectAssetTagDelegate.AddUObject(this, &ThisClass::OnEffectAssetTag);
+		}
 	}
 }
 
@@ -56,6 +68,21 @@ void UOverlayMainWidgetController::OnManaChanged(const FOnAttributeChangeData& D
 void UOverlayMainWidgetController::OnMaxManaChanged(const FOnAttributeChangeData& Data) const
 {
 	OnMaxManaChangedDelegate.Broadcast(Data.NewValue);
+}
+
+void UOverlayMainWidgetController::OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraASC) const
+{
+	if (!AuraASC || !AuraASC->bStartupAbilitiesGiven) return;
+
+	FForEachAbilityDelegate ForEachAbilityDelegate;
+	ForEachAbilityDelegate.BindLambda([this, AuraASC](const FGameplayAbilitySpec& AbilitySpec)
+	{
+		auto DA_AbilityInfo = DataAsset_AbilityInfo->FindAbilityInfoForTag(AuraASC->GetAbilityTagFromSpec(AbilitySpec));
+		DA_AbilityInfo.InputTag = AuraASC->GetInputTagFromSpec(AbilitySpec);
+		AbilityInfoDelegate.Broadcast(DA_AbilityInfo);
+	});
+	
+	AuraASC->ForEachAbility(ForEachAbilityDelegate);
 }
 
 void UOverlayMainWidgetController::OnEffectAssetTag(const FGameplayTagContainer& AssetTags) const

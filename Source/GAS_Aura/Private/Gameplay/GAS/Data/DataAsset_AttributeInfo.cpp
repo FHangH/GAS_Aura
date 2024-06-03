@@ -4,8 +4,8 @@
 #include "Gameplay/GAS/Data/DataAsset_AttributeInfo.h"
 #include "Untils/AuraLog.h"
 
-FAuraAttributeInfo UDataAsset_AttributeInfo::FindAttributeInfoForTag(const FGameplayTag& AttributeTag,
-                                                                     bool bLogNotFound) const
+FAuraAttributeInfo UDataAsset_AttributeInfo::FindAttributeInfoForTag(
+	const FGameplayTag& AttributeTag, const bool bLogNotFound) const
 {
 	for (const auto& Info : AttributeInformation)
 	{
