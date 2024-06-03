@@ -8,6 +8,7 @@
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "OverlayMainWidgetController.generated.h"
 
+class UDataAsset_AbilityInfo;
 class UAuraUserWidget;
 struct FOnAttributeChangeData;
 
@@ -56,6 +57,9 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|DataTable")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|DataAsset")
+	TObjectPtr<UDataAsset_AbilityInfo> DataAsset_AbilityInfo;
 
 	/* Function */
 public:

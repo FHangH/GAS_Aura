@@ -37,5 +37,5 @@ public:
 
 	/* Function */
 public:
-	FAuraAttributeInfo FindAttributeInfoForTag(const FGameplayTag& AttributeTag, bool bLogNotFound = false) const;
+	FAuraAttributeInfo FindAttributeInfoForTag(const FGameplayTag& AttributeTag, const bool bLogNotFound = false) const;
 };
