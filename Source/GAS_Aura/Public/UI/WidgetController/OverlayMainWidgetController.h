@@ -8,6 +8,7 @@
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "OverlayMainWidgetController.generated.h"
 
+class UAuraAbilitySystemComponent;
 class UDataAsset_AbilityInfo;
 class UAuraUserWidget;
 struct FOnAttributeChangeData;
@@ -71,7 +72,7 @@ protected:
 	void OnMaxHealthChanged(const FOnAttributeChangeData& Data) const;
 	void OnManaChanged(const FOnAttributeChangeData& Data) const;
 	void OnMaxManaChanged(const FOnAttributeChangeData& Data) const;
-	
+	void OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraASC) const;
 	void OnEffectAssetTag(const FGameplayTagContainer& AssetTags) const;
 
 	template<typename T>
