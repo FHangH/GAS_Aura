@@ -13,7 +13,7 @@ struct FActiveGameplayEffectHandle;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCooldownChangeSignature, float, TimeRemaining);
 
-UCLASS()
+UCLASS(BlueprintType, meta=(ExposedAsyncProxy="AsyncTask"))
 class GAS_AURA_API UAsync_WaitCooldownChange : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
@@ -34,12 +34,12 @@ protected:
 
 	/* Function */
 public:
-	UFUNCTION(BlueprintCallable, Category="Aura|AsyncTask|Cooldown", meta=(BlueprintInternalUseOnly=true))
+	UFUNCTION(BlueprintCallable, Category="Aura|AsyncTask|Cooldown", DisplayName="WaitCooldownChange_Async", meta=(BlueprintInternalUseOnly=true))
 	static UAsync_WaitCooldownChange* Async_WaitCooldownChange(UAbilitySystemComponent* ASC, const FGameplayTag InCooldownTag);
 
 	UFUNCTION(BlueprintCallable, Category="Aura|AsyncTask|Cooldown")
 	void EndTask();
 
-	void OnActiveEffectAdded(UAbilitySystemComponent* TargetASC, const FGameplayEffectSpec& GESpecApplied, FActiveGameplayEffectHandle ActiveGEHandle);
+	void OnActiveEffectAdded(UAbilitySystemComponent* TargetASC, const FGameplayEffectSpec& GESpecApplied, FActiveGameplayEffectHandle ActiveGEHandle) const;
 	void OnCooldownTagChanged(const FGameplayTag InCooldownTag, int32 NewCount) const;
 };
