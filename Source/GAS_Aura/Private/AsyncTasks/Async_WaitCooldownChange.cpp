@@ -35,7 +35,7 @@ void UAsync_WaitCooldownChange::EndTask()
 }
 
 void UAsync_WaitCooldownChange::OnActiveEffectAdded(
-	UAbilitySystemComponent* TargetASC, const FGameplayEffectSpec& GESpecApplied, FActiveGameplayEffectHandle ActiveGEHandle)
+	UAbilitySystemComponent* TargetASC, const FGameplayEffectSpec& GESpecApplied, FActiveGameplayEffectHandle ActiveGEHandle) const
 {
 	if (!TargetASC) return;
 
