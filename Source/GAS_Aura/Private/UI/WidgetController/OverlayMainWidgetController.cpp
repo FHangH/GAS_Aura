@@ -5,6 +5,9 @@
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Gameplay/GAS/AuraAttributeSet.h"
 #include "Gameplay/GAS/Data/DataAsset_AbilityInfo.h"
+#include "Gameplay/GAS/Data/DataAsset_LevelUpInfo.h"
+#include "Gameplay/PlayerState/AuraPlayerState.h"
+#include "Untils/AuraLog.h"
 
 void UOverlayMainWidgetController::BroadcastInitValues()
 {
@@ -23,7 +26,13 @@ void UOverlayMainWidgetController::BindCallBackToDependencies()
 {
 	Super::BindCallBackToDependencies();
 
+	if (const auto AuraPS = Cast<AAuraPlayerState>(PlayerState))
+	{
+		AuraPS->OnXPChangedDelegate.AddUObject(this, &ThisClass::OnXPChanged);
+	}
+	
 	const auto AuraAs = Cast<UAuraAttributeSet>(AS);
+	
 	if (AuraAs && ASComponent)
 	{
 		ASComponent->GetGameplayAttributeValueChangeDelegate(
@@ -96,5 +105,32 @@ void UOverlayMainWidgetController::OnEffectAssetTag(const FGameplayTagContainer&
 		{
 			OnMessageWidgetRowDelegate.Broadcast(*Row);
 		}
+	}
+}
+
+void UOverlayMainWidgetController::OnXPChanged(const int32 NewXP) const
+{
+	const auto AuraPS = Cast<AAuraPlayerState>(PlayerState);
+	if (!AuraPS) return;
+
+	const auto LevelUpInfo = AuraPS->DA_LevelUpInfo;
+	if (!LevelUpInfo)
+	{
+		UE_LOG(Aura, Warning, TEXT("DataAsset_LevelUpInfo is nullptr, please check the DataAsset_LevelUpInfo in the AuraPlayerState"));
+		return;
+	}
+
+	const auto Level = LevelUpInfo->FindLevelForXP(NewXP);
+	const auto MaxLevel = LevelUpInfo->LevelUpInformation.Num();
+	if (Level <= MaxLevel && Level > 0)
+	{
+		const auto LevelUpRequirement = LevelUpInfo->LevelUpInformation[Level].LevelUpRequirement;
+		const auto PreviousLevelUpRequirement = LevelUpInfo->LevelUpInformation[Level - 1].LevelUpRequirement;
+
+		const auto DeltaLevelUpRequirement = LevelUpRequirement - PreviousLevelUpRequirement;
+		const auto XPForThisLevel = NewXP - PreviousLevelUpRequirement;
+
+		const auto XPBarPercent = static_cast<float>(XPForThisLevel) / static_cast<float>(DeltaLevelUpRequirement);
+		OnXPPercentChangedDelegate.Broadcast(XPBarPercent);
 	}
 }

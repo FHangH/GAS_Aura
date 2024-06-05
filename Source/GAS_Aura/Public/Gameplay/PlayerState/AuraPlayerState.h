@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "AuraPlayerState.generated.h"
 
+class UDataAsset_LevelUpInfo;
 class UAttributeSet;
 class UAbilitySystemComponent;
 
@@ -35,6 +36,9 @@ public:
 	// Delegate
 	FOnPlayerStateChangedDelegate OnLevelChangedDelegate;
 	FOnPlayerStateChangedDelegate OnXPChangedDelegate;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Aura")
+	TObjectPtr<UDataAsset_LevelUpInfo> DA_LevelUpInfo;
 	
 	/* Function */
 public:
