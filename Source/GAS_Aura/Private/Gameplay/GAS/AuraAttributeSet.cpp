@@ -9,9 +9,9 @@
 #include "GameFramework/Character.h"
 #include "Gameplay/PlayerController/AuraPlayerController.h"
 #include "Interaction/CombatInterface.h"
+#include "Interaction/PlayerInterface.h"
 #include "Untils/AuraAbilitySystemFuncLibrary.h"
 #include "Untils/AuraGameplayTags.h"
-#include "Untils/AuraLog.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
@@ -137,6 +137,11 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	{
 		const auto LocalIncomingXP = GetIncomingXP();
 		SetIncomingXP(0.f);
+
+		if (EffectProperties.SourceCharacter->Implements<UPlayerInterface>())
+		{
+			IPlayerInterface::Execute_AddToXP(EffectProperties.SourceCharacter, LocalIncomingXP);
+		}
 	}
 }
 

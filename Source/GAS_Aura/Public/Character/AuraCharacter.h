@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
+#include "Interaction/PlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
 UCLASS()
-class GAS_AURA_API AAuraCharacter : public AAuraCharacterBase
+class GAS_AURA_API AAuraCharacter : public AAuraCharacterBase, public IPlayerInterface
 {
 	GENERATED_BODY()
 
@@ -21,6 +22,9 @@ protected:
 
 	// Combat Interface
 	virtual int32 GetPlayerLevel() override;
+
+	// Player Interface
+	virtual void AddToXP_Implementation(const int32 InXP) override;
 
 private:
 	virtual void InitAbilityActorInfo() override;
