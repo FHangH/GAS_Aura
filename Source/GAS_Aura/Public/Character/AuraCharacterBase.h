@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "Gameplay/GAS/Data/DataAsset_CharacterClassInfo.h"
 #include "Interaction/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
 
@@ -38,6 +39,10 @@ protected:
 	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributesClass;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|AsClass")
 	TSubclassOf<UGameplayEffect> DefaultVitalAttributesClass;
+
+	// Type
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|CharacterType")
+	ECharacterClassType CharacterClassType {ECharacterClassType::ECT_Warrior};
 
 	// Abilities
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|GAClass")
@@ -100,6 +105,7 @@ protected:
 	virtual FTaggedMontage GetTaggedMontageByTag_Implementation(const FGameplayTag& MontageTag) override;
 	virtual int32 GetMinionCount_Implementation() const override;
 	virtual void IncrementMinionCount_Implementation(const int32 Amount) override;
+	virtual ECharacterClassType GetCharacterClassType_Implementation() override;
 
 	void ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const;
 	virtual void InitializeDefaultAttributes() const;

@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
-#include "Gameplay/GAS/Data/DataAsset_CharacterClassInfo.h"
 #include "Interaction/EnemyInterface.h"
 #include "UI/WidgetController/OverlayMainWidgetController.h"
 #include "AuraEnemy.generated.h"
@@ -44,10 +43,6 @@ protected:
 	// Level
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy")
 	int32 Level {1};
-
-	// Type
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy")
-	ECharacterClassType CharacterClassType {ECharacterClassType::ECT_Warrior};
 
 	// Heath UI
 	UPROPERTY(BlueprintReadOnly, Category="Aura|Enemy")

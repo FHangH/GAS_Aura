@@ -45,21 +45,24 @@ class GAS_AURA_API UOverlayMainWidgetController : public UAuraWidgetController
 
 	/* Property */
 public:
-	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate")
+	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|Attributes")
 	FOnAttributeChangedSignature OnHealthChangedDelegate;
-	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate")
+	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|Attributes")
 	FOnAttributeChangedSignature OnMaxHealthChangedDelegate;
 	
-	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate")
+	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|Attributes")
 	FOnAttributeChangedSignature OnManaChangedDelegate;
-	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate")
+	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|Attributes")
 	FOnAttributeChangedSignature OnMaxManaChangedDelegate;
 	
-	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate")
+	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|Messages")
 	FOnMessageWidgetRowSignature OnMessageWidgetRowDelegate;
 
-	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate")
+	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|Messages")
 	FAbilityInfoSignature AbilityInfoDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|Messages")
+	FOnAttributeChangedSignature OnXPPercentChangedDelegate;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|DataTable")
@@ -80,6 +83,7 @@ protected:
 	void OnMaxManaChanged(const FOnAttributeChangeData& Data) const;
 	void OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraASC) const;
 	void OnEffectAssetTag(const FGameplayTagContainer& AssetTags) const;
+	void OnXPChanged(const int32 NewXP) const;
 
 	template<typename T>
 	static T* GetDataTableRowByTag(const UDataTable* DataTable, const FGameplayTag& Tag)

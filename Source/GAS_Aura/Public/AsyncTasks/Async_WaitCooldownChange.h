@@ -20,10 +20,10 @@ class GAS_AURA_API UAsync_WaitCooldownChange : public UBlueprintAsyncActionBase
 
 	/* Property */
 protected:
-	UPROPERTY(BlueprintAssignable, Category="Aura|Cooldown")
+	UPROPERTY(BlueprintAssignable, Category="Aura|Cooldown", DisplayName="CooldownStart")
 	FCooldownChangeSignature CooldownStartDelegate;
 
-	UPROPERTY(BlueprintAssignable, Category="Aura|Cooldown")
+	UPROPERTY(BlueprintAssignable, Category="Aura|Cooldown", DisplayName="CooldownEnd")
 	FCooldownChangeSignature CooldownEndDelegate;
 
 	UPROPERTY()

@@ -185,3 +185,17 @@ bool UAuraAbilitySystemFuncLibrary::IsNotFriend(const AActor* FirstActor, const 
 	const auto BothAreEnemies = FirstActor->ActorHasTag(FName{"Enemy"}) && SecondActor->ActorHasTag(FName{"Enemy"});
     return !(BothArePlayers || BothAreEnemies);
 }
+
+int32 UAuraAbilitySystemFuncLibrary::GetXPRewardForClassAndLevel(
+	const UObject* WorldContextObject, const ECharacterClassType ECT, const int32 Level)
+{
+	if (!WorldContextObject) return 0;
+
+	const auto DA_CharacterClassTypeInfo = GetCharacterClassInfo(WorldContextObject);
+	if (!DA_CharacterClassTypeInfo) return 0;
+
+	const auto& Info = DA_CharacterClassTypeInfo->GetClassDefaultInfo(ECT);
+	const auto XPReward = Info.XPReward.GetValueAtLevel(Level);
+	
+	return static_cast<int32>(XPReward);
+}
