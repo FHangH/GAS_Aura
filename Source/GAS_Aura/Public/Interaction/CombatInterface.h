@@ -7,6 +7,7 @@
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
 
+enum class ECharacterClassType : uint8;
 class UNiagaraSystem;
 
 USTRUCT(BlueprintType)
@@ -71,4 +72,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
 	void IncrementMinionCount(const int32 Amount);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
+	ECharacterClassType GetCharacterClassType();
 };

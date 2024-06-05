@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AuraAbilitySystemFuncLibrary.generated.h"
 
+class UDataAsset_CharacterClassInfo;
 struct FGameplayEffectContextHandle;
 enum class ECharacterClassType : uint8;
 class UAbilitySystemComponent;
@@ -51,4 +52,7 @@ public:
 
 	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayMechanics")
 	static bool IsNotFriend(const AActor* FirstActor, const AActor* SecondActor);
+
+	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|XPReward")
+	static int32 GetXPRewardForClassAndLevel(const UObject* WorldContextObject, const ECharacterClassType ECT, const int32 Level);
 };

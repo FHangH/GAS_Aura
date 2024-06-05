@@ -121,6 +121,11 @@ void AAuraCharacterBase::IncrementMinionCount_Implementation(const int32 Amount)
 	MinionsCount += Amount;
 }
 
+ECharacterClassType AAuraCharacterBase::GetCharacterClassType_Implementation()
+{
+	return CharacterClassType;
+}
+
 void AAuraCharacterBase::ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const
 {
 	if (ASComponent)
