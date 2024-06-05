@@ -2,6 +2,8 @@
 
 
 #include "Gameplay/GAS/AuraAttributeSet.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "GameplayEffectExtension.h"
 #include "GameFramework/Character.h"
@@ -116,6 +118,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				{
 					CombatInterface->Die();
 				}
+				SendXPEvent(EffectProperties);
 			}
 			else
 			{
@@ -134,8 +137,6 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	{
 		const auto LocalIncomingXP = GetIncomingXP();
 		SetIncomingXP(0.f);
-		
-		UE_LOG(Aura, Warning, TEXT("Incoming XP: %f"), LocalIncomingXP);
 	}
 }
 
@@ -294,5 +295,24 @@ void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& EffectProp, co
 		{
 			AuraTargetPC->Client_ShowDamageNumber(Damage, EffectProp.TargetCharacter, IsBlockedHit, IsCriticalHit);
 		}
+	}
+}
+
+void UAuraAttributeSet::SendXPEvent(const FEffectProperties& EffectProp)
+{
+	if (const auto CombatInterface = Cast<ICombatInterface>(EffectProp.TargetCharacter))
+	{
+		const auto TargetLevel = CombatInterface->GetPlayerLevel();
+		const auto TargetClassType = ICombatInterface::Execute_GetCharacterClassType(EffectProp.TargetCharacter);
+		const auto XPReward =
+			UAuraAbilitySystemFuncLibrary::GetXPRewardForClassAndLevel(EffectProp.SourceCharacter, TargetClassType, TargetLevel);
+
+		const auto GameplayTag = FAuraGameplayTags::Get().Attributes_Meta_IncomingXP;
+
+		FGameplayEventData PayLoad;
+		PayLoad.EventTag = GameplayTag;
+		PayLoad.EventMagnitude = XPReward;
+		
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(EffectProp.SourceCharacter, GameplayTag, PayLoad);
 	}
 }

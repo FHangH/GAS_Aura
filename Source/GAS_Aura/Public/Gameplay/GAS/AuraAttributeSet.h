@@ -247,4 +247,5 @@ protected:
 	
 	static void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties);
 	static void ShowFloatingText(const FEffectProperties& EffectProp, const float Damage, const bool IsBlockedHit, const bool IsCriticalHit);
+	static void SendXPEvent(const FEffectProperties& EffectProp);
 };
