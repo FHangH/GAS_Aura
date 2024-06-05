@@ -168,6 +168,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="Aura|AS|Meta")
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage)
+
+	UPROPERTY(BlueprintReadOnly, Category="Aura|AS|Meta")
+	FGameplayAttributeData IncomingXP;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingXP)
 	
 	// EffectContextHandle, ASC, Avatar, Controller, Character
 	UPROPERTY(BlueprintReadOnly, Category="Aura|AS")
