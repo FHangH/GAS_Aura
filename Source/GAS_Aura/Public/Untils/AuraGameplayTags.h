@@ -39,6 +39,9 @@ public:
  FGameplayTag Attributes_Resistance_Arcane;
  FGameplayTag Attributes_Resistance_Physical;
 
+ // Attributes.Meta Tags
+ FGameplayTag Attributes_Meta_IncomingXP;
+
  // InputAction Tags
  FGameplayTag InputTag_LMB; // Left Mouse Button
  FGameplayTag InputTag_RMB; // Right Mouse Button

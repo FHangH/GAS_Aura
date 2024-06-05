@@ -175,6 +175,7 @@ void AAuraCharacterBase::AddCharacterAbilities() const
 	if (!ASC) return;
 
 	ASC->AddCharacterAbilities(StartUpAbilities);
+	ASC->AddCharacterPassiveAbilities(StartUpPassiveAbilities);
 }
 
 void AAuraCharacterBase::Multicast_HandleDeath_Implementation()

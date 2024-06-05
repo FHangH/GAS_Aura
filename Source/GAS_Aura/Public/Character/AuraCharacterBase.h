@@ -30,14 +30,14 @@ protected:
 	TObjectPtr<UAbilitySystemComponent> ASComponent;
 
 	// Attributes
-	UPROPERTY(BlueprintReadOnly, Category="Aura")
+	UPROPERTY(BlueprintReadOnly, Category="Aura|AS")
 	TObjectPtr<UAttributeSet> AS;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|AsClass")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|GE_AttributeClass")
 	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributesClass;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|AsClass")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|GE_AttributeClass")
 	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributesClass;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|AsClass")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|GE_AttributeClass")
 	TSubclassOf<UGameplayEffect> DefaultVitalAttributesClass;
 
 	// Type
@@ -45,8 +45,11 @@ protected:
 	ECharacterClassType CharacterClassType {ECharacterClassType::ECT_Warrior};
 
 	// Abilities
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|GAClass")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|AbilityClass")
 	TArray<TSubclassOf<UGameplayAbility>> StartUpAbilities;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|AbilityClass")
+	TArray<TSubclassOf<UGameplayAbility>> StartUpPassiveAbilities;
 
 	// SocketNames
 	UPROPERTY(EditAnywhere, Category="Aura|Weapon|Socket")
