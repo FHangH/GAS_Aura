@@ -2,11 +2,14 @@
 
 
 #include "Gameplay/GAS/AuraAttributeSet.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "GameplayEffectExtension.h"
 #include "GameFramework/Character.h"
 #include "Gameplay/PlayerController/AuraPlayerController.h"
 #include "Interaction/CombatInterface.h"
+#include "Interaction/PlayerInterface.h"
 #include "Untils/AuraAbilitySystemFuncLibrary.h"
 #include "Untils/AuraGameplayTags.h"
 
@@ -99,6 +102,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	{
 		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
 	}
+	// Meta => IncomingDamage
 	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
 		const auto LocalIncomingDamage = GetIncomingDamage();
@@ -114,6 +118,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				{
 					CombatInterface->Die();
 				}
+				SendXPEvent(EffectProperties);
 			}
 			else
 			{
@@ -125,6 +130,17 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			const auto IsBlocked = UAuraAbilitySystemFuncLibrary::IsBlockedHit(EffectProperties.EffectContextHandle);
 			const auto IsCritical = UAuraAbilitySystemFuncLibrary::IsCriticalHit(EffectProperties.EffectContextHandle);
 			ShowFloatingText(EffectProperties, LocalIncomingDamage, IsBlocked, IsCritical);
+		}
+	}
+	// Meta => IncomingXP
+	if (Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
+	{
+		const auto LocalIncomingXP = GetIncomingXP();
+		SetIncomingXP(0.f);
+
+		if (EffectProperties.SourceCharacter->Implements<UPlayerInterface>())
+		{
+			IPlayerInterface::Execute_AddToXP(EffectProperties.SourceCharacter, LocalIncomingXP);
 		}
 	}
 }
@@ -284,5 +300,24 @@ void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& EffectProp, co
 		{
 			AuraTargetPC->Client_ShowDamageNumber(Damage, EffectProp.TargetCharacter, IsBlockedHit, IsCriticalHit);
 		}
+	}
+}
+
+void UAuraAttributeSet::SendXPEvent(const FEffectProperties& EffectProp)
+{
+	if (const auto CombatInterface = Cast<ICombatInterface>(EffectProp.TargetCharacter))
+	{
+		const auto TargetLevel = CombatInterface->GetPlayerLevel();
+		const auto TargetClassType = ICombatInterface::Execute_GetCharacterClassType(EffectProp.TargetCharacter);
+		const auto XPReward =
+			UAuraAbilitySystemFuncLibrary::GetXPRewardForClassAndLevel(EffectProp.SourceCharacter, TargetClassType, TargetLevel);
+
+		const auto GameplayTag = FAuraGameplayTags::Get().Attributes_Meta_IncomingXP;
+
+		FGameplayEventData PayLoad;
+		PayLoad.EventTag = GameplayTag;
+		PayLoad.EventMagnitude = XPReward;
+		
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(EffectProp.SourceCharacter, GameplayTag, PayLoad);
 	}
 }

@@ -30,6 +30,8 @@ void FAuraGameplayTags::InitNativeGameplayTags()
 	GameplayTags.Attributes_Resistance_Lightning = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Attributes.Resistance.Lightning"});
 	GameplayTags.Attributes_Resistance_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Attributes.Resistance.Arcane"});
 	GameplayTags.Attributes_Resistance_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Attributes.Resistance.Physical"});
+	// Meta
+	GameplayTags.Attributes_Meta_IncomingXP = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Attributes.Meta.IncomingXP"});
 	
 	// InputAction Tags
 	GameplayTags.InputTag_LMB = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"InputTag.LMB"});

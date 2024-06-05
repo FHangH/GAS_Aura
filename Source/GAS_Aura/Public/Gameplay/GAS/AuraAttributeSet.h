@@ -168,6 +168,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="Aura|AS|Meta")
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage)
+
+	UPROPERTY(BlueprintReadOnly, Category="Aura|AS|Meta")
+	FGameplayAttributeData IncomingXP;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingXP)
 	
 	// EffectContextHandle, ASC, Avatar, Controller, Character
 	UPROPERTY(BlueprintReadOnly, Category="Aura|AS")
@@ -243,4 +247,5 @@ protected:
 	
 	static void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties);
 	static void ShowFloatingText(const FEffectProperties& EffectProp, const float Damage, const bool IsBlockedHit, const bool IsCriticalHit);
+	static void SendXPEvent(const FEffectProperties& EffectProp);
 };
