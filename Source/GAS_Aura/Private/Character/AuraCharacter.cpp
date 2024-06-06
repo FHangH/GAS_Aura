@@ -3,12 +3,17 @@
 
 #include "Character/AuraCharacter.h"
 #include "AbilitySystemComponent.h"
+#include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
+#include "Camera/CameraComponent.h"
 #include "Gameplay/PlayerState/AuraPlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Gameplay/GAS/Data/DataAsset_LevelUpInfo.h"
 #include "Gameplay/PlayerController/AuraPlayerController.h"
 #include "UI/HUD/AuraHUD.h"
+#include "Untils/AuraLog.h"
 
 AAuraCharacter::AAuraCharacter()
 {
@@ -16,6 +21,19 @@ AAuraCharacter::AAuraCharacter()
 	GetCharacterMovement()->RotationRate = {0.f, 480.f, 0.f};
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
+
+	LevelUpNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LevelUpNiagaraComponent"));
+	LevelUpNiagaraComponent->SetupAttachment(RootComponent);
+	LevelUpNiagaraComponent->bAutoActivate = false;
+
+	TopDownSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("TopDownSpringArm"));
+	TopDownSpringArm->SetupAttachment(RootComponent);
+	TopDownSpringArm->SetUsingAbsoluteRotation(true);
+	TopDownSpringArm->bDoCollisionTest = false;
+	
+	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCameraComponent"));
+	TopDownCameraComponent->SetupAttachment(TopDownSpringArm, USpringArmComponent::SocketName);
+	TopDownCameraComponent->bUsePawnControlRotation = false;
 
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
@@ -137,5 +155,19 @@ void AAuraCharacter::AddToSpellPoints_Implementation(const int32 InSpellPoints)
 
 void AAuraCharacter::LevelUp_Implementation()
 {
-	
+	MultiCast_LevelUpParticle();
+}
+
+void AAuraCharacter::MultiCast_LevelUpParticle_Implementation()
+{
+	if (LevelUpNiagaraComponent->GetAsset())
+	{
+		const auto CameraLocation = TopDownCameraComponent->GetComponentLocation();
+		const auto NiagaraSystemLocation = LevelUpNiagaraComponent->GetComponentLocation();
+		const auto ToCameraRotation = (CameraLocation - NiagaraSystemLocation).Rotation();
+		LevelUpNiagaraComponent->SetWorldRotation(ToCameraRotation);
+		LevelUpNiagaraComponent->Activate(true);
+		return;
+	}
+	UE_LOG(Aura, Warning, TEXT("LevelUpNiagaraComponent System Asset is not set"));
 }
