@@ -20,4 +20,7 @@ class GAS_AURA_API IPlayerInterface
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Player")
 	void AddToXP(const int32 InXP);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Player")
+	void LevelUp();
 };
