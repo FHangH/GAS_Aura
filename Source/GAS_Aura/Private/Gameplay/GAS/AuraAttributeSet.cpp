@@ -138,8 +138,28 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 		const auto LocalIncomingXP = GetIncomingXP();
 		SetIncomingXP(0.f);
 
-		if (EffectProperties.SourceCharacter->Implements<UPlayerInterface>())
+		// Source Character is the owner, since GA_ListenForEvent applies GE_EventBase, adding to IncomingXP
+		if (EffectProperties.SourceCharacter->Implements<UPlayerInterface>() &&
+			EffectProperties.SourceCharacter->Implements<UCombatInterface>())
 		{
+			const auto CurrentLevel = ICombatInterface::Execute_GetPlayerLevel(EffectProperties.SourceCharacter);
+			const auto CurrentXP = IPlayerInterface::Execute_GetXP(EffectProperties.SourceCharacter);
+			const auto NewLevel = IPlayerInterface::Execute_FindLevelForXP(EffectProperties.SourceCharacter, CurrentXP + LocalIncomingXP);
+			const auto NewLevelUp = NewLevel - CurrentLevel;
+
+			if (NewLevelUp > 0)
+			{
+				const auto AttributePointReward = IPlayerInterface::Execute_GetAttributePointReward(EffectProperties.SourceCharacter, CurrentLevel);
+				const auto SpellPointReward = IPlayerInterface::Execute_GetSpellPointReward(EffectProperties.SourceCharacter, CurrentLevel);
+				
+				IPlayerInterface::Execute_AddToPlayerLevel(EffectProperties.SourceCharacter, NewLevelUp);
+				SetHealth(GetMaxHealth());
+				SetMana(GetMaxMana());
+				
+				IPlayerInterface::Execute_AddToAttributePoints(EffectProperties.SourceCharacter, AttributePointReward);
+				IPlayerInterface::Execute_AddToSpellPoints(EffectProperties.SourceCharacter, SpellPointReward);
+				IPlayerInterface::Execute_LevelUp(EffectProperties.SourceCharacter);
+			}
 			IPlayerInterface::Execute_AddToXP(EffectProperties.SourceCharacter, LocalIncomingXP);
 		}
 	}
