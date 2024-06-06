@@ -29,6 +29,7 @@ void UOverlayMainWidgetController::BindCallBackToDependencies()
 	if (const auto AuraPS = Cast<AAuraPlayerState>(PlayerState))
 	{
 		AuraPS->OnXPChangedDelegate.AddUObject(this, &ThisClass::OnXPChanged);
+		AuraPS->OnLevelChangedDelegate.AddUObject(this, &ThisClass::OnLevelChanged);
 	}
 	
 	const auto AuraAs = Cast<UAuraAttributeSet>(AS);
@@ -126,11 +127,16 @@ void UOverlayMainWidgetController::OnXPChanged(const int32 NewXP) const
 	{
 		const auto LevelUpRequirement = LevelUpInfo->LevelUpInformation[Level].LevelUpRequirement;
 		const auto PreviousLevelUpRequirement = LevelUpInfo->LevelUpInformation[Level - 1].LevelUpRequirement;
-
+		
 		const auto DeltaLevelUpRequirement = LevelUpRequirement - PreviousLevelUpRequirement;
 		const auto XPForThisLevel = NewXP - PreviousLevelUpRequirement;
 
 		const auto XPBarPercent = static_cast<float>(XPForThisLevel) / static_cast<float>(DeltaLevelUpRequirement);
 		OnXPPercentChangedDelegate.Broadcast(XPBarPercent);
 	}
+}
+
+void UOverlayMainWidgetController::OnLevelChanged(const int32 NewLevel) const
+{
+	OnPlayerLevelChangedSignature.Broadcast(NewLevel);
 }

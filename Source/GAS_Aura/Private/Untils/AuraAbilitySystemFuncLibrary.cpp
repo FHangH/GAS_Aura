@@ -100,9 +100,9 @@ void UAuraAbilitySystemFuncLibrary::GiveStartupAbilities(
 	const auto DefaultInfo = DA_CharacterClassTypeInfo->GetClassDefaultInfo(ECT);
 	for (const auto& AbilityClass : DefaultInfo.StartupAbilities)
 	{
-		if (const auto CombatInterface = Cast<ICombatInterface>(ASC->GetAvatarActor()))
+		if (ASC->GetAvatarActor()->Implements<UCombatInterface>())
 		{
-			auto GASpec = FGameplayAbilitySpec{AbilityClass, CombatInterface->GetPlayerLevel()};
+			auto GASpec = FGameplayAbilitySpec{AbilityClass, ICombatInterface::Execute_GetPlayerLevel(ASC->GetAvatarActor())};
 			ASC->GiveAbility(GASpec);
 		}
 	}

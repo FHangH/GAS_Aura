@@ -35,6 +35,7 @@ struct FUIWidgetRow : public FTableRowBase
 
 // Delegate
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStatusChangedSignature, int32, NewValue);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMessageWidgetRowSignature, FUIWidgetRow, Row);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FAuraAbilityInfo&, AbilityInfo);
 
@@ -61,8 +62,11 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|Messages")
 	FAbilityInfoSignature AbilityInfoDelegate;
 
-	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|Messages")
+	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|XP")
 	FOnAttributeChangedSignature OnXPPercentChangedDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|Level")
+	FOnPlayerStatusChangedSignature OnPlayerLevelChangedSignature;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|DataTable")
@@ -84,6 +88,7 @@ protected:
 	void OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraASC) const;
 	void OnEffectAssetTag(const FGameplayTagContainer& AssetTags) const;
 	void OnXPChanged(const int32 NewXP) const;
+	void OnLevelChanged(const int32 NewLevel) const;
 
 	template<typename T>
 	static T* GetDataTableRowByTag(const UDataTable* DataTable, const FGameplayTag& Tag)

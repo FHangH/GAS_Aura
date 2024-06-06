@@ -83,9 +83,16 @@ void UEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPara
 	const auto TargetAvatar = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
 	if (!SourceAvatar || !TargetAvatar) return;
 
-	const auto SourceCombatInterface = Cast<ICombatInterface>(SourceAvatar);
-	const auto TargetCombatInterface = Cast<ICombatInterface>(TargetAvatar);
-	if (!SourceCombatInterface || !TargetCombatInterface) return;
+	int32 SourcePlayerLevel = 1;
+	int32 TargetPlayerLevel = 1;
+	if (SourceAvatar->Implements<UCombatInterface>())
+	{
+		SourcePlayerLevel = ICombatInterface::Execute_GetPlayerLevel(SourceAvatar);
+	}
+	if (TargetAvatar->Implements<UCombatInterface>())
+	{
+		TargetPlayerLevel = ICombatInterface::Execute_GetPlayerLevel(TargetAvatar);
+	}
 
 	const auto GESpec = ExecutionParams.GetOwningSpec();
 	const auto SourceTag = GESpec.CapturedSourceTags.GetAggregatedTags();
@@ -147,8 +154,8 @@ void UEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPara
 	const auto EffectiveArmorCurve = CharacterClassInfo->DamageCalculationCoefficient->FindCurve(FName{"EffectiveArmor"}, FString{});
 
 	if (!ArmorPenetrationCurve || !EffectiveArmorCurve) return;
-	const auto ArmorPenetrationCoefficient = ArmorPenetrationCurve->Eval(SourceCombatInterface->GetPlayerLevel());
-	const auto EffectiveArmorCoefficient = EffectiveArmorCurve->Eval(TargetCombatInterface->GetPlayerLevel());
+	const auto ArmorPenetrationCoefficient = ArmorPenetrationCurve->Eval(SourcePlayerLevel);
+	const auto EffectiveArmorCoefficient = EffectiveArmorCurve->Eval(TargetPlayerLevel);
 	
 	// ArmorPenetration ignores a percentage of the target's armor
 	const auto EffectiveArmor = TargetArmor * (100 - SourceArmorPenetration * ArmorPenetrationCoefficient) / 100.f;
@@ -174,7 +181,7 @@ void UEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPara
 	// Get CriticalHitResistance From CharacterClassInfo
 	const auto CriticalHitResistanceCurve = CharacterClassInfo->DamageCalculationCoefficient->FindCurve(FName{"CriticalHitResistance"}, FString{});
 	if (!CriticalHitResistanceCurve) return;
-	const auto CriticalHitResistanceCoefficient = CriticalHitResistanceCurve->Eval(TargetCombatInterface->GetPlayerLevel());
+	const auto CriticalHitResistanceCoefficient = CriticalHitResistanceCurve->Eval(TargetPlayerLevel);
 
 	// Critical Hit Resistance reduces Critical Hit Chance by a certain percentage
 	const auto EffectiveCriticalHitChance = SourceCriticalHitChance - TargetCriticalHitResistance * CriticalHitResistanceCoefficient;
