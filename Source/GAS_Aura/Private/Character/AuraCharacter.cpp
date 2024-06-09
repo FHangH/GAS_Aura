@@ -141,7 +141,7 @@ void AAuraCharacter::AddToAttributePoints_Implementation(const int32 InAttribute
 {
 	if (const auto AuraPS = GetPlayerState<AAuraPlayerState>())
 	{
-		
+		AuraPS->AddToAttributePoints(InAttributePoints);
 	}
 }
 
@@ -149,7 +149,7 @@ void AAuraCharacter::AddToSpellPoints_Implementation(const int32 InSpellPoints)
 {
 	if (const auto AuraPS = GetPlayerState<AAuraPlayerState>())
 	{
-		
+		AuraPS->AddToSpellPoints(InSpellPoints);
 	}
 }
 

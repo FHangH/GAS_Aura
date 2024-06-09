@@ -4,6 +4,7 @@
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
 #include "Gameplay/GAS/AuraAttributeSet.h"
 #include "Gameplay/GAS/Data/DataAsset_AttributeInfo.h"
+#include "Gameplay/PlayerState/AuraPlayerState.h"
 #include "Untils/AuraLog.h"
 
 void UAttributeMenuWidgetController::BindCallBackToDependencies()
@@ -20,6 +21,15 @@ void UAttributeMenuWidgetController::BindCallBackToDependencies()
 			}
 		);
 	}
+
+	if (const auto AuraPlayerState = Cast<AAuraPlayerState>(PlayerState))
+	{
+		AuraPlayerState->OnAttributePointChangedDelegate.AddLambda
+		([this](const int32 Points)
+		{
+			AttributePointsChangedDelegate.Broadcast(Points);
+		});
+	}
 }
 
 void UAttributeMenuWidgetController::BroadcastInitValues()
@@ -35,6 +45,11 @@ void UAttributeMenuWidgetController::BroadcastInitValues()
 	for (const auto& Item : AuraAS->Map_TagsToAttributes)
 	{
 		BroadcastAttributeInfo(Item.Key, Item.Value());
+	}
+
+	if (const auto AuraPlayerState = Cast<AAuraPlayerState>(PlayerState))
+	{
+		AttributePointsChangedDelegate.Broadcast(AuraPlayerState->GetAttributePoints());
 	}
 }
 
