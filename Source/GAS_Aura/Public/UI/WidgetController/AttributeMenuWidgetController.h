@@ -35,6 +35,9 @@ public:
 	virtual void BindCallBackToDependencies() override;
 	virtual void BroadcastInitValues() override;
 
+	UFUNCTION(BlueprintCallable, Category="Aura|WidgetController")
+	void UpgradeAttribute(const FGameplayTag& AttributeTag);
+
 private:
 	void BroadcastAttributeInfo(const FGameplayTag& AttributeTag, const FGameplayAttribute& Attribute) const;
 };

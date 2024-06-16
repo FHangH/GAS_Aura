@@ -2,6 +2,7 @@
 
 
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
+#include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Gameplay/GAS/AuraAttributeSet.h"
 #include "Gameplay/GAS/Data/DataAsset_AttributeInfo.h"
 #include "Gameplay/PlayerState/AuraPlayerState.h"
@@ -53,8 +54,16 @@ void UAttributeMenuWidgetController::BroadcastInitValues()
 	}
 }
 
+void UAttributeMenuWidgetController::UpgradeAttribute(const FGameplayTag& AttributeTag)
+{
+	if (const auto AuraASC = Cast<UAuraAbilitySystemComponent>(ASComponent))
+	{
+		AuraASC->UpgradeAttribute(AttributeTag);
+	}
+}
+
 void UAttributeMenuWidgetController::BroadcastAttributeInfo(const FGameplayTag& AttributeTag,
-															const FGameplayAttribute& Attribute) const
+                                                            const FGameplayAttribute& Attribute) const
 {
 	auto Info = DA_AttributeInfo->FindAttributeInfoForTag(AttributeTag, true);
 	Info.AttributeValue = Attribute.GetNumericValue(AS);

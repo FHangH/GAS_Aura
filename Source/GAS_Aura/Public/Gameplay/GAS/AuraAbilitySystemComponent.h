@@ -38,7 +38,12 @@ public:
 	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	
+	void UpgradeAttribute(const FGameplayTag& AttributeTag);
+	
 protected:
 	UFUNCTION(Client, Reliable)
 	void Client_OnEffectApplied(UAbilitySystemComponent* ASComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveGEHandle) const;
+
+	UFUNCTION(Server, Reliable)
+	void Server_UpgradeAttribute(const FGameplayTag& AttributeTag);
 };

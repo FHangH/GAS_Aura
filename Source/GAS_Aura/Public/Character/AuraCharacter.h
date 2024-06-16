@@ -45,6 +45,8 @@ protected:
 	virtual int32 GetXP_Implementation() const override;
 	virtual int32 GetAttributePointReward_Implementation(const int32 Level) const override;
 	virtual int32 GetSpellPointReward_Implementation(const int32 Level) const override;
+	virtual int32 GetAttributePoints_Implementation() const override;
+	virtual int32 GetSpellPoints_Implementation() const override;
 	virtual void AddToXP_Implementation(const int32 InXP) override;
 	virtual void AddToPlayerLevel_Implementation(const int32 InPlayerLevel) override;
 	virtual void AddToAttributePoints_Implementation(const int32 InAttributePoints) override;
