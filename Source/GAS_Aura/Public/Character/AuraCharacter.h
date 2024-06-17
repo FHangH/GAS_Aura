@@ -30,6 +30,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura")
 	TObjectPtr<UCameraComponent> TopDownCameraComponent;
 
+private:
 	TObjectPtr<AAuraPlayerState> AuraPlayerState;
 	
 	/* Function */

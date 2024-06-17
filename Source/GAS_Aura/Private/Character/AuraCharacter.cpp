@@ -81,8 +81,8 @@ void AAuraCharacter::InitAbilityActorInfo()
 
 int32 AAuraCharacter::GetPlayerLevel_Implementation()
 {
-	const auto AuraPS = GetPlayerState<AAuraPlayerState>();
-	return AuraPS ? AuraPS->GetPlayerLevel() : 0;
+	CHECK_PLAYERSTATE(AuraPlayerState);
+	return AuraPlayerState ? AuraPlayerState->GetPlayerLevel() : 0;
 }
 
 int32 AAuraCharacter::FindLevelForXP_Implementation(const int32 InXP) const
@@ -149,25 +149,25 @@ void AAuraCharacter::AddToXP_Implementation(const int32 InXP)
 
 void AAuraCharacter::AddToPlayerLevel_Implementation(const int32 InPlayerLevel)
 {
-	if (const auto AuraPS = GetPlayerState<AAuraPlayerState>())
+	if (CHECK_PLAYERSTATE(AuraPlayerState))
 	{
-		AuraPS->AddLevel(InPlayerLevel);
+		AuraPlayerState->AddLevel(InPlayerLevel);
 	}
 }
 
 void AAuraCharacter::AddToAttributePoints_Implementation(const int32 InAttributePoints)
 {
-	if (const auto AuraPS = GetPlayerState<AAuraPlayerState>())
+	if (CHECK_PLAYERSTATE(AuraPlayerState))
 	{
-		AuraPS->AddToAttributePoints(InAttributePoints);
+		AuraPlayerState->AddToAttributePoints(InAttributePoints);
 	}
 }
 
 void AAuraCharacter::AddToSpellPoints_Implementation(const int32 InSpellPoints)
 {
-	if (const auto AuraPS = GetPlayerState<AAuraPlayerState>())
+	if (CHECK_PLAYERSTATE(AuraPlayerState))
 	{
-		AuraPS->AddToSpellPoints(InSpellPoints);
+		AuraPlayerState->AddToSpellPoints(InSpellPoints);
 	}
 }
 
