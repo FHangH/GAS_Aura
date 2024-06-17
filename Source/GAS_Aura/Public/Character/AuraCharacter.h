@@ -44,7 +44,7 @@ protected:
 	virtual void InitAbilityActorInfo() override;
 
 	// Combat Interface
-	virtual int32 GetPlayerLevel_Implementation() override;;
+	virtual int32 GetPlayerLevel_Implementation() override;
 
 	// Player Interface
 	virtual int32 FindLevelForXP_Implementation(const int32 InXP) const override;
