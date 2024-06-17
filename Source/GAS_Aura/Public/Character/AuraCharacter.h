@@ -7,9 +7,12 @@
 #include "Interaction/PlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
+class AAuraPlayerState;
 class USpringArmComponent;
 class UCameraComponent;
 class UNiagaraComponent;
+
+#define CHECK_PLAYERSTATE(PlayerStateVar) (PlayerStateVar = (PlayerStateVar == nullptr ? GetPlayerState<AAuraPlayerState>() : PlayerStateVar))
 
 UCLASS()
 class GAS_AURA_API AAuraCharacter : public AAuraCharacterBase, public IPlayerInterface
@@ -26,6 +29,8 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Aura")
 	TObjectPtr<UCameraComponent> TopDownCameraComponent;
+
+	TObjectPtr<AAuraPlayerState> AuraPlayerState;
 	
 	/* Function */
 public:

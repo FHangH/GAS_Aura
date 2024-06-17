@@ -61,7 +61,7 @@ void AAuraCharacter::OnRep_PlayerState()
 
 void AAuraCharacter::InitAbilityActorInfo()
 {
-	if (const auto AuraPlayerState = GetPlayerState<AAuraPlayerState>())
+	if (CHECK_PLAYERSTATE(AuraPlayerState))
 	{
 		AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
 		Cast<UAuraAbilitySystemComponent>(AuraPlayerState->GetAbilitySystemComponent())->AbilityActorInfoSet();
@@ -141,9 +141,9 @@ int32 AAuraCharacter::GetSpellPoints_Implementation() const
 
 void AAuraCharacter::AddToXP_Implementation(const int32 InXP)
 {
-	if (const auto AuraPS = GetPlayerState<AAuraPlayerState>())
+	if (CHECK_PLAYERSTATE(AuraPlayerState))
 	{
-		AuraPS->AddToXP(InXP);
+		AuraPlayerState->AddToXP(InXP);
 	}
 }
 
