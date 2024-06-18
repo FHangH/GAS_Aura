@@ -18,3 +18,4 @@ Build
 *.suo
 *.xcodeproj
 *.xcworkspace
+*.sln.DotSettings.user
