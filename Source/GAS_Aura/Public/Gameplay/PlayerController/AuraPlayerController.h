@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Interaction/CursorTraceInterface.h"
 #include "Untils/TickRate.h"
 #include "AuraPlayerController.generated.h"
 
@@ -20,7 +21,7 @@ class IEnemyInterface;
 class UInputMappingContext;
 
 UCLASS()
-class GAS_AURA_API AAuraPlayerController : public APlayerController
+class GAS_AURA_API AAuraPlayerController : public APlayerController, public ICursorTraceInterface
 {
 	GENERATED_BODY()
 
@@ -90,12 +91,18 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|WidgetComponent", meta=(AllowPrivateAccess=true))
 	TSubclassOf<UDamageTextWidgetComponent> DamageTextComponentClass;
 
+	// CursorTrace Mode
+	bool IsCursorTraceMode {true};
+
 	/* Function */
 public:
 	AAuraPlayerController();
 
 	UFUNCTION(BlueprintPure, Category="Aura")
 	UAuraAbilitySystemComponent* GetASComponent();
+
+	// CursorTrace Interface
+	virtual void SetCursorTraceMode_Implementation(bool bEnable) override;
 
 protected:
 	virtual void BeginPlay() override;
