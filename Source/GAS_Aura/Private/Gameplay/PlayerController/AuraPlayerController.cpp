@@ -31,6 +31,19 @@ UAuraAbilitySystemComponent* AAuraPlayerController::GetASComponent()
 			AuraAbilitySystemComponent;
 }
 
+void AAuraPlayerController::SetCursorTraceMode_Implementation(const bool bEnable)
+{
+	IsCursorTraceMode = bEnable;
+	if (bEnable)
+	{
+		StartTickTimerHandle_AutoRun();
+		StartTickTimerHandle_CursorTrace();
+		return;
+	}
+	StopTickTimerHandle_AutoRun();
+	StopTickTimerHandle_CursorTrace();
+}
+
 void AAuraPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -108,6 +121,8 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 
 void AAuraPlayerController::CursorTrace()
 {
+	if (!IsCursorTraceMode) return;
+	
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHitResult);
 	if (!CursorHitResult.bBlockingHit) return;
 
@@ -171,6 +186,7 @@ void AAuraPlayerController::CursorTrace()
 
 void AAuraPlayerController::AutoRun()
 {
+	if (!IsCursorTraceMode) return;
 	if (!bAutoRunning) return;
 	if (GetCharacter())
 	{
