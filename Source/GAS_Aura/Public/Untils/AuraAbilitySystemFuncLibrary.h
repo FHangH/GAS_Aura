@@ -6,6 +6,10 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AuraAbilitySystemFuncLibrary.generated.h"
 
+class AAuraPlayerController;
+class AAuraHUD;
+struct FWidgetControllerParams;
+class USpellMenuWidgetController;
 class UDataAsset_CharacterClassInfo;
 struct FGameplayEffectContextHandle;
 enum class ECharacterClassType : uint8;
@@ -20,12 +24,21 @@ class GAS_AURA_API UAuraAbilitySystemFuncLibrary : public UBlueprintFunctionLibr
 
 	/* Function */
 public:
-	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|WidgetController")
+	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|PlayerController", meta=(DefaultToSelf="WorldContextObject"))
+	static AAuraPlayerController* GetAuraPlayerController(const UObject* WorldContextObject);
+	
+	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|WidgetController", meta=(DefaultToSelf="WorldContextObject"))
+	static bool MakeWidgetControllerParams(const UObject* WorldContextObject, FWidgetControllerParams& OutWidgetParams, AAuraHUD*& OutAuraHUD);
+	
+	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|WidgetController", meta=(DefaultToSelf="WorldContextObject"))
 	static UOverlayMainWidgetController* GetOverlayMainWidgetController(const UObject* WorldContextObject);
 	
-	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|WidgetController")
+	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|WidgetController", meta=(DefaultToSelf="WorldContextObject"))
 	static UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const UObject* WorldContextObject);
 
+	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|WidgetController", meta=(DefaultToSelf="WorldContextObject"))
+	static USpellMenuWidgetController* GetSpellMenuWidgetController(const UObject* WorldContextObject);
+	
 	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|CharacterClassTypeInfo")
 	static void InitializeDefaultAttributes(const UObject* WorldContextObject, const ECharacterClassType ECT, const float Level, UAbilitySystemComponent* ASC);
 
