@@ -11,7 +11,6 @@
 
 struct FAuraAbilityInfo;
 class UAuraAbilitySystemComponent;
-class UDataAsset_AbilityInfo;
 class UAuraUserWidget;
 struct FOnAttributeChangeData;
 
@@ -36,7 +35,6 @@ struct FUIWidgetRow : public FTableRowBase
 // Delegate
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewValue);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMessageWidgetRowSignature, FUIWidgetRow, Row);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FAuraAbilityInfo&, AbilityInfo);
 
 UCLASS(BlueprintType, Blueprintable)
 class GAS_AURA_API UOverlayMainWidgetController : public UAuraWidgetController
@@ -45,34 +43,28 @@ class GAS_AURA_API UOverlayMainWidgetController : public UAuraWidgetController
 
 	/* Property */
 public:
-	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|Attributes")
+	UPROPERTY(BlueprintAssignable, Category="Aura|WidgetController|Attributes")
 	FOnAttributeChangedSignature OnHealthChangedDelegate;
-	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|Attributes")
+	UPROPERTY(BlueprintAssignable, Category="Aura|WidgetController|Attributes")
 	FOnAttributeChangedSignature OnMaxHealthChangedDelegate;
 	
-	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|Attributes")
+	UPROPERTY(BlueprintAssignable, Category="Aura|WidgetController|Attributes")
 	FOnAttributeChangedSignature OnManaChangedDelegate;
-	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|Attributes")
+	UPROPERTY(BlueprintAssignable, Category="Aura|WidgetController|Attributes")
 	FOnAttributeChangedSignature OnMaxManaChangedDelegate;
 	
-	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|Messages")
+	UPROPERTY(BlueprintAssignable, Category="Aura|WidgetController|Messages")
 	FOnMessageWidgetRowSignature OnMessageWidgetRowDelegate;
 
-	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|Messages")
-	FAbilityInfoSignature AbilityInfoDelegate;
-
-	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|XP")
+	UPROPERTY(BlueprintAssignable, Category="Aura|WidgetController|XP")
 	FOnAttributeChangedSignature OnXPPercentChangedDelegate;
 
-	UPROPERTY(BlueprintAssignable, Category="Aura|Delegate|Level")
+	UPROPERTY(BlueprintAssignable, Category="Aura|WidgetController|Level")
 	FOnPlayerStatusChangedSignature OnPlayerLevelChangedSignature;
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|DataTable")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|WidgetController|DataTable")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|DataAsset")
-	TObjectPtr<UDataAsset_AbilityInfo> DataAsset_AbilityInfo;
 
 	/* Function */
 public:
@@ -84,9 +76,8 @@ protected:
 	void OnMaxHealthChanged(const FOnAttributeChangeData& Data) const;
 	void OnManaChanged(const FOnAttributeChangeData& Data) const;
 	void OnMaxManaChanged(const FOnAttributeChangeData& Data) const;
-	void OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraASC) const;
 	void OnEffectAssetTag(const FGameplayTagContainer& AssetTags) const;
-	void OnXPChanged(const int32 NewXP) const;
+	void OnXPChanged(const int32 NewXP);
 	void OnLevelChanged(const int32 NewLevel) const;
 
 	template<typename T>

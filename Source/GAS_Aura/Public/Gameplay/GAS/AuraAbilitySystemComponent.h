@@ -9,7 +9,7 @@
 class UAuraAbilitySystemComponent;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTagDelegate, const FGameplayTagContainer& /*AssetTags*/)
-DECLARE_MULTICAST_DELEGATE_OneParam(FAbilityGivenDelegate, UAuraAbilitySystemComponent* /*ASComponent*/)
+DECLARE_MULTICAST_DELEGATE(FAbilityGivenDelegate)
 DECLARE_DELEGATE_OneParam(FForEachAbilityDelegate, const FGameplayAbilitySpec& /*Spec*/)
 
 UCLASS()

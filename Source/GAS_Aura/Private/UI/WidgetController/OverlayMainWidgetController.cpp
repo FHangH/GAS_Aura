@@ -11,51 +11,45 @@
 
 void UOverlayMainWidgetController::BroadcastInitValues()
 {
-	Super::BroadcastInitValues();
-
-	if (const auto AuraAs = Cast<UAuraAttributeSet>(AS))
+	if (GetAuraAS())
 	{
-		OnHealthChangedDelegate.Broadcast(AuraAs->GetHealth());
-		OnMaxHealthChangedDelegate.Broadcast(AuraAs->GetMaxHealth());
-		OnManaChangedDelegate.Broadcast(AuraAs->GetMana());
-		OnMaxManaChangedDelegate.Broadcast(AuraAs->GetMaxMana());
+		OnHealthChangedDelegate.Broadcast(AuraAS->GetHealth());
+		OnMaxHealthChangedDelegate.Broadcast(AuraAS->GetMaxHealth());
+		OnManaChangedDelegate.Broadcast(AuraAS->GetMana());
+		OnMaxManaChangedDelegate.Broadcast(AuraAS->GetMaxMana());
 	}
 }
 
 void UOverlayMainWidgetController::BindCallBackToDependencies()
 {
-	Super::BindCallBackToDependencies();
-
-	if (const auto AuraPS = Cast<AAuraPlayerState>(PlayerState))
+	if (GetAuraPS())
 	{
-		AuraPS->OnXPChangedDelegate.AddUObject(this, &ThisClass::OnXPChanged);
-		AuraPS->OnLevelChangedDelegate.AddUObject(this, &ThisClass::OnLevelChanged);
+		AuraPlayerState->OnXPChangedDelegate.AddUObject(this, &ThisClass::OnXPChanged);
+		AuraPlayerState->OnLevelChangedDelegate.AddUObject(this, &ThisClass::OnLevelChanged);
 	}
 	
-	const auto AuraAs = Cast<UAuraAttributeSet>(AS);
-	
-	if (AuraAs && ASComponent)
+	if (GetAuraAS() && ASComponent)
 	{
 		ASComponent->GetGameplayAttributeValueChangeDelegate(
-			AuraAs->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
+			AuraAS->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
 		ASComponent->GetGameplayAttributeValueChangeDelegate(
-			AuraAs->GetMaxHealthAttribute()).AddUObject(this, &ThisClass::OnMaxHealthChanged);
+			AuraAS->GetMaxHealthAttribute()).AddUObject(this, &ThisClass::OnMaxHealthChanged);
 		ASComponent->GetGameplayAttributeValueChangeDelegate(
-			AuraAs->GetManaAttribute()).AddUObject(this, &ThisClass::OnManaChanged);
+			AuraAS->GetManaAttribute()).AddUObject(this, &ThisClass::OnManaChanged);
 		ASComponent->GetGameplayAttributeValueChangeDelegate(
-			AuraAs->GetMaxManaAttribute()).AddUObject(this, &ThisClass::OnMaxManaChanged);
+			AuraAS->GetMaxManaAttribute()).AddUObject(this, &ThisClass::OnMaxManaChanged);
 
-		if (auto AuraASC = Cast<UAuraAbilitySystemComponent>(ASComponent))
+		if (GetAuraASC())
 		{
-			if (AuraASC->bStartupAbilitiesGiven)
+			if (AuraASComponent->bStartupAbilitiesGiven)
 			{
-				OnInitializeStartupAbilities(AuraASC);
+				BroadcastAbilityInfo();
 			}
 			else
 			{
-				AuraASC->AbilityGivenDelegate.AddUObject(this, &ThisClass::OnInitializeStartupAbilities);
+				AuraASComponent->AbilityGivenDelegate.AddUObject(this, &ThisClass::BroadcastAbilityInfo);
 			}
-			AuraASC->EffectAssetTagDelegate.AddUObject(this, &ThisClass::OnEffectAssetTag);
+			AuraASComponent->EffectAssetTagDelegate.AddUObject(this, &ThisClass::OnEffectAssetTag);
 		}
 	}
 }
@@ -80,21 +74,6 @@ void UOverlayMainWidgetController::OnMaxManaChanged(const FOnAttributeChangeData
 	OnMaxManaChangedDelegate.Broadcast(Data.NewValue);
 }
 
-void UOverlayMainWidgetController::OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraASC) const
-{
-	if (!AuraASC || !AuraASC->bStartupAbilitiesGiven) return;
-
-	FForEachAbilityDelegate ForEachAbilityDelegate;
-	ForEachAbilityDelegate.BindLambda([this, AuraASC](const FGameplayAbilitySpec& AbilitySpec)
-	{
-		auto DA_AbilityInfo = DataAsset_AbilityInfo->FindAbilityInfoForTag(AuraASC->GetAbilityTagFromSpec(AbilitySpec));
-		DA_AbilityInfo.InputTag = AuraASC->GetInputTagFromSpec(AbilitySpec);
-		AbilityInfoDelegate.Broadcast(DA_AbilityInfo);
-	});
-	
-	AuraASC->ForEachAbility(ForEachAbilityDelegate);
-}
-
 void UOverlayMainWidgetController::OnEffectAssetTag(const FGameplayTagContainer& AssetTags) const
 {
 	const auto MessageTag = FGameplayTag::RequestGameplayTag(FName{"Message"});
@@ -109,12 +88,11 @@ void UOverlayMainWidgetController::OnEffectAssetTag(const FGameplayTagContainer&
 	}
 }
 
-void UOverlayMainWidgetController::OnXPChanged(const int32 NewXP) const
+void UOverlayMainWidgetController::OnXPChanged(const int32 NewXP)
 {
-	const auto AuraPS = Cast<AAuraPlayerState>(PlayerState);
-	if (!AuraPS) return;
+	if (!GetAuraPS()) return;
 
-	const auto LevelUpInfo = AuraPS->DA_LevelUpInfo;
+	const auto LevelUpInfo = AuraPlayerState->DA_LevelUpInfo;
 	if (!LevelUpInfo)
 	{
 		UE_LOG(Aura, Warning, TEXT("DataAsset_LevelUpInfo is nullptr, please check the DataAsset_LevelUpInfo in the AuraPlayerState"));

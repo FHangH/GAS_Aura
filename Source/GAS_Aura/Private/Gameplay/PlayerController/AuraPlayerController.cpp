@@ -24,11 +24,12 @@ AAuraPlayerController::AAuraPlayerController()
 
 UAuraAbilitySystemComponent* AAuraPlayerController::GetASComponent()
 {
+	if (AuraAbilitySystemComponent)
+	{
+		return AuraAbilitySystemComponent;
+	}
 	return AuraAbilitySystemComponent =
-		AuraAbilitySystemComponent == nullptr ?
-			Cast<UAuraAbilitySystemComponent>(
-				UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetCharacter())) :
-			AuraAbilitySystemComponent;
+		Cast<UAuraAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetCharacter()));
 }
 
 void AAuraPlayerController::SetCursorTraceMode_Implementation(const bool bEnable)
