@@ -5,6 +5,7 @@
 #include "UI/Widget/AuraUserWidget.h"
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
 #include "UI/WidgetController/OverlayMainWidgetController.h"
+#include "UI/WidgetController/SpellMenuWidgetController.h"
 #include "Untils/AuraLog.h"
 
 UOverlayMainWidgetController* AAuraHUD::GetOverlayMainWidgetController(const FWidgetControllerParams& Params)
@@ -13,11 +14,9 @@ UOverlayMainWidgetController* AAuraHUD::GetOverlayMainWidgetController(const FWi
 
 	if (IsValid(OverlayMainWidgetControllerClass))
 	{
-		OverlayMainWidgetController =
-			NewObject<UOverlayMainWidgetController>(this, OverlayMainWidgetControllerClass);
+		OverlayMainWidgetController = NewObject<UOverlayMainWidgetController>(this, OverlayMainWidgetControllerClass);
 		OverlayMainWidgetController->SetWidgetControllerParams(Params);
 		OverlayMainWidgetController->BindCallBackToDependencies();
-		
 		return OverlayMainWidgetController;
 	}
 	
@@ -31,15 +30,29 @@ UAttributeMenuWidgetController* AAuraHUD::GetAttributeMenuWidgetController(const
 
 	if (IsValid(AttributeMenuWidgetControllerClass))
 	{
-		AttributeMenuWidgetController =
-			NewObject<UAttributeMenuWidgetController>(this, AttributeMenuWidgetControllerClass);
+		AttributeMenuWidgetController = NewObject<UAttributeMenuWidgetController>(this, AttributeMenuWidgetControllerClass);
 		AttributeMenuWidgetController->SetWidgetControllerParams(Params);
 		AttributeMenuWidgetController->BindCallBackToDependencies();
-		
 		return AttributeMenuWidgetController;
 	}
 	
 	UE_LOG(Aura, Warning, TEXT("AttributeMenuWidgetControllerClass is nullptr"));
+	return nullptr;
+}
+
+USpellMenuWidgetController* AAuraHUD::GetSpellMenuWidgetController(const FWidgetControllerParams& Params)
+{
+	if (SpellMenuWidgetController) return SpellMenuWidgetController;
+
+	if (IsValid(SpellMenuWidgetControllerClass))
+	{
+		SpellMenuWidgetController = NewObject<USpellMenuWidgetController>(this, SpellMenuWidgetControllerClass);
+		SpellMenuWidgetController->SetWidgetControllerParams(Params);
+		SpellMenuWidgetController->BindCallBackToDependencies();
+		return SpellMenuWidgetController;
+	}
+
+	UE_LOG(Aura, Warning, TEXT("SpellMenuWidgetControllerClass is nullptr"));
 	return nullptr;
 }
 
@@ -51,7 +64,6 @@ void AAuraHUD::InitOverlayMain(APlayerController* PC, APlayerState* PS, UAbility
 		if (OverlayMainWidget)
 		{
 			const auto Widget = Cast<UUserWidget>(OverlayMainWidget);
-
 			const FWidgetControllerParams WidgetControllerParams {PC, PS, ASC, AS};
 			const auto WidgetController = GetOverlayMainWidgetController(WidgetControllerParams);
 
