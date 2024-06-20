@@ -61,7 +61,7 @@ void AAuraCharacter::OnRep_PlayerState()
 
 void AAuraCharacter::InitAbilityActorInfo()
 {
-	if (CHECK_PLAYERSTATE(AuraPlayerState))
+	if (CHECK_PLAYER_STATE(AuraPlayerState))
 	{
 		AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
 		Cast<UAuraAbilitySystemComponent>(AuraPlayerState->GetAbilitySystemComponent())->AbilityActorInfoSet();
@@ -81,7 +81,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 
 int32 AAuraCharacter::GetPlayerLevel_Implementation()
 {
-	CHECK_PLAYERSTATE(AuraPlayerState);
+	CHECK_PLAYER_STATE(AuraPlayerState);
 	return AuraPlayerState ? AuraPlayerState->GetPlayerLevel() : 0;
 }
 
@@ -141,7 +141,7 @@ int32 AAuraCharacter::GetSpellPoints_Implementation() const
 
 void AAuraCharacter::AddToXP_Implementation(const int32 InXP)
 {
-	if (CHECK_PLAYERSTATE(AuraPlayerState))
+	if (CHECK_PLAYER_STATE(AuraPlayerState))
 	{
 		AuraPlayerState->AddToXP(InXP);
 	}
@@ -149,15 +149,14 @@ void AAuraCharacter::AddToXP_Implementation(const int32 InXP)
 
 void AAuraCharacter::AddToPlayerLevel_Implementation(const int32 InPlayerLevel)
 {
-	if (CHECK_PLAYERSTATE(AuraPlayerState))
-	{
-		AuraPlayerState->AddLevel(InPlayerLevel);
-	}
+	if (!CHECK_PLAYER_STATE(AuraPlayerState) || !CHECK_ABILITY_SYSTEM_COMPONENT(AuraASComponent)) return;
+	AuraPlayerState->AddLevel(InPlayerLevel);
+	AuraASComponent->UpdateAbilityStatuses(AuraPlayerState->GetPlayerLevel());
 }
 
 void AAuraCharacter::AddToAttributePoints_Implementation(const int32 InAttributePoints)
 {
-	if (CHECK_PLAYERSTATE(AuraPlayerState))
+	if (CHECK_PLAYER_STATE(AuraPlayerState))
 	{
 		AuraPlayerState->AddToAttributePoints(InAttributePoints);
 	}
@@ -165,7 +164,7 @@ void AAuraCharacter::AddToAttributePoints_Implementation(const int32 InAttribute
 
 void AAuraCharacter::AddToSpellPoints_Implementation(const int32 InSpellPoints)
 {
-	if (CHECK_PLAYERSTATE(AuraPlayerState))
+	if (CHECK_PLAYER_STATE(AuraPlayerState))
 	{
 		AuraPlayerState->AddToSpellPoints(InSpellPoints);
 	}

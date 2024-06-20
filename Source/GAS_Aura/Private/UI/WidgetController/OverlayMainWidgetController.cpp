@@ -47,9 +47,9 @@ void UOverlayMainWidgetController::BindCallBackToDependencies()
 			}
 			else
 			{
-				AuraASComponent->AbilityGivenDelegate.AddUObject(this, &ThisClass::BroadcastAbilityInfo);
+				AuraASComponent->OnAbilityGivenDelegate.AddUObject(this, &ThisClass::BroadcastAbilityInfo);
 			}
-			AuraASComponent->EffectAssetTagDelegate.AddUObject(this, &ThisClass::OnEffectAssetTag);
+			AuraASComponent->OnEffectAssetTagDelegate.AddUObject(this, &ThisClass::OnEffectAssetTag);
 		}
 	}
 }
