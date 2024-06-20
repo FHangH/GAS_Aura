@@ -41,7 +41,8 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 	AbilityGivenDelegate.Broadcast();
 }
 
-void UAuraAbilitySystemComponent::AddCharacterPassiveAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartUpPassiveAbilities)
+void UAuraAbilitySystemComponent::AddCharacterPassiveAbilities(
+	const TArray<TSubclassOf<UGameplayAbility>>& StartUpPassiveAbilities)
 {
 	for (const auto& GAClass : StartUpPassiveAbilities)
 	{
@@ -141,8 +142,8 @@ void UAuraAbilitySystemComponent::UpgradeAttribute(const FGameplayTag& Attribute
 	}
 }
 
-void UAuraAbilitySystemComponent::Client_OnEffectApplied_Implementation(UAbilitySystemComponent* ASComponent,
-                                                                        const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveGEHandle) const
+void UAuraAbilitySystemComponent::Client_OnEffectApplied_Implementation(
+	UAbilitySystemComponent* ASComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveGEHandle) const
 {
 	FGameplayTagContainer TagContainer;
 	EffectSpec.GetAllAssetTags(TagContainer);

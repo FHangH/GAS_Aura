@@ -18,6 +18,9 @@ struct FAuraAbilityInfo
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	FGameplayTag InputTag {};
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
+	FGameplayTag StatusTag {};
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FGameplayTag CooldownTag {};
 
