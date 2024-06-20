@@ -60,14 +60,16 @@ public:
  FGameplayTag Damage_Physical;
  TMap<FGameplayTag, FGameplayTag> DamageTypesToResistance;
 
- // HitReact Tag
+ // Effect HitReact Tag
  FGameplayTag Effects_HitReact;
 
  // Ability Tags
  FGameplayTag Ability_Attack;
  FGameplayTag Ability_Summon;
+ 
  FGameplayTag Ability_Fire_FireBolt;
-
+ FGameplayTag Ability_Lightning_Electrocute;
+ 
  // Ability HitReact Tag
  FGameplayTag Ability_HitReact;
 
