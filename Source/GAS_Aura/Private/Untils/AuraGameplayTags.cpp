@@ -40,6 +40,8 @@ void FAuraGameplayTags::InitNativeGameplayTags()
 	GameplayTags.InputTag_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"InputTag.2"});
 	GameplayTags.InputTag_3 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"InputTag.3"});
 	GameplayTags.InputTag_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"InputTag.4"});
+	GameplayTags.InputTag_Passive_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"InputTag.Passive.1"});
+	GameplayTags.InputTag_Passive_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"InputTag.Passive.2"});
 
 	// Damage Tags
 	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Damage"});
@@ -53,13 +55,29 @@ void FAuraGameplayTags::InitNativeGameplayTags()
 	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Arcane, GameplayTags.Attributes_Resistance_Arcane);
 	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Physical, GameplayTags.Attributes_Resistance_Physical);
 	
-	// Hit React
+	// Effect HitReact
 	GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Effects.HitReact"});
 
 	// Ability
 	GameplayTags.Ability_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Ability.Attack"});
 	GameplayTags.Ability_Summon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Ability.Summon"});
+	
 	GameplayTags.Ability_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Ability.Fire.FireBolt"});
+	GameplayTags.Ability_Lightning_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Ability.Lightning.Electrocute"});
+
+	// Ability HitReact
+	GameplayTags.Ability_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Ability.HitReact"});
+	
+	// Ability Status
+	GameplayTags.Ability_Status_Locked = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Ability.Status.Locked"});
+	GameplayTags.Ability_Status_Eligible = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Ability.Status.Eligible"});
+	GameplayTags.Ability_Status_Unlocked = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Ability.Status.Unlocked"});
+	GameplayTags.Ability_Status_Equipped = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Ability.Status.Equipped"});
+	
+	// Ability Type
+	GameplayTags.Ability_Type_Offensive = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Ability.Type.Offensive"});
+	GameplayTags.Ability_Type_Passive = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Ability.Type.Passive"});
+	GameplayTags.Ability_Type_None = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Ability.Type.None"});
 
 	// CoolDown
 	GameplayTags.Cooldown_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"CoolDown.Fire.FireBolt"});

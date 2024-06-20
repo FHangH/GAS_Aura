@@ -7,6 +7,8 @@
 #include "Engine/DataAsset.h"
 #include "DataAsset_AbilityInfo.generated.h"
 
+class UGameplayAbility;
+
 USTRUCT(BlueprintType)
 struct FAuraAbilityInfo
 {
@@ -18,6 +20,9 @@ struct FAuraAbilityInfo
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	FGameplayTag InputTag {};
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
+	FGameplayTag StatusTag {};
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FGameplayTag CooldownTag {};
 
@@ -26,6 +31,12 @@ struct FAuraAbilityInfo
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<const UMaterialInterface> BackgroundMaterial {};
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 LevelRequirement { 1 };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UGameplayAbility> Ability;
 };
 
 UCLASS(BlueprintType)

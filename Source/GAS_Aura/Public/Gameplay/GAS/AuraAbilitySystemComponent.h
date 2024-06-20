@@ -8,9 +8,10 @@
 
 class UAuraAbilitySystemComponent;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTagDelegate, const FGameplayTagContainer& /*AssetTags*/)
-DECLARE_MULTICAST_DELEGATE(FAbilityGivenDelegate)
-DECLARE_DELEGATE_OneParam(FForEachAbilityDelegate, const FGameplayAbilitySpec& /*Spec*/)
+DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTagDelegate, const FGameplayTagContainer& /*AssetTags*/);
+DECLARE_MULTICAST_DELEGATE(FAbilityGivenDelegate);
+DECLARE_DELEGATE_OneParam(FForEachAbilityDelegate, const FGameplayAbilitySpec& /*Spec*/);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FAbilityStatusChangedDelegate, const FGameplayTag& /*AbilityTag*/, const FGameplayTag& /*StatusTag*/);
 
 UCLASS()
 class GAS_AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
@@ -19,10 +20,11 @@ class GAS_AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
 
 	/* Property */
 public:
-	FEffectAssetTagDelegate EffectAssetTagDelegate;
-	FAbilityGivenDelegate AbilityGivenDelegate;
-
 	bool bStartupAbilitiesGiven {false};
+	
+	FEffectAssetTagDelegate OnEffectAssetTagDelegate;
+	FAbilityGivenDelegate OnAbilityGivenDelegate;
+	FAbilityStatusChangedDelegate OnAbilityStatusChangedDelegate;
 
 	/* Function */
 public:
@@ -37,8 +39,12 @@ public:
 
 	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
+	static FGameplayTag GetStatusTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
+
+	FGameplayAbilitySpec* GetSpecFromAbilityTag(const FGameplayTag& AbilityTag);
 	
 	void UpgradeAttribute(const FGameplayTag& AttributeTag);
+	void UpdateAbilityStatuses(const int32 Level);
 	
 protected:
 	UFUNCTION(Client, Reliable)
@@ -46,4 +52,7 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void Server_UpgradeAttribute(const FGameplayTag& AttributeTag);
+
+	UFUNCTION(Client, Reliable)
+	void Client_UpdateAbilityStatus(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag);
 };

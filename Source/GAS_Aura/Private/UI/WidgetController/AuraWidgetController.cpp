@@ -59,6 +59,7 @@ void UAuraWidgetController::BroadcastAbilityInfo()
 	{
 		auto DA_AbilityInfo = DataAsset_AbilityInfo->FindAbilityInfoForTag(AuraASComponent->GetAbilityTagFromSpec(AbilitySpec));
 		DA_AbilityInfo.InputTag = AuraASComponent->GetInputTagFromSpec(AbilitySpec);
+		DA_AbilityInfo.StatusTag = AuraASComponent->GetStatusTagFromSpec(AbilitySpec);
 		OnAbilityInfoDelegate.Broadcast(DA_AbilityInfo);
 	});
 	

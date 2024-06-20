@@ -7,12 +7,14 @@
 #include "Interaction/PlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
+class UAuraAbilitySystemComponent;
 class AAuraPlayerState;
 class USpringArmComponent;
 class UCameraComponent;
 class UNiagaraComponent;
 
-#define CHECK_PLAYERSTATE(PlayerStateVar) (PlayerStateVar = (PlayerStateVar == nullptr ? GetPlayerState<AAuraPlayerState>() : PlayerStateVar))
+#define CHECK_PLAYER_STATE(PlayerState) (PlayerState = (PlayerState == nullptr ? GetPlayerState<AAuraPlayerState>() : PlayerState))
+#define CHECK_ABILITY_SYSTEM_COMPONENT(AbilitySystemComponent) (AbilitySystemComponent = (AbilitySystemComponent == nullptr ? Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponent()) : AbilitySystemComponent))
 
 UCLASS()
 class GAS_AURA_API AAuraCharacter : public AAuraCharacterBase, public IPlayerInterface
@@ -32,6 +34,7 @@ protected:
 
 private:
 	TObjectPtr<AAuraPlayerState> AuraPlayerState;
+	TObjectPtr<UAuraAbilitySystemComponent> AuraASComponent;
 	
 	/* Function */
 public:
