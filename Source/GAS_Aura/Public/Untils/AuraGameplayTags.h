@@ -68,6 +68,20 @@ public:
  FGameplayTag Ability_Summon;
  FGameplayTag Ability_Fire_FireBolt;
 
+ // Ability HitReact Tag
+ FGameplayTag Ability_HitReact;
+
+ // Ability Status Tags
+ FGameplayTag Ability_Status_Locked;
+ FGameplayTag Ability_Status_Eligible;
+ FGameplayTag Ability_Status_Unlocked;
+ FGameplayTag Ability_Status_Equipped;
+ 
+ // Ability Type Tags
+ FGameplayTag Ability_Type_Offensive;
+ FGameplayTag Ability_Type_Passive;
+ FGameplayTag Ability_Type_None;
+
  // CoolDown Tags
  FGameplayTag Cooldown_Fire_FireBolt;
 

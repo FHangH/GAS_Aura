@@ -5,6 +5,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Gameplay/GAS/AuraGameplayAbility.h"
 #include "Interaction/PlayerInterface.h"
+#include "Untils/AuraGameplayTags.h"
 #include "Untils/AuraLog.h"
 
 void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
@@ -32,6 +33,7 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 		if (const auto AuraGA = Cast<UAuraGameplayAbility>(GASpec.Ability))
 		{
 			GASpec.DynamicAbilityTags.AddTag(AuraGA->StartUpInputTag);
+			GASpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Ability_Status_Equipped);
 			GiveAbility(GASpec);
 		}
 	}
@@ -109,6 +111,18 @@ FGameplayTag UAuraAbilitySystemComponent::GetInputTagFromSpec(const FGameplayAbi
 	for (const auto& Tag : AbilitySpec.DynamicAbilityTags)
 	{
 		if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("InputTag"))))
+		{
+			return Tag;
+		}
+	}
+	return FGameplayTag{};
+}
+
+FGameplayTag UAuraAbilitySystemComponent::GetStatusTagFromSpec(const FGameplayAbilitySpec& AbilitySpec)
+{
+	for (const auto& Tag : AbilitySpec.DynamicAbilityTags)
+	{
+		if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Ability.Status"))))
 		{
 			return Tag;
 		}
