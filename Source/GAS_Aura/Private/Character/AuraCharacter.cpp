@@ -85,56 +85,56 @@ int32 AAuraCharacter::GetPlayerLevel_Implementation()
 	return AuraPlayerState ? AuraPlayerState->GetPlayerLevel() : 0;
 }
 
-int32 AAuraCharacter::FindLevelForXP_Implementation(const int32 InXP) const
+int32 AAuraCharacter::FindLevelForXP_Implementation(const int32 InXP)
 {
-	if (const auto AuraPS = GetPlayerState<AAuraPlayerState>())
+	if (CHECK_PLAYER_STATE(AuraPlayerState))
 	{
-		return AuraPS->DA_LevelUpInfo->FindLevelForXP(InXP);
+		return AuraPlayerState->DA_LevelUpInfo->FindLevelForXP(InXP);
 	}
 	return 0;
 }
 
-int32 AAuraCharacter::GetXP_Implementation() const
+int32 AAuraCharacter::GetXP_Implementation()
 {
-	if (const auto AuraPS = GetPlayerState<AAuraPlayerState>())
+	if (CHECK_PLAYER_STATE(AuraPlayerState))
 	{
-		return AuraPS->GetPlayerXP();
+		return AuraPlayerState->GetPlayerXP();
 	}
 	return 0;
 }
 
-int32 AAuraCharacter::GetAttributePointReward_Implementation(const int32 Level) const
+int32 AAuraCharacter::GetAttributePointReward_Implementation(const int32 Level)
 {
-	if (const auto AuraPS = GetPlayerState<AAuraPlayerState>())
+	if (CHECK_PLAYER_STATE(AuraPlayerState))
 	{
-		return AuraPS->DA_LevelUpInfo->LevelUpInformation[Level].AttributePointAward;
+		return AuraPlayerState->DA_LevelUpInfo->LevelUpInformation[Level].AttributePointAward;
 	}
 	return 0;
 }
 
-int32 AAuraCharacter::GetSpellPointReward_Implementation(const int32 Level) const
+int32 AAuraCharacter::GetSpellPointReward_Implementation(const int32 Level)
 {
-	if (const auto AuraPS = GetPlayerState<AAuraPlayerState>())
+	if (CHECK_PLAYER_STATE(AuraPlayerState))
 	{
-		return AuraPS->DA_LevelUpInfo->LevelUpInformation[Level].SpellPointAward;
+		return AuraPlayerState->DA_LevelUpInfo->LevelUpInformation[Level].SpellPointAward;
 	}
 	return 0;
 }
 
-int32 AAuraCharacter::GetAttributePoints_Implementation() const
+int32 AAuraCharacter::GetAttributePoints_Implementation()
 {
-	if (const auto AuraPS = GetPlayerState<AAuraPlayerState>())
+	if (CHECK_PLAYER_STATE(AuraPlayerState))
 	{
-		return AuraPS->GetAttributePoints();
+		return AuraPlayerState->GetAttributePoints();
 	}
 	return 0;
 }
 
-int32 AAuraCharacter::GetSpellPoints_Implementation() const
+int32 AAuraCharacter::GetSpellPoints_Implementation()
 {
-	if (const auto AuraPS = GetPlayerState<AAuraPlayerState>())
+	if (CHECK_PLAYER_STATE(AuraPlayerState))
 	{
-		return AuraPS->GetSpellPoints();
+		return AuraPlayerState->GetSpellPoints();
 	}
 	return 0;
 }

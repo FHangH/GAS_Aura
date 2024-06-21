@@ -19,22 +19,22 @@ class GAS_AURA_API IPlayerInterface
 	/* Function */
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Player")
-	int32 FindLevelForXP(const int32 InXP) const;
+	int32 FindLevelForXP(const int32 InXP);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Player")
-	int32 GetXP() const;
+	int32 GetXP();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Player")
-	int32 GetAttributePointReward(const int32 Level) const;
+	int32 GetAttributePointReward(const int32 Level);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Player")
-	int32 GetSpellPointReward(const int32 Level) const;
+	int32 GetSpellPointReward(const int32 Level);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Player")
-	int32 GetAttributePoints() const;
+	int32 GetAttributePoints();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Player")
-	int32 GetSpellPoints() const;
+	int32 GetSpellPoints();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Player")
 	void AddToXP(const int32 InXP);

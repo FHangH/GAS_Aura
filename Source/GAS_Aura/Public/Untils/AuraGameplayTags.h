@@ -64,6 +64,8 @@ public:
  FGameplayTag Effects_HitReact;
 
  // Ability Tags
+ FGameplayTag Ability_None;
+ 
  FGameplayTag Ability_Attack;
  FGameplayTag Ability_Summon;
  
