@@ -49,26 +49,46 @@ void USpellMenuWidgetController::SpellGlobeSelected(const FGameplayTag& AbilityT
 	{
 		AbilityStatus = GetAuraASC()->GetStatusTagFromSpec(*AbilitySpec);
 	}
+	SelectedAbility = { AbilityTag, AbilityStatus };
 
 	bool IsEnableSpendPoint { false };
 	bool IsEnableEquip { false };
 	ShouldEnableButton(AbilityStatus, GetAuraPS()->GetSpellPoints(), IsEnableSpendPoint, IsEnableEquip);
-
+	
 	OnSpellGlobeSelectedDelegate.Broadcast(IsEnableSpendPoint, IsEnableEquip);
 }
 
-void USpellMenuWidgetController::OnAbilityStatusChanged(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag) const
+void USpellMenuWidgetController::OnAbilityStatusChanged(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag)
 {
-	if (!DataAsset_AbilityInfo) return;
+	if (SelectedAbility.Ability.MatchesTag(AbilityTag))
+	{
+		SelectedAbility.Status = StatusTag;
+
+		bool IsEnableSpendPoint { false };
+		bool IsEnableEquip { false };
+		ShouldEnableButton(StatusTag, CurrentSpendPoints, IsEnableSpendPoint, IsEnableEquip);
+
+		OnSpellGlobeSelectedDelegate.Broadcast(IsEnableSpendPoint, IsEnableEquip);
+	}
+	if (DataAsset_AbilityInfo)
+	{
+		auto Info = DataAsset_AbilityInfo->FindAbilityInfoForTag(AbilityTag);
+		Info.StatusTag = StatusTag;
 	
-	auto Info = DataAsset_AbilityInfo->FindAbilityInfoForTag(AbilityTag);
-	Info.StatusTag = StatusTag;
-	OnAbilityInfoDelegate.Broadcast(Info);
+		OnAbilityInfoDelegate.Broadcast(Info);
+	}
 }
 
-void USpellMenuWidgetController::OnSpellPointsChanged(const int32 SpellPoints) const
+void USpellMenuWidgetController::OnSpellPointsChanged(const int32 SpellPoints)
 {
+	CurrentSpendPoints = SpellPoints;
 	OnSpellPointsChangedDelegate.Broadcast(SpellPoints);
+
+	bool IsEnableSpendPoint { false };
+	bool IsEnableEquip { false };
+	ShouldEnableButton(SelectedAbility.Status, CurrentSpendPoints, IsEnableSpendPoint, IsEnableEquip);
+
+	OnSpellGlobeSelectedDelegate.Broadcast(IsEnableSpendPoint, IsEnableEquip);
 }
 
 void USpellMenuWidgetController::ShouldEnableButton(
