@@ -27,16 +27,16 @@ protected:
 	TObjectPtr<UAttributeSet> AS;
 
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_Level, Category="Aura")
-	int32 Level {1};
+	int32 Level { 1 };
 
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_XP, Category="Aura")
-	int32 XP {1};
+	int32 XP { 1 };
 
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_AttributePoints, Category="Aura")
-	int32 AttributePoints {0};
+	int32 AttributePoints { 0 };
 	
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_SpellPoints, Category="Aura")
-	int32 SpellPoints {1};
+	int32 SpellPoints { 0 };
 	
 public:
 	// Delegate
