@@ -1,6 +1,9 @@
 @echo off
 setlocal enabledelayedexpansion
 
+REM 启动PowerShell脚本来居中控制台窗口，并重定向输出到nul以隐藏输出
+powershell -ExecutionPolicy Bypass -File "%~dp0CenterConsole.ps1" >nul 2>&1
+
 :: 设置控制台编码为UTF-8
 chcp 65001
 
