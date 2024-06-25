@@ -11,7 +11,7 @@ class UAuraAbilitySystemComponent;
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTagDelegate, const FGameplayTagContainer& /*AssetTags*/);
 DECLARE_MULTICAST_DELEGATE(FAbilityGivenDelegate);
 DECLARE_DELEGATE_OneParam(FForEachAbilityDelegate, const FGameplayAbilitySpec& /*Spec*/);
-DECLARE_MULTICAST_DELEGATE_TwoParams(FAbilityStatusChangedDelegate, const FGameplayTag& /*AbilityTag*/, const FGameplayTag& /*StatusTag*/);
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilityStatusChangedDelegate, const FGameplayTag& /*AbilityTag*/, const FGameplayTag& /*StatusTag*/, const int32 /*AbilityLevel*/);
 
 UCLASS()
 class GAS_AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
@@ -45,7 +45,8 @@ public:
 	
 	void UpgradeAttribute(const FGameplayTag& AttributeTag);
 	void UpdateAbilityStatuses(const int32 Level);
-	
+
+	// RPC
 protected:
 	UFUNCTION(Client, Reliable)
 	void Client_OnEffectApplied(UAbilitySystemComponent* ASComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveGEHandle) const;
@@ -54,5 +55,9 @@ protected:
 	void Server_UpgradeAttribute(const FGameplayTag& AttributeTag);
 
 	UFUNCTION(Client, Reliable)
-	void Client_UpdateAbilityStatus(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag);
+	void Client_UpdateAbilityStatus(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const int32 AbilityLevel);
+
+public:
+	UFUNCTION(Server, Reliable)
+	void Server_SpendSpellPoint(const FGameplayTag& AbilityTag);
 };
