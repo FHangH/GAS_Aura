@@ -207,7 +207,7 @@ void UAuraAbilitySystemComponent::Client_UpdateAbilityStatus_Implementation(
 
 void UAuraAbilitySystemComponent::Server_SpendSpellPoint_Implementation(const FGameplayTag& AbilityTag)
 {
-	if (GetAvatarActor()->Implements<UPlayerInterface>()) return;
+	if (!GetAvatarActor()->Implements<UPlayerInterface>()) return;
 	IPlayerInterface::Execute_AddToSpellPoints(GetAvatarActor(), -1);
 	
 	if (const auto AbilitySpec = GetSpecFromAbilityTag(AbilityTag))

@@ -71,14 +71,6 @@ void AAuraPlayerState::SetXP(const int32 InXP)
 	OnXPChangedDelegate.Broadcast(XP);
 }
 
-void AAuraPlayerState::SetAttributePoints(const int32 InAttributePoints)
-{
-}
-
-void AAuraPlayerState::SetSpellPoints(const int32 InSpellPoints)
-{
-}
-
 // OnRepNotify
 void AAuraPlayerState::OnRep_Level(const int32 OldLevel) const
 {
