@@ -44,8 +44,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Aura|WidgetController")
 	void SpellGlobeSelected(const FGameplayTag& AbilityTag);
 
+	UFUNCTION(BlueprintCallable, Category="Aura|WidgetController")
+	void SpendPointButtonPressed();
+
 protected:
-	void OnAbilityStatusChanged(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag);
+	void OnAbilityStatusChanged(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const int32 NewLevel);
 	void OnSpellPointsChanged(const int32 SpellPoints);
 
 	static void ShouldEnableButton(const FGameplayTag& AbilityStatus, const int32 SpellPoints, bool& IsShouldEnableSpellPointsButton, bool& IsShouldEnableEquipButton);

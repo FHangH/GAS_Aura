@@ -173,7 +173,7 @@ void UAuraAbilitySystemComponent::UpdateAbilityStatuses(const int32 Level)
 			
 			GiveAbility(AbilitySpec);
 			MarkAbilitySpecDirty(AbilitySpec);
-			Client_UpdateAbilityStatus(Info.AbilityTag, FAuraGameplayTags::Get().Ability_Status_Eligible);
+			Client_UpdateAbilityStatus(Info.AbilityTag, FAuraGameplayTags::Get().Ability_Status_Eligible, 1);
 		}
 	}
 }
@@ -200,7 +200,33 @@ void UAuraAbilitySystemComponent::Server_UpgradeAttribute_Implementation(const F
 }
 
 void UAuraAbilitySystemComponent::Client_UpdateAbilityStatus_Implementation(
-	const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag)
+	const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const int32 AbilityLevel)
 {
-	OnAbilityStatusChangedDelegate.Broadcast(AbilityTag, StatusTag);
+	OnAbilityStatusChangedDelegate.Broadcast(AbilityTag, StatusTag, AbilityLevel);
+}
+
+void UAuraAbilitySystemComponent::Server_SpendSpellPoint_Implementation(const FGameplayTag& AbilityTag)
+{
+	if (GetAvatarActor()->Implements<UPlayerInterface>()) return;
+	IPlayerInterface::Execute_AddToSpellPoints(GetAvatarActor(), -1);
+	
+	if (const auto AbilitySpec = GetSpecFromAbilityTag(AbilityTag))
+	{
+		const auto GameplayTags = FAuraGameplayTags::Get();
+		auto Status = GetStatusTagFromSpec(*AbilitySpec);
+
+		if (Status.MatchesTagExact(GameplayTags.Ability_Status_Eligible))
+		{
+			AbilitySpec->DynamicAbilityTags.RemoveTag(GameplayTags.Ability_Status_Eligible);
+			AbilitySpec->DynamicAbilityTags.AddTag(GameplayTags.Ability_Status_Unlocked);
+			Status = GameplayTags.Ability_Status_Unlocked;
+		}
+		else if (Status.MatchesTagExact(GameplayTags.Ability_Status_Equipped) ||
+				 Status.MatchesTagExact(GameplayTags.Ability_Status_Unlocked))
+		{
+			AbilitySpec->Level += 1;
+		}
+		Client_UpdateAbilityStatus(AbilityTag, Status, AbilitySpec->Level);
+		MarkAbilitySpecDirty(*AbilitySpec);
+	}
 }
