@@ -15,4 +15,10 @@ class GAS_AURA_API UAuraGameplayAbility : public UGameplayAbility
 public:
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	FGameplayTag StartUpInputTag;
+
+	/* Function */
+public:
+	virtual FString GetDescription(const int32 Level);
+	virtual FString GetNextLevelDescription(const int32 Level);
+	static FString GetLockedDescription(const int32 Level);
 };

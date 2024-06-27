@@ -46,6 +46,8 @@ public:
 	void UpgradeAttribute(const FGameplayTag& AttributeTag);
 	void UpdateAbilityStatuses(const int32 Level);
 
+	bool GetDescriptionFromAbilityTag(const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription);
+
 	// RPC
 protected:
 	UFUNCTION(Client, Reliable)
