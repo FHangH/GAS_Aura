@@ -17,6 +17,9 @@ class GAS_AURA_API UGA_AuraProjectileSpell : public UAuraDamageGameplayAbility
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura", meta=(AllowPrivateAccess=true))
 	TSubclassOf<AAuraProjectile> ProjectileClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura", meta=(AllowPrivateAccess=true))
+	int32 NumProjectiles { 5 };
 	
 	/* Function */
 protected:
@@ -24,4 +27,8 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category="Aura")
 	void SpawnProjectile(const FVector& ProjectileTargetLocation, const FGameplayTag& SocketTag, const bool bOverridePitch = false, const float PitchOverride = 0.f);
+
+public:
+	virtual FString GetDescription(const int32 Level) override;
+	virtual FString GetNextLevelDescription(const int32 Level) override;
 };

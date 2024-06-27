@@ -178,6 +178,24 @@ void UAuraAbilitySystemComponent::UpdateAbilityStatuses(const int32 Level)
 	}
 }
 
+bool UAuraAbilitySystemComponent::GetDescriptionFromAbilityTag(
+	const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription)
+{
+	if (const auto AbilitySpec = GetSpecFromAbilityTag(AbilityTag))
+	{
+		if (const auto AuraAbility = Cast<UAuraGameplayAbility>(AbilitySpec->Ability))
+		{
+			OutDescription = AuraAbility->GetDescription(AbilitySpec->Level);
+			OutNextLevelDescription = AuraAbility->GetDescription(AbilitySpec->Level + 1);
+			return true;
+		}
+	}
+	const auto AbilityInfo = UAuraAbilitySystemFuncLibrary::GetAbilityInfo(GetAvatarActor());
+	OutDescription = UAuraGameplayAbility::GetLockedDescription(AbilityInfo->FindAbilityInfoForTag(AbilityTag).LevelRequirement);
+	OutNextLevelDescription = {};
+	return false;
+}
+
 void UAuraAbilitySystemComponent::Client_OnEffectApplied_Implementation(
 	UAbilitySystemComponent* ASComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveGEHandle) const
 {
