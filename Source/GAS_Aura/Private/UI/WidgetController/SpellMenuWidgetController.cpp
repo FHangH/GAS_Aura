@@ -31,8 +31,14 @@ void USpellMenuWidgetController::BroadcastInitValues()
 
 void USpellMenuWidgetController::SpellGlobeSelected(const FGameplayTag& AbilityTag)
 {
+	if (bWaitingForEquipSelection)
+	{
+		bWaitingForEquipSelection = false;
+		const auto SelectedAbilityType = DataAsset_AbilityInfo->FindAbilityInfoForTag(AbilityTag).AbilityType;
+		OnStopForEquipSelectionDelegate.Broadcast(SelectedAbilityType);
+	}
+	
 	if (!GetAuraPS()) return;
-
 	const auto GameplayTags = FAuraGameplayTags::Get();
 	const auto AbilitySpec = GetAuraASC()->GetSpecFromAbilityTag(AbilityTag);
 
@@ -64,12 +70,31 @@ void USpellMenuWidgetController::SpellGlobeSelected(const FGameplayTag& AbilityT
 	OnSpellGlobeSelectedDelegate.Broadcast(IsEnableSpendPoint, IsEnableEquip, Description, NextLevelDescription);
 }
 
+void USpellMenuWidgetController::GlobeDeselect()
+{
+	if (bWaitingForEquipSelection)
+	{
+		bWaitingForEquipSelection = false;
+		const auto SelectedAbilityType = DataAsset_AbilityInfo->FindAbilityInfoForTag(SelectedAbility.Ability).AbilityType;
+		OnStopForEquipSelectionDelegate.Broadcast(SelectedAbilityType);
+	}
+	SelectedAbility = {FAuraGameplayTags::Get().Ability_None, FAuraGameplayTags::Get().Ability_Status_Locked};
+	OnSpellGlobeSelectedDelegate.Broadcast(false, false, {}, {});
+}
+
 void USpellMenuWidgetController::SpendPointButtonPressed()
 {
 	if (GetAuraASC())
 	{
 		GetAuraASC()->Server_SpendSpellPoint(SelectedAbility.Ability);	
 	}
+}
+
+void USpellMenuWidgetController::EquipButtonPressed()
+{
+	const auto AbilityType = DataAsset_AbilityInfo->FindAbilityInfoForTag(SelectedAbility.Ability).AbilityType;
+	bWaitingForEquipSelection = true;
+	OnWaitForEquipSelectionDelegate.Broadcast(AbilityType);
 }
 
 void USpellMenuWidgetController::OnAbilityStatusChanged(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const int32 NewLevel)
@@ -148,10 +173,4 @@ void USpellMenuWidgetController::ShouldEnableButton(
 		}
 		IsShouldEnableEquipButton = true;
 	}
-}
-
-void USpellMenuWidgetController::GlobeDeselect()
-{
-	SelectedAbility = {FAuraGameplayTags::Get().Ability_None, FAuraGameplayTags::Get().Ability_Status_Locked};
-	OnSpellGlobeSelectedDelegate.Broadcast(false, false, {}, {});
 }
