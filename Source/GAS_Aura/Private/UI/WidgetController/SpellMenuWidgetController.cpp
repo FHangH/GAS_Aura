@@ -149,3 +149,9 @@ void USpellMenuWidgetController::ShouldEnableButton(
 		IsShouldEnableEquipButton = true;
 	}
 }
+
+void USpellMenuWidgetController::GlobeDeselect()
+{
+	SelectedAbility = {FAuraGameplayTags::Get().Ability_None, FAuraGameplayTags::Get().Ability_Status_Locked};
+	OnSpellGlobeSelectedDelegate.Broadcast(false, false, {}, {});
+}
