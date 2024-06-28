@@ -18,6 +18,7 @@ struct FSelectedAbility
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSpellGlobeSelectedSignature, const bool, IsSpendPointsButtonEnabled, const bool, IsEquipButtonEnabled, const FString, DescriptionString, const FString, NextLevelDescriptionString);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitForEquipSelectionSignature, const FGameplayTag&, AbilityType);
 
 UCLASS(BlueprintType, Blueprintable)
 class GAS_AURA_API USpellMenuWidgetController : public UAuraWidgetController
@@ -27,7 +28,10 @@ class GAS_AURA_API USpellMenuWidgetController : public UAuraWidgetController
 	/* Property */
 private:
 	FSelectedAbility SelectedAbility { FAuraGameplayTags::Get().Ability_None, FAuraGameplayTags::Get().Ability_Status_Locked };
+
 	int32 CurrentSpendPoints { 0 };
+	
+	bool bWaitingForEquipSelection { false };
 	
 protected:
 	UPROPERTY(BlueprintAssignable, Category="Aura|WidgetController|Messages")
@@ -35,6 +39,12 @@ protected:
 
 	UPROPERTY(BlueprintAssignable, Category="Aura|WidgetController|Status")
 	FSpellGlobeSelectedSignature OnSpellGlobeSelectedDelegate;
+	
+	UPROPERTY(BlueprintAssignable, Category="Aura|WidgetController|Equip")
+	FWaitForEquipSelectionSignature OnWaitForEquipSelectionDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category="Aura|WidgetController|Equip")
+	FWaitForEquipSelectionSignature OnStopForEquipSelectionDelegate;
 
 	/* Function */
 public:
@@ -45,10 +55,13 @@ public:
 	void SpellGlobeSelected(const FGameplayTag& AbilityTag);
 
 	UFUNCTION(BlueprintCallable, Category="Aura|WidgetController")
+	void GlobeDeselect();
+	
+	UFUNCTION(BlueprintCallable, Category="Aura|WidgetController")
 	void SpendPointButtonPressed();
 
 	UFUNCTION(BlueprintCallable, Category="Aura|WidgetController")
-	void GlobeDeselect();
+	void EquipButtonPressed();
 
 protected:
 	void OnAbilityStatusChanged(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const int32 NewLevel);
