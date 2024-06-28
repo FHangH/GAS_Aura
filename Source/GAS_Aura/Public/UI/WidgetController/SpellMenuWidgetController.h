@@ -47,6 +47,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Aura|WidgetController")
 	void SpendPointButtonPressed();
 
+	UFUNCTION(BlueprintCallable, Category="Aura|WidgetController")
+	void GlobeDeselect();
+
 protected:
 	void OnAbilityStatusChanged(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const int32 NewLevel);
 	void OnSpellPointsChanged(const int32 SpellPoints);

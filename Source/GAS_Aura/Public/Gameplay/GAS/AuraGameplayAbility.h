@@ -17,6 +17,10 @@ public:
 	FGameplayTag StartUpInputTag;
 
 	/* Function */
+protected:
+	float GetManaCost(const float InLevel = 1.f) const;
+	float GetCooldown(const float InLevel = 1.f) const;
+	
 public:
 	virtual FString GetDescription(const int32 Level);
 	virtual FString GetNextLevelDescription(const int32 Level);
