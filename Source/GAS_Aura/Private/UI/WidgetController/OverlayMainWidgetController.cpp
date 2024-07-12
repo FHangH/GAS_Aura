@@ -7,6 +7,7 @@
 #include "Gameplay/GAS/Data/DataAsset_AbilityInfo.h"
 #include "Gameplay/GAS/Data/DataAsset_LevelUpInfo.h"
 #include "Gameplay/PlayerState/AuraPlayerState.h"
+#include "Untils/AuraGameplayTags.h"
 #include "Untils/AuraLog.h"
 
 void UOverlayMainWidgetController::BroadcastInitValues()
@@ -28,7 +29,7 @@ void UOverlayMainWidgetController::BindCallBackToDependencies()
 		AuraPlayerState->OnLevelChangedDelegate.AddUObject(this, &ThisClass::OnLevelChanged);
 	}
 	
-	if (GetAuraAS() && ASComponent)
+	if (GetAuraAS() && ASComponent && GetAuraASC())
 	{
 		ASComponent->GetGameplayAttributeValueChangeDelegate(
 			AuraAS->GetHealthAttribute()).AddUObject(this, &ThisClass::OnHealthChanged);
@@ -39,18 +40,17 @@ void UOverlayMainWidgetController::BindCallBackToDependencies()
 		ASComponent->GetGameplayAttributeValueChangeDelegate(
 			AuraAS->GetMaxManaAttribute()).AddUObject(this, &ThisClass::OnMaxManaChanged);
 
-		if (GetAuraASC())
+		GetAuraASC()->OnAbilityEquippedDelegate.AddUObject(this, &ThisClass::OnAbilityEquipped);
+		
+		if (GetAuraASC()->bStartupAbilitiesGiven)
 		{
-			if (AuraASComponent->bStartupAbilitiesGiven)
-			{
-				BroadcastAbilityInfo();
-			}
-			else
-			{
-				AuraASComponent->OnAbilityGivenDelegate.AddUObject(this, &ThisClass::BroadcastAbilityInfo);
-			}
-			AuraASComponent->OnEffectAssetTagDelegate.AddUObject(this, &ThisClass::OnEffectAssetTag);
+			BroadcastAbilityInfo();
 		}
+		else
+		{
+			GetAuraASC()->OnAbilityGivenDelegate.AddUObject(this, &ThisClass::BroadcastAbilityInfo);
+		}
+		GetAuraASC()->OnEffectAssetTagDelegate.AddUObject(this, &ThisClass::OnEffectAssetTag);
 	}
 }
 
@@ -117,4 +117,21 @@ void UOverlayMainWidgetController::OnXPChanged(const int32 NewXP)
 void UOverlayMainWidgetController::OnLevelChanged(const int32 NewLevel) const
 {
 	OnPlayerLevelChangedSignature.Broadcast(NewLevel);
+}
+
+void UOverlayMainWidgetController::OnAbilityEquipped(
+	const FGameplayTag& AbilityTag, const FGameplayTag& StatusSlot, const FGameplayTag& SlotTag, const FGameplayTag& PreviousSlot) const
+{
+	const auto GameplayTags = FAuraGameplayTags::Get();
+	
+	FAuraAbilityInfo LastSlotInfo;
+	LastSlotInfo.StatusTag = GameplayTags.Ability_Status_Unlocked;
+	LastSlotInfo.InputTag = PreviousSlot;
+	LastSlotInfo.AbilityTag = GameplayTags.Ability_None;
+	OnAbilityInfoDelegate.Broadcast(LastSlotInfo);
+
+	FAuraAbilityInfo Info = DataAsset_AbilityInfo->FindAbilityInfoForTag(AbilityTag);
+	Info.StatusTag = StatusSlot;
+	Info.InputTag = SlotTag;
+	OnAbilityInfoDelegate.Broadcast(Info);
 }
