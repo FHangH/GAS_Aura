@@ -12,6 +12,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTagDelegate, const FGameplayTagC
 DECLARE_MULTICAST_DELEGATE(FAbilityGivenDelegate);
 DECLARE_DELEGATE_OneParam(FForEachAbilityDelegate, const FGameplayAbilitySpec& /*Spec*/);
 DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilityStatusChangedDelegate, const FGameplayTag& /*AbilityTag*/, const FGameplayTag& /*StatusTag*/, const int32 /*AbilityLevel*/);
+DECLARE_MULTICAST_DELEGATE_FourParams(FAbilityEquippedDelegate, const FGameplayTag& /*AbilityTag*/, const FGameplayTag& /*StatusTag*/, const FGameplayTag& /*SlotTag*/, const FGameplayTag& /*PrevSlot*/);
 
 UCLASS()
 class GAS_AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
@@ -25,6 +26,7 @@ public:
 	FEffectAssetTagDelegate OnEffectAssetTagDelegate;
 	FAbilityGivenDelegate OnAbilityGivenDelegate;
 	FAbilityStatusChangedDelegate OnAbilityStatusChangedDelegate;
+	FAbilityEquippedDelegate OnAbilityEquippedDelegate;
 
 	/* Function */
 public:
@@ -40,6 +42,8 @@ public:
 	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetStatusTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
+	FGameplayTag GetStatusFromAbilityTag(const FGameplayTag& AbilityTag);
+	FGameplayTag GetInputTagFromAbilityTag(const FGameplayTag& AbilityTag);
 
 	FGameplayAbilitySpec* GetSpecFromAbilityTag(const FGameplayTag& AbilityTag);
 	
@@ -48,8 +52,12 @@ public:
 
 	bool GetDescriptionFromAbilityTag(const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription);
 
+	static bool AbilityHasSlot(FGameplayAbilitySpec* Spec, const FGameplayTag& SlotTag);
+	void ClearSlot(FGameplayAbilitySpec* Spec);
+	void ClearAbilitiesOfSlot(const FGameplayTag& SlotTag);
+
 	// RPC
-protected:
+public:
 	UFUNCTION(Client, Reliable)
 	void Client_OnEffectApplied(UAbilitySystemComponent* ASComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveGEHandle) const;
 
@@ -59,7 +67,12 @@ protected:
 	UFUNCTION(Client, Reliable)
 	void Client_UpdateAbilityStatus(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const int32 AbilityLevel);
 
-public:
+	UFUNCTION(Server, Reliable)
+	void Server_EquipAbility(const FGameplayTag& AbilityTag, const FGameplayTag& SlotTag);
+
+	UFUNCTION(Client, Reliable)
+	void Client_EquipAbility(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const FGameplayTag& SlotTag, const FGameplayTag& PreviousSlot);
+	
 	UFUNCTION(Server, Reliable)
 	void Server_SpendSpellPoint(const FGameplayTag& AbilityTag);
 };

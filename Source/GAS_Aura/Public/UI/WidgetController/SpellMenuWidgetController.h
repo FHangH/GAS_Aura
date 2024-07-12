@@ -32,6 +32,8 @@ private:
 	int32 CurrentSpendPoints { 0 };
 	
 	bool bWaitingForEquipSelection { false };
+
+	FGameplayTag SelectedSlot;
 	
 protected:
 	UPROPERTY(BlueprintAssignable, Category="Aura|WidgetController|Messages")
@@ -63,9 +65,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Aura|WidgetController")
 	void EquipButtonPressed();
 
+	UFUNCTION(BlueprintCallable, Category="Aura|WidgetController")
+	void SpellRowGlobePressed(const FGameplayTag& SlotTag, const FGameplayTag& AbilityType);
+
 protected:
 	void OnAbilityStatusChanged(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const int32 NewLevel);
 	void OnSpellPointsChanged(const int32 SpellPoints);
+	void OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& StatusSlot, const FGameplayTag& SlotTag, const FGameplayTag& PreviousSlot);
 
 	static void ShouldEnableButton(const FGameplayTag& AbilityStatus, const int32 SpellPoints, bool& IsShouldEnableSpellPointsButton, bool& IsShouldEnableEquipButton);
 };
