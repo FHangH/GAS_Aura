@@ -79,6 +79,7 @@ protected:
 	void OnEffectAssetTag(const FGameplayTagContainer& AssetTags) const;
 	void OnXPChanged(const int32 NewXP);
 	void OnLevelChanged(const int32 NewLevel) const;
+	void OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& StatusSlot, const FGameplayTag& SlotTag, const FGameplayTag& PreviousSlot) const;
 
 	template<typename T>
 	static T* GetDataTableRowByTag(const UDataTable* DataTable, const FGameplayTag& Tag)
