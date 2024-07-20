@@ -19,6 +19,7 @@ struct FSelectedAbility
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSpellGlobeSelectedSignature, const bool, IsSpendPointsButtonEnabled, const bool, IsEquipButtonEnabled, const FString, DescriptionString, const FString, NextLevelDescriptionString);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitForEquipSelectionSignature, const FGameplayTag&, AbilityType);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSpellGlobeReassignedSignature, const FGameplayTag&, AbilityTag);
 
 UCLASS(BlueprintType, Blueprintable)
 class GAS_AURA_API USpellMenuWidgetController : public UAuraWidgetController
@@ -47,6 +48,9 @@ protected:
 
 	UPROPERTY(BlueprintAssignable, Category="Aura|WidgetController|Equip")
 	FWaitForEquipSelectionSignature OnStopForEquipSelectionDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category="Aura|WidgetController|Reassign")
+	FSpellGlobeReassignedSignature OnSpellGlobeReassignedDelegate;
 
 	/* Function */
 public:

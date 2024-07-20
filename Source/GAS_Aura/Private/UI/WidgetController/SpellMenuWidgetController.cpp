@@ -182,6 +182,8 @@ void USpellMenuWidgetController::OnAbilityEquipped(
 	OnAbilityInfoDelegate.Broadcast(Info);
 
 	OnStopForEquipSelectionDelegate.Broadcast(DataAsset_AbilityInfo->FindAbilityInfoForTag(AbilityTag).AbilityType);
+	OnSpellGlobeReassignedDelegate.Broadcast(AbilityTag);
+	GlobeDeselect();
 }
 
 void USpellMenuWidgetController::ShouldEnableButton(
