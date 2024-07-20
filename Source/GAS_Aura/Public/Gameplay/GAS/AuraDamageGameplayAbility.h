@@ -15,14 +15,26 @@ class GAS_AURA_API UAuraDamageGameplayAbility : public UAuraGameplayAbility
 
 	/* Property */
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|GE")
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|Damage")
 	FGameplayTag DamageType;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura")
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|Damage")
 	FScalableFloat Damage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|DeBuff")
+	float DeBuffChance { 20.f };
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|DeBuff")
+	float DeBuffDamage { 5.f };
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|DeBuff")
+	float DeBuffFrequency { 1.f };
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|DeBuff")
+	float DeBuffDuration { 5.f };
 
 	/* Function */
 public:

@@ -107,6 +107,11 @@ public:
  FGameplayTag DeBuff_Arcane;
  FGameplayTag DeBuff_Physical;
  TMap<FGameplayTag, FGameplayTag> DamageTypesToDeBuffs;
+
+ FGameplayTag DeBuff_Chance;
+ FGameplayTag DeBuff_Damage;
+ FGameplayTag DeBuff_Frequency;
+ FGameplayTag DeBuff_Duration;
  
  /* Function */
 public:

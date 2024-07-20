@@ -106,4 +106,9 @@ void FAuraGameplayTags::InitNativeGameplayTags()
 	GameplayTags.DamageTypesToDeBuffs.Add(GameplayTags.Damage_Lightning, GameplayTags.DeBuff_Stun);
 	GameplayTags.DamageTypesToDeBuffs.Add(GameplayTags.Damage_Arcane, GameplayTags.DeBuff_Arcane);
 	GameplayTags.DamageTypesToDeBuffs.Add(GameplayTags.Damage_Physical, GameplayTags.DeBuff_Physical);
+
+	GameplayTags.DeBuff_Chance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"DeBuff.Chance"});
+	GameplayTags.DeBuff_Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"DeBuff.Damage"});
+	GameplayTags.DeBuff_Frequency = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"DeBuff.Frequency"});
+	GameplayTags.DeBuff_Duration = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"DeBuff.Duration"});
 }
