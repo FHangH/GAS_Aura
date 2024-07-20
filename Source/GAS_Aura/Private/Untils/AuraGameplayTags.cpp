@@ -95,4 +95,20 @@ void FAuraGameplayTags::InitNativeGameplayTags()
 	GameplayTags.Montage_Attack_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Montage.Attack.2"});
 	GameplayTags.Montage_Attack_3 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Montage.Attack.3"});
 	GameplayTags.Montage_Attack_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Montage.Attack.4"});
+
+	// DeBuff
+	GameplayTags.DeBuff_Burn = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"DeBuff.Burn"});
+	GameplayTags.DeBuff_Stun = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"DeBuff.Stun"});
+	GameplayTags.DeBuff_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"DeBuff.Arcane"});
+	GameplayTags.DeBuff_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"DeBuff.Physical"});
+
+	GameplayTags.DamageTypesToDeBuffs.Add(GameplayTags.Damage_Fire, GameplayTags.DeBuff_Burn);
+	GameplayTags.DamageTypesToDeBuffs.Add(GameplayTags.Damage_Lightning, GameplayTags.DeBuff_Stun);
+	GameplayTags.DamageTypesToDeBuffs.Add(GameplayTags.Damage_Arcane, GameplayTags.DeBuff_Arcane);
+	GameplayTags.DamageTypesToDeBuffs.Add(GameplayTags.Damage_Physical, GameplayTags.DeBuff_Physical);
+
+	GameplayTags.DeBuff_Chance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"DeBuff.Chance"});
+	GameplayTags.DeBuff_Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"DeBuff.Damage"});
+	GameplayTags.DeBuff_Frequency = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"DeBuff.Frequency"});
+	GameplayTags.DeBuff_Duration = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"DeBuff.Duration"});
 }

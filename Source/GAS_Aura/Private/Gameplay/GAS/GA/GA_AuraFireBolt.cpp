@@ -2,11 +2,10 @@
 
 
 #include "Gameplay/GAS/GA/GA_AuraFireBolt.h"
-#include "Untils/AuraGameplayTags.h"
 
 FString UGA_AuraFireBolt::GetDescription(const int32 Level)
 {
-	const int32 Damage = GetDamageByDamageType(Level, FAuraGameplayTags::Get().Damage_Fire);
+	const auto ScaledDamage = Damage.GetValueAtLevel(Level);
 	const auto ManaCost = FMath::Abs(GetManaCost(Level));
 	const auto Cooldown = GetCooldown(Level);
 
@@ -19,7 +18,7 @@ FString UGA_AuraFireBolt::GetDescription(const int32 Level)
 			"<Small>Cooldown: </><Cooldown>%.1f</>\n"
 			"<Default>Launches a bolt of fire, Exploding on Impact and Dealing: </>"
 			"<Damage>%d</><Default> Fire damage with a chance to burn</>\n")
-			, Level, ManaCost, Cooldown, Damage);
+			, Level, ManaCost, Cooldown, ScaledDamage);
 	}
 	return FString::Printf(TEXT(
 			"<Title>FIRE BOLT</>\n"
@@ -28,12 +27,12 @@ FString UGA_AuraFireBolt::GetDescription(const int32 Level)
 			"<Small>Cooldown: </><Cooldown>%.1f</>\n"
 			"<Default>Launches %d bolt of fire, Exploding on Impact and Dealing: </>"
 			"<Damage>%d</><Default> Fire damage with a chance to burn</>\n")
-			, Level, ManaCost, Cooldown, FMath::Min(Level, NumProjectiles), Damage);
+			, Level, ManaCost, Cooldown, FMath::Min(Level, NumProjectiles), ScaledDamage);
 }
 
 FString UGA_AuraFireBolt::GetNextLevelDescription(const int32 Level)
 {
-	const int32 Damage = GetDamageByDamageType(Level, FAuraGameplayTags::Get().Damage_Fire);
+	const auto ScaledDamage = Damage.GetValueAtLevel(Level);
 	const auto ManaCost = FMath::Abs(GetManaCost(Level));
 	const auto Cooldown = GetCooldown(Level);
 	
@@ -44,5 +43,5 @@ FString UGA_AuraFireBolt::GetNextLevelDescription(const int32 Level)
 		"<Small>Cooldown: </><Cooldown>%.1f</>\n"
 		"<Default>Launches %d bolts of fire, Exploding on Impact and Dealing: </>"
 		"<Damage>%d</><Default> Fire damage with a chance to burn</>\n")
-		, Level, ManaCost, Cooldown, FMath::Min(Level, NumProjectiles), Damage);
+		, Level, ManaCost, Cooldown, FMath::Min(Level, NumProjectiles), ScaledDamage);
 }

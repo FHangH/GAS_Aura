@@ -5,6 +5,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "Interaction/CombatInterface.h"
+#include "Untils/AuraAbilityTypes.h"
 #include "Untils/AuraLog.h"
 
 void UAuraDamageGameplayAbility::CauseDamage(AActor* TargetActor)
@@ -16,11 +17,8 @@ void UAuraDamageGameplayAbility::CauseDamage(AActor* TargetActor)
 	}
 	
 	const auto DamageSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
-	for (const auto& Pair : DamageTypes)
-	{
-		const auto ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, Pair.Key, ScaledDamage);
-	}
+	const auto ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, DamageType, ScaledDamage);
 
 	if (const auto ASC = GetAbilitySystemComponentFromActorInfo())
 	{
@@ -37,8 +35,19 @@ FTaggedMontage UAuraDamageGameplayAbility::GetRandomTaggedMontage(const TArray<F
 	return TaggedMontages[FMath::RandRange(0, TaggedMontages.Num() - 1)];
 }
 
-float UAuraDamageGameplayAbility::GetDamageByDamageType(const float InLevel, const FGameplayTag& DamageType)
+FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassDefaults(const TObjectPtr<AActor> TargetActor) const
 {
-	checkf(DamageTypes.Contains(DamageType), TEXT("GameplayAbility [%s] does not contain DamageType [%s]"), *GetNameSafe(this), *DamageType.ToString());
-	return DamageTypes[DamageType].GetValueAtLevel(InLevel);
+	FDamageEffectParams Params;
+	Params.WorldContextObject = GetAvatarActorFromActorInfo();
+	Params.DamageGameplayEffectClass = DamageEffectClass;
+	Params.SourceASComponent = GetAbilitySystemComponentFromActorInfo();
+	Params.TargetASComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	Params.BaseDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+	Params.AbilityLevel = GetAbilityLevel();
+	Params.DamageType = DamageType;
+	Params.DeBuffChance = DeBuffChance;
+	Params.DeBuffDamage = DeBuffDamage;
+	Params.DeBuffDuration = DeBuffDuration;
+	Params.DeBuffFrequency = DeBuffFrequency;
+	return Params;
 }

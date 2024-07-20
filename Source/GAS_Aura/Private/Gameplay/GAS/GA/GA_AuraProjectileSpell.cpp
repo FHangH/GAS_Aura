@@ -21,62 +21,35 @@ void UGA_AuraProjectileSpell::SpawnProjectile(
 {
 	if (!GetAvatarActorFromActorInfo()->HasAuthority()) return;
 	const auto CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
-	
-	if (ProjectileClass && CombatInterface)
-	{
-		FTransform Transform;
-		const auto SocketLocation =
-			CombatInterface->Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), SocketTag);
 
-		auto Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
-		if (bOverridePitch)
-		{
-			Rotation.Pitch = PitchOverride;
-		}
-		
-		Transform.SetLocation(SocketLocation);
-		Transform.SetRotation(Rotation.Quaternion());
-
-		const auto Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
-			ProjectileClass,
-			Transform,
-			GetOwningActorFromActorInfo(),
-			Cast<APawn>(GetOwningActorFromActorInfo()),
-			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
-	
-        if (DamageEffectClass)
-        {
-	        if (const auto SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo()))
-        	{
-	        	auto EffectContextHandle = SourceASC->MakeEffectContext();
-	        	EffectContextHandle.SetAbility(this);
-	        	EffectContextHandle.AddSourceObject(Projectile);
-				TArray<TWeakObjectPtr<AActor>> Actors;
-	        	Actors.Add(Projectile);
-	        	EffectContextHandle.AddActors(Actors);
-	        	FHitResult HitResult;
-	        	HitResult.Location = ProjectileTargetLocation;
-	        	EffectContextHandle.AddHitResult(HitResult);
-	        	
-		        const auto SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
-				for (const auto& Pair : DamageTypes)
-				{
-					const auto ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
-					UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
-				}
-        		Projectile->DamageEffectSpecHandle = SpecHandle;
-        	}
-        }
-        else
-        {
-	        UE_LOG(Aura, Warning, TEXT("DamageEffectClass is null in %s"), *GetName());
-        }
-		
-		if (!Projectile) return;
-		Projectile->FinishSpawning(Transform);
-	}
-	else
+	if (!ProjectileClass || !CombatInterface)
 	{
 		UE_LOG(Aura, Warning, TEXT("ProjectileClass is null in %s"), *GetName());
+		return;
 	}
+	
+	const auto SocketLocation =
+		CombatInterface->Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), SocketTag);
+	
+	auto Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
+	if (bOverridePitch)
+	{
+		Rotation.Pitch = PitchOverride;
+	}
+
+	FTransform Transform;
+	Transform.SetLocation(SocketLocation);
+	Transform.SetRotation(Rotation.Quaternion());
+
+	const auto Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
+		ProjectileClass,
+		Transform,
+		GetOwningActorFromActorInfo(),
+		Cast<APawn>(GetOwningActorFromActorInfo()),
+		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
+		
+	if (!Projectile) return;
+	Projectile->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults();
+		
+	Projectile->FinishSpawning(Transform);
 }
