@@ -56,83 +56,55 @@ void AAuraProjectile::BeginPlay()
 
 void AAuraProjectile::Destroyed()
 {
-	if (!bIsHit && !HasAuthority())
-    {
-		if (ImpactSound)
-		{
-			UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), GetActorRotation());
-		}
-		else
-		{
-			UE_LOG(Aura, Warning, TEXT("No Impact Effect set on %s"), *GetName());
-		}
-		
-		if (ImpactEffect)
-		{
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
-		}
-		else
-		{
-			UE_LOG(Aura, Warning, TEXT("No Impact Sound set on %s"), *GetName());
-		}
-		
-		if (LoopingSoundComponent) LoopingSoundComponent->Stop();
-
-		bIsHit = true;
-    }
+	if (!bIsHit && !HasAuthority()) OnHit();
+	
 	Super::Destroyed();
+}
+
+void AAuraProjectile::OnHit()
+{
+	if (ImpactSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), GetActorRotation());
+	}
+	else
+	{
+		UE_LOG(Aura, Warning, TEXT("No Impact Effect set on %s"), *GetName());
+	}
+		
+	if (ImpactEffect)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
+	}
+	else
+	{
+		UE_LOG(Aura, Warning, TEXT("No Impact Sound set on %s"), *GetName());
+	}
+		
+	if (LoopingSoundComponent) LoopingSoundComponent->Stop();
+
+	bIsHit = true;
 }
 
 void AAuraProjectile::OnSphereStartOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!DamageEffectSpecHandle.Data.IsValid() ||
-		DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor)
-	{
-		return;
-	}
+	const auto SourceAvatarActor = DamageEffectParams.SourceASComponent->GetAvatarActor();
 
-	if (!UAuraAbilitySystemFuncLibrary::IsNotFriend(
-		DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser(), OtherActor))
+	if (SourceAvatarActor == OtherActor) return;
+	if (!UAuraAbilitySystemFuncLibrary::IsNotFriend(SourceAvatarActor, OtherActor)) return;
+
+	if (!bIsHit) OnHit();
+	if (!HasAuthority())
 	{
+		bIsHit = true;
 		return;
 	}
 	
-	if (!bIsHit)
+	if (const auto TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 	{
-		if (ImpactSound)
-		{
-			UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), GetActorRotation());
-		}
-		else
-		{
-			UE_LOG(Aura, Warning, TEXT("No Impact Effect set on %s"), *GetName());
-		}
-		
-		if (ImpactEffect)
-		{
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
-		}
-		else
-		{
-			UE_LOG(Aura, Warning, TEXT("No Impact Sound set on %s"), *GetName());
-		}
-		
-		if (LoopingSoundComponent) LoopingSoundComponent->Stop();
-
-		bIsHit = true;
+		DamageEffectParams.TargetASComponent = TargetASC;
+		UAuraAbilitySystemFuncLibrary::ApplyDamageEffect(DamageEffectParams);
 	}
-
-	if (HasAuthority())
-	{
-		if (const auto TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
-		{
-			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
-		}
-		Destroy();
-	}
-	else
-	{
-		bIsHit = true;
-	}
+	Destroy();
 }
