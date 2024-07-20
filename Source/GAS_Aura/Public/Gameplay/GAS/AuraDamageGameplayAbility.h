@@ -6,6 +6,7 @@
 #include "AuraGameplayAbility.h"
 #include "AuraDamageGameplayAbility.generated.h"
 
+struct FDamageEffectParams;
 struct FTaggedMontage;
 
 UCLASS()
@@ -35,7 +36,7 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|DeBuff")
 	float DeBuffDuration { 5.f };
-
+	
 	/* Function */
 public:
 	UFUNCTION(BlueprintCallable, Category="Aura")
@@ -43,4 +44,6 @@ public:
 
 	UFUNCTION(BlueprintPure, Category="Aura")
 	static FTaggedMontage GetRandomTaggedMontage(const TArray<FTaggedMontage>& TaggedMontages);
+
+	FDamageEffectParams MakeDamageEffectParamsFromClassDefaults(TObjectPtr<AActor> TargetActor = nullptr) const;
 };

@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AuraAbilitySystemFuncLibrary.generated.h"
 
+struct FDamageEffectParams;
 class AAuraPlayerController;
 class AAuraHUD;
 struct FWidgetControllerParams;
@@ -71,4 +72,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|XPReward")
 	static int32 GetXPRewardForClassAndLevel(const UObject* WorldContextObject, const ECharacterClassType ECT, const int32 Level);
+
+	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|ApplyDamage")
+	static FGameplayEffectContextHandle ApplyDamageEffect(const FDamageEffectParams& DamageEffectParams);
 };

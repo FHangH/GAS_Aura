@@ -2,6 +2,8 @@
 
 
 #include "Untils/AuraAbilitySystemFuncLibrary.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "Gameplay/GameMode/AuraGameModeBase.h"
 #include "Gameplay/GAS/Data/DataAsset_CharacterClassInfo.h"
@@ -12,6 +14,7 @@
 #include "UI/HUD/AuraHUD.h"
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "Untils/AuraAbilityTypes.h"
+#include "Untils/AuraGameplayTags.h"
 
 AAuraPlayerController* UAuraAbilitySystemFuncLibrary::GetAuraPlayerController(const UObject* WorldContextObject)
 {
@@ -226,4 +229,25 @@ int32 UAuraAbilitySystemFuncLibrary::GetXPRewardForClassAndLevel(
 	const auto XPReward = Info.XPReward.GetValueAtLevel(Level);
 	
 	return static_cast<int32>(XPReward);
+}
+
+FGameplayEffectContextHandle UAuraAbilitySystemFuncLibrary::ApplyDamageEffect(const FDamageEffectParams& DamageEffectParams)
+{
+	const auto GameplayTags = FAuraGameplayTags::Get();
+	const auto SourceAvatarActor = DamageEffectParams.SourceASComponent->GetAvatarActor();
+
+	auto EffectContextHandle = DamageEffectParams.SourceASComponent->MakeEffectContext();
+	EffectContextHandle.AddSourceObject(SourceAvatarActor);
+
+	const auto EffectSpecHandle =
+		DamageEffectParams.SourceASComponent->MakeOutgoingSpec(
+			DamageEffectParams.DamageGameplayEffectClass, DamageEffectParams.AbilityLevel, EffectContextHandle);
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, DamageEffectParams.DamageType, DamageEffectParams.BaseDamage);
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, GameplayTags.DeBuff_Chance, DamageEffectParams.DeBuffChance);
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, GameplayTags.DeBuff_Damage, DamageEffectParams.DeBuffDamage);
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, GameplayTags.DeBuff_Duration, DamageEffectParams.DeBuffDuration);
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, GameplayTags.DeBuff_Frequency, DamageEffectParams.DeBuffFrequency);
+	
+	DamageEffectParams.TargetASComponent->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data);
+	return EffectContextHandle;
 }
