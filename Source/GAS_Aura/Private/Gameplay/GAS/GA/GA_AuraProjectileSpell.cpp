@@ -59,11 +59,8 @@ void UGA_AuraProjectileSpell::SpawnProjectile(
 	        	EffectContextHandle.AddHitResult(HitResult);
 	        	
 		        const auto SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
-				for (const auto& Pair : DamageTypes)
-				{
-					const auto ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
-					UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
-				}
+	        	const auto ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+	        	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, DamageType, ScaledDamage);
         		Projectile->DamageEffectSpecHandle = SpecHandle;
         	}
         }

@@ -33,7 +33,7 @@ public:
  FGameplayTag Attributes_Secondary_CriticalHitResistance;
  FGameplayTag Attributes_Secondary_HealthRegeneration;
  FGameplayTag Attributes_Secondary_ManaRegeneration;
-
+ 
  FGameplayTag Attributes_Resistance_Fire;
  FGameplayTag Attributes_Resistance_Lightning;
  FGameplayTag Attributes_Resistance_Arcane;
@@ -100,6 +100,13 @@ public:
  FGameplayTag Montage_Attack_2;
  FGameplayTag Montage_Attack_3;
  FGameplayTag Montage_Attack_4;
+
+ // DeBuff Tags
+ FGameplayTag DeBuff_Burn;
+ FGameplayTag DeBuff_Stun;
+ FGameplayTag DeBuff_Arcane;
+ FGameplayTag DeBuff_Physical;
+ TMap<FGameplayTag, FGameplayTag> DamageTypesToDeBuffs;
  
  /* Function */
 public:

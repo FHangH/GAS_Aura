@@ -17,9 +17,12 @@ class GAS_AURA_API UAuraDamageGameplayAbility : public UAuraGameplayAbility
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura")
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura")
+	FGameplayTag DamageType;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura")
-	TMap<FGameplayTag, FScalableFloat> DamageTypes;
+	FScalableFloat Damage;
 
 	/* Function */
 public:
@@ -28,7 +31,4 @@ public:
 
 	UFUNCTION(BlueprintPure, Category="Aura")
 	static FTaggedMontage GetRandomTaggedMontage(const TArray<FTaggedMontage>& TaggedMontages);
-
-protected:
-	float GetDamageByDamageType(const float InLevel, const FGameplayTag& DamageType);
 };
