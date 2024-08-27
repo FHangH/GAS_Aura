@@ -56,10 +56,24 @@ struct FAuraGameplayEffectContext : public FGameplayEffectContext
 	/* Property */
 protected:
 	UPROPERTY()
-	bool bIsBlockedHit {false};
+	bool bIsBlockedHit { false };
 	
 	UPROPERTY()
-	bool bIsCriticalHit {false};
+	bool bIsCriticalHit { false };
+
+	UPROPERTY()
+	bool bIsSuccessfulDeBuff { false };
+
+	UPROPERTY()
+	float DeBuffDamage { 0.f };
+
+	UPROPERTY()
+	float DeBuffDuration { 0.f };
+
+	UPROPERTY()
+	float DeBuffFrequency { 0.f };
+
+	TSharedPtr<FGameplayTag> DamageType;
 	
 	/* Function */
 public:
@@ -67,10 +81,22 @@ public:
 	virtual bool NetSerialize(FArchive& Ar, UPackageMap* Map, bool& bOutSuccess) override;
 	virtual FGameplayEffectContext* Duplicate() const override;
 
+	// Get
 	FORCEINLINE bool IsCriticalHit() const { return bIsCriticalHit; }
 	FORCEINLINE bool IsBlockedHit() const { return bIsBlockedHit; }
+	FORCEINLINE bool IsSuccessfulDeBuff() const { return bIsSuccessfulDeBuff; }
+	FORCEINLINE float GetDeBuffDamage() const { return DeBuffDamage; }
+	FORCEINLINE float GetDeBuffDuration() const { return DeBuffDuration; }
+	FORCEINLINE float GetDeBuffFrequency() const { return DeBuffFrequency; }
+	FORCEINLINE TSharedPtr<FGameplayTag> GetDamageType() const { return DamageType; }
+
+	// Set
 	FORCEINLINE void SetIsCriticalHit(const bool bNewCriticalHit) { bIsCriticalHit = bNewCriticalHit; }
 	FORCEINLINE void SetIsBlockedHit(const bool bNewBlockedHit) { bIsBlockedHit = bNewBlockedHit; }
+	FORCEINLINE void SetIsSuccessfulDeBuff(const bool bNewSuccessfulDeBuff) { bIsSuccessfulDeBuff = bNewSuccessfulDeBuff; }
+	FORCEINLINE void SetDeBuffDamage(const float InDeBuffDamage) { DeBuffDamage = InDeBuffDamage; }
+	FORCEINLINE void SetDeBuffDuration(const float InDeBuffDuration) { DeBuffDuration = InDeBuffDuration; }
+	FORCEINLINE void SetDeBuffFrequency(const float InDeBuffFrequency) { DeBuffFrequency = InDeBuffFrequency; }
 };
 
 template<>
