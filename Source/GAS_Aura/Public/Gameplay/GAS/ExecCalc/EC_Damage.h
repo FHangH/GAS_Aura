@@ -14,6 +14,10 @@ class GAS_AURA_API UEC_Damage : public UGameplayEffectExecutionCalculation
 	/* Function */
 public:
 	UEC_Damage();
+	static void DetermineDeBuff(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
+								const FGameplayEffectSpec& GESpec,
+	                            const FAggregatorEvaluateParameters& EvaluateParams,
+	                            const TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition>& InTagsToDefs);
 
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 };
