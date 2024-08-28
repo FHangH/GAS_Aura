@@ -9,6 +9,10 @@
 
 enum class ECharacterClassType : uint8;
 class UNiagaraSystem;
+class UAbilitySystemComponent;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnASComponentRegisteredSignature, UAbilitySystemComponent*);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathSignature, AActor*, DeadActor);
 
 USTRUCT(BlueprintType)
 struct FTaggedMontage
@@ -39,6 +43,9 @@ class GAS_AURA_API ICombatInterface
 	GENERATED_BODY()
 
 public:
+	virtual FOnASComponentRegisteredSignature GetOnAsComponentRegisteredDelegate() = 0;
+	virtual FOnDeathSignature GetOnDeathDelegate() = 0;
+	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interface|Combat")
 	int32 GetPlayerLevel();
 

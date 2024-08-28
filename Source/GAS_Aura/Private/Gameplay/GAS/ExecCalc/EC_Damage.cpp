@@ -7,7 +7,6 @@
 #include "Gameplay/GAS/Data/DataAsset_CharacterClassInfo.h"
 #include "Interaction/CombatInterface.h"
 #include "Untils/AuraAbilitySystemFuncLibrary.h"
-#include "Untils/AuraAbilityTypes.h"
 #include "Untils/AuraGameplayTags.h"
 #include "Untils/AuraLog.h"
 
@@ -85,11 +84,20 @@ void UEC_Damage::DetermineDeBuff(
 
 			TargetDeBuffResistance = FMath::Max<float>(TargetDeBuffResistance, 0.f);
 			const auto EffectiveDeBuffChance = SourceDeBuffChance * ( 100 - TargetDeBuffResistance ) / 100.f;
-			const auto IsDeBuff = FMath::RandRange(1, 100) < EffectiveDeBuffChance;
 
-			if (IsDeBuff)
+			if (const auto IsDeBuff = FMath::RandRange(1, 100) < EffectiveDeBuffChance)
 			{
-				
+				auto ContextHandle = GESpec.GetContext();
+				UAuraAbilitySystemFuncLibrary::SetIsSuccessfulDeBuff(ContextHandle, IsDeBuff);
+				UAuraAbilitySystemFuncLibrary::SetDamageType(ContextHandle, DamageType);
+
+				const auto DeBuffDamage = GESpec.GetSetByCallerMagnitude(GameplayTags.DeBuff_Damage, false, -1.f);
+				const auto DeBuffDuration = GESpec.GetSetByCallerMagnitude(GameplayTags.DeBuff_Duration, false, -1.f);
+				const auto DeBuffFrequency = GESpec.GetSetByCallerMagnitude(GameplayTags.DeBuff_Frequency, false, -1.f);
+
+				UAuraAbilitySystemFuncLibrary::SetDeBuffDamage(ContextHandle, DeBuffDamage);
+				UAuraAbilitySystemFuncLibrary::SetDeBuffDuration(ContextHandle, DeBuffDuration);
+				UAuraAbilitySystemFuncLibrary::SetDeBuffFrequency(ContextHandle, DeBuffFrequency);
 			}
 		}
 	}

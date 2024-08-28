@@ -249,8 +249,11 @@ protected:
 	void OnRep_Health(const FGameplayAttributeData& OldValue) const;
 	UFUNCTION()
 	void OnRep_Mana(const FGameplayAttributeData& OldValue) const;
-	
-	static void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties);
+
+	void HandleInComingDamage(const FEffectProperties& EffectProp);
+	void HandleInComingXP(const FEffectProperties& EffectProp);
+	static void DeBuff(const FEffectProperties& EffectProp);
+	static void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProp);
 	static void ShowFloatingText(const FEffectProperties& EffectProp, const float Damage, const bool IsBlockedHit, const bool IsCriticalHit);
 	static void SendXPEvent(const FEffectProperties& EffectProp);
 };

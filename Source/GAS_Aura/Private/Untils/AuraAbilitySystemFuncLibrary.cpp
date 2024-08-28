@@ -15,11 +15,13 @@
 #include "Untils/AuraAbilityTypes.h"
 #include "Untils/AuraGameplayTags.h"
 
+// PlayerController
 AAuraPlayerController* UAuraAbilitySystemFuncLibrary::GetAuraPlayerController(const UObject* WorldContextObject)
 {
 	return Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0));
 }
 
+// WidgetController
 bool UAuraAbilitySystemFuncLibrary::MakeWidgetControllerParams(
 	const UObject* WorldContextObject, FWidgetControllerParams& OutWidgetParams, AAuraHUD*& OutAuraHUD)
 {
@@ -78,6 +80,7 @@ USpellMenuWidgetController* UAuraAbilitySystemFuncLibrary::GetSpellMenuWidgetCon
 	return nullptr;
 }
 
+// CharacterClass TypeInfo
 void UAuraAbilitySystemFuncLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject,
                                                                 const ECharacterClassType ECT, const float Level, UAbilitySystemComponent* ASC)
 {
@@ -105,6 +108,15 @@ void UAuraAbilitySystemFuncLibrary::InitializeDefaultAttributes(const UObject* W
 	ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle_VitalAttributes.Data.Get());
 }
 
+UDataAsset_CharacterClassInfo* UAuraAbilitySystemFuncLibrary::GetCharacterClassInfo(const UObject* WorldContextObject)
+{
+	const auto AuraGMBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (!AuraGMBase) return nullptr;
+	
+	return AuraGMBase->DA_CharacterClassInfo;
+}
+
+// Ability
 void UAuraAbilitySystemFuncLibrary::GiveStartupAbilities(
 	const UObject* WorldContextObject, UAbilitySystemComponent* ASC, const ECharacterClassType ECT)
 {
@@ -130,14 +142,6 @@ void UAuraAbilitySystemFuncLibrary::GiveStartupAbilities(
 	}
 }
 
-UDataAsset_CharacterClassInfo* UAuraAbilitySystemFuncLibrary::GetCharacterClassInfo(const UObject* WorldContextObject)
-{
-	const auto AuraGMBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
-	if (!AuraGMBase) return nullptr;
-	
-	return AuraGMBase->DA_CharacterClassInfo;
-}
-
 UDataAsset_AbilityInfo* UAuraAbilitySystemFuncLibrary::GetAbilityInfo(const UObject* WorldContextObject)
 {
 	const auto AuraGMBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
@@ -146,6 +150,7 @@ UDataAsset_AbilityInfo* UAuraAbilitySystemFuncLibrary::GetAbilityInfo(const UObj
 	return AuraGMBase->DA_AbilityInfo;
 }
 
+// Gameplay Effect
 bool UAuraAbilitySystemFuncLibrary::IsBlockedHit(const FGameplayEffectContextHandle& EffectContextHandle)
 {
 	if (const auto AuraEffectContext = static_cast<const FAuraGameplayEffectContext*>(EffectContextHandle.Get()))
@@ -209,8 +214,16 @@ FGameplayTag UAuraAbilitySystemFuncLibrary::GetDamageType(const FGameplayEffectC
 	return FGameplayTag{};
 }
 
-void UAuraAbilitySystemFuncLibrary::SetIsBlockedHit(FGameplayEffectContextHandle& EffectContextHandle,
-                                                    const bool bIsBlockedHit)
+FVector UAuraAbilitySystemFuncLibrary::GetDeathImpulse(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (const auto AuraEffectContext = static_cast<const FAuraGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		return AuraEffectContext->GetDeathImpulse();
+	}
+	return FVector::ZeroVector;
+}
+
+void UAuraAbilitySystemFuncLibrary::SetIsBlockedHit(FGameplayEffectContextHandle& EffectContextHandle, const bool bIsBlockedHit)
 {
 	if (const auto AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContextHandle.Get()))
 	{
@@ -218,8 +231,7 @@ void UAuraAbilitySystemFuncLibrary::SetIsBlockedHit(FGameplayEffectContextHandle
 	}
 }
 
-void UAuraAbilitySystemFuncLibrary::SetIsCriticalHit(FGameplayEffectContextHandle& EffectContextHandle,
-	const bool bIsCriticalHit)
+void UAuraAbilitySystemFuncLibrary::SetIsCriticalHit(FGameplayEffectContextHandle& EffectContextHandle, const bool bIsCriticalHit)
 {
 	if (const auto AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContextHandle.Get()))
 	{
@@ -227,15 +239,55 @@ void UAuraAbilitySystemFuncLibrary::SetIsCriticalHit(FGameplayEffectContextHandl
 	}
 }
 
-void UAuraAbilitySystemFuncLibrary::SetIsSuccessfulDeBuff(FGameplayEffectContextHandle& EffectContextHandle,
-	const bool bIsSuccessfulDeBuff)
+void UAuraAbilitySystemFuncLibrary::SetIsSuccessfulDeBuff(FGameplayEffectContextHandle& EffectContextHandle, const bool bIsSuccessfulDeBuff)
 {
 	if (const auto AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContextHandle.Get()))
 	{
-		AuraEffectContext->SetIsCriticalHit(bIsSuccessfulDeBuff);
+		AuraEffectContext->SetIsSuccessfulDeBuff(bIsSuccessfulDeBuff);
 	}
 }
 
+void UAuraAbilitySystemFuncLibrary::SetDeBuffDamage(FGameplayEffectContextHandle& EffectContextHandle, const float InDamage)
+{
+	if (const auto AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		AuraEffectContext->SetDeBuffDamage(InDamage);
+	}
+}
+
+void UAuraAbilitySystemFuncLibrary::SetDeBuffDuration(FGameplayEffectContextHandle& EffectContextHandle, const float InDuration)
+{
+	if (const auto AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		AuraEffectContext->SetDeBuffDuration(InDuration);
+	}
+}
+
+void UAuraAbilitySystemFuncLibrary::SetDeBuffFrequency(FGameplayEffectContextHandle& EffectContextHandle, const float InFrequency)
+{
+	if (const auto AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		AuraEffectContext->SetDeBuffFrequency(InFrequency);
+	}
+}
+
+void UAuraAbilitySystemFuncLibrary::SetDamageType(FGameplayEffectContextHandle& EffectContextHandle, const FGameplayTag& InDamageType)
+{
+	if (const auto AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		AuraEffectContext->SetDamageType(MakeShared<FGameplayTag>(InDamageType));
+	}
+}
+
+void UAuraAbilitySystemFuncLibrary::SetDeathImpulse(FGameplayEffectContextHandle& EffectContextHandle, const FVector& InDeathImpulse)
+{
+	if (const auto AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		AuraEffectContext->SetDeathImpulse(InDeathImpulse);
+	}
+}
+
+// Gameplay Mechanics
 void UAuraAbilitySystemFuncLibrary::GetLivePlayersWithRadius(
 	const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingPlayers, const TArray<AActor*>& ActorsToIgnore,
 	const float Radius, const FVector& SphereOrigin)
@@ -270,6 +322,7 @@ bool UAuraAbilitySystemFuncLibrary::IsNotFriend(const AActor* FirstActor, const 
     return !(BothArePlayers || BothAreEnemies);
 }
 
+// XP Reward
 int32 UAuraAbilitySystemFuncLibrary::GetXPRewardForClassAndLevel(
 	const UObject* WorldContextObject, const ECharacterClassType ECT, const int32 Level)
 {
@@ -284,17 +337,20 @@ int32 UAuraAbilitySystemFuncLibrary::GetXPRewardForClassAndLevel(
 	return static_cast<int32>(XPReward);
 }
 
+// ApplyDamage
 FGameplayEffectContextHandle UAuraAbilitySystemFuncLibrary::ApplyDamageEffect(const FDamageEffectParams& DamageEffectParams)
 {
 	const auto GameplayTags = FAuraGameplayTags::Get();
 	const auto SourceAvatarActor = DamageEffectParams.SourceASComponent->GetAvatarActor();
-
+	
 	auto EffectContextHandle = DamageEffectParams.SourceASComponent->MakeEffectContext();
 	EffectContextHandle.AddSourceObject(SourceAvatarActor);
+	SetDeathImpulse(EffectContextHandle, DamageEffectParams.DeathImpulse);
 
 	const auto EffectSpecHandle =
 		DamageEffectParams.SourceASComponent->MakeOutgoingSpec(
 			DamageEffectParams.DamageGameplayEffectClass, DamageEffectParams.AbilityLevel, EffectContextHandle);
+	
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, DamageEffectParams.DamageType, DamageEffectParams.BaseDamage);
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, GameplayTags.DeBuff_Chance, DamageEffectParams.DeBuffChance);
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, GameplayTags.DeBuff_Damage, DamageEffectParams.DeBuffDamage);

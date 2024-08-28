@@ -46,6 +46,12 @@ struct FDamageEffectParams
 
 	UPROPERTY()
 	float DeBuffFrequency { 0.f };
+
+	UPROPERTY()
+	float DeathImpulseMagnitude { 0.f };
+
+	UPROPERTY()
+	FVector DeathImpulse { FVector::ZeroVector };
 };
 
 USTRUCT(BlueprintType)
@@ -74,6 +80,9 @@ protected:
 	float DeBuffFrequency { 0.f };
 
 	TSharedPtr<FGameplayTag> DamageType;
+
+	UPROPERTY()
+	FVector DeathImpulse { FVector::ZeroVector };
 	
 	/* Function */
 public:
@@ -89,6 +98,7 @@ public:
 	FORCEINLINE float GetDeBuffDuration() const { return DeBuffDuration; }
 	FORCEINLINE float GetDeBuffFrequency() const { return DeBuffFrequency; }
 	FORCEINLINE TSharedPtr<FGameplayTag> GetDamageType() const { return DamageType; }
+	FORCEINLINE FVector GetDeathImpulse() const { return DeathImpulse; }
 
 	// Set
 	FORCEINLINE void SetIsCriticalHit(const bool bNewCriticalHit) { bIsCriticalHit = bNewCriticalHit; }
@@ -97,6 +107,8 @@ public:
 	FORCEINLINE void SetDeBuffDamage(const float InDeBuffDamage) { DeBuffDamage = InDeBuffDamage; }
 	FORCEINLINE void SetDeBuffDuration(const float InDeBuffDuration) { DeBuffDuration = InDeBuffDuration; }
 	FORCEINLINE void SetDeBuffFrequency(const float InDeBuffFrequency) { DeBuffFrequency = InDeBuffFrequency; }
+	FORCEINLINE void SetDamageType(const TSharedPtr<FGameplayTag>& InDamageType) { DamageType = InDamageType; }
+	FORCEINLINE void SetDeathImpulse(const FVector& InDeathImpulse) { DeathImpulse = InDeathImpulse; }
 };
 
 template<>

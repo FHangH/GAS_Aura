@@ -24,6 +24,10 @@ AAuraCharacterBase::AAuraCharacterBase()
 	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMeshComponent"));
 	WeaponMeshComponent->SetupAttachment(GetMesh(), FName{"WeaponHandSocket"});
 	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	NiagaraComponent_DeBuff_Burn = CreateDefaultSubobject<UNiagaraComponent_DeBuff>("NiagaraComp_DeBuff_Burn");
+	NiagaraComponent_DeBuff_Burn->SetupAttachment(GetRootComponent());
+	NiagaraComponent_DeBuff_Burn->DeBuff_Tag = FAuraGameplayTags::Get().DeBuff_Burn;
 }
 
 UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
@@ -40,6 +44,16 @@ void AAuraCharacterBase::BeginPlay()
 void AAuraCharacterBase::InitAbilityActorInfo()
 {
 	
+}
+
+FOnASComponentRegisteredSignature AAuraCharacterBase::GetOnAsComponentRegisteredDelegate()
+{
+	return OnASComponentRegisteredDelegate;
+}
+
+FOnDeathSignature AAuraCharacterBase::GetOnDeathDelegate()
+{
+	return OnDeathDelegate;
 }
 
 FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) const 
