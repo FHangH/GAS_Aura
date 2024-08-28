@@ -80,6 +80,9 @@ public:
 	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayEffect")
 	static FGameplayTag GetDamageType(const FGameplayEffectContextHandle& EffectContextHandle);
 
+	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayEffect")
+	static FVector GetDeathImpulse(const FGameplayEffectContextHandle& EffectContextHandle);
+
 	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|GameplayEffect")
 	static void SetIsBlockedHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const bool bIsBlockedHit);
 
@@ -100,6 +103,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|GameplayEffect")
 	static void SetDamageType(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const FGameplayTag& InDamageType);
+
+	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|GameplayEffect")
+	static void SetDeathImpulse(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const FVector& InDeathImpulse);
 
 	// Gameplay Mechanics
 	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayMechanics")

@@ -8,7 +8,7 @@
 #include "Untils/AuraAbilityTypes.h"
 #include "Untils/AuraLog.h"
 
-void UAuraDamageGameplayAbility::CauseDamage(AActor* TargetActor)
+void UAuraDamageGameplayAbility::CauseDamage(AActor* TargetActor) const
 {
 	if (!TargetActor || !DamageEffectClass)
 	{
@@ -49,5 +49,6 @@ FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassD
 	Params.DeBuffDamage = DeBuffDamage;
 	Params.DeBuffDuration = DeBuffDuration;
 	Params.DeBuffFrequency = DeBuffFrequency;
+	Params.DeathImpulseMagnitude = DeathImpulseMagnitude;
 	return Params;
 }

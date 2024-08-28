@@ -36,11 +36,14 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|DeBuff")
 	float DeBuffDuration { 5.f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|Impulse")
+	float DeathImpulseMagnitude { 60.f };
 	
 	/* Function */
 public:
 	UFUNCTION(BlueprintCallable, Category="Aura")
-	void CauseDamage(AActor* TargetActor);
+	void CauseDamage(AActor* TargetActor) const;
 
 	UFUNCTION(BlueprintPure, Category="Aura")
 	static FTaggedMontage GetRandomTaggedMontage(const TArray<FTaggedMontage>& TaggedMontages);
