@@ -38,7 +38,7 @@ protected:
 	float DeBuffDuration { 5.f };
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|Impulse")
-	float DeathImpulseMagnitude { 60.f };
+	float DeathImpulseMagnitude { 10000.f };
 	
 	/* Function */
 public:
