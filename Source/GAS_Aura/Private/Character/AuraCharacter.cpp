@@ -68,6 +68,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 
 		ASComponent = AuraPlayerState->GetAbilitySystemComponent();
 		AS = AuraPlayerState->GetAttributeSet();
+		OnASComponentRegisteredDelegate.Broadcast(ASComponent);
 
 		if (const auto AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
 		{
@@ -81,8 +82,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 
 int32 AAuraCharacter::GetPlayerLevel_Implementation()
 {
-	CHECK_PLAYER_STATE(AuraPlayerState);
-	return AuraPlayerState ? AuraPlayerState->GetPlayerLevel() : 0;
+	return CHECK_PLAYER_STATE(AuraPlayerState) ? AuraPlayerState->GetPlayerLevel() : 0;
 }
 
 int32 AAuraCharacter::FindLevelForXP_Implementation(const int32 InXP)

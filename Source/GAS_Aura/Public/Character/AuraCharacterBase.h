@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "Gameplay/GAS/Data/DataAsset_CharacterClassInfo.h"
+#include "Gameplay/GAS/NiagaraComponent/NiagaraComponent_DeBuff.h"
 #include "Interaction/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
 
@@ -28,6 +29,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> ASComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|NiagaraComponent")
+	TObjectPtr<UNiagaraComponent_DeBuff> NiagaraComponent_DeBuff_Burn;
 
 	// Attributes
 	UPROPERTY(BlueprintReadOnly, Category="Aura|AS")
@@ -87,6 +91,10 @@ protected:
 
 	// Minions
 	int32 MinionsCount { 0 };
+
+	// Combat Interface
+	FOnASComponentRegisteredSignature OnASComponentRegisteredDelegate;
+	FOnDeathSignature OnDeathDelegate;
 	
 	/* Function */
 public:
@@ -98,6 +106,8 @@ protected:
 	virtual void InitAbilityActorInfo();
 	
 	// Combat Interface
+	virtual FOnASComponentRegisteredSignature GetOnAsComponentRegisteredDelegate() override;
+	virtual FOnDeathSignature GetOnDeathDelegate() override;
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) const override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual void Die() override;
