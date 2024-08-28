@@ -92,6 +92,10 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 	SetEffectProperties(Data, EffectProperties);
 
+	// Check IsDead
+	if (EffectProperties.TargetCharacter->Implements<UCombatInterface>() &&
+		ICombatInterface::Execute_IsDead(EffectProperties.SourceCharacter)) return;
+
 	// CurrentValue To BaseValue
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
@@ -280,9 +284,8 @@ void UAuraAttributeSet::HandleInComingXP(const FEffectProperties& EffectProp)
 		const auto CurrentLevel = ICombatInterface::Execute_GetPlayerLevel(EffectProp.SourceCharacter);
 		const auto CurrentXP = IPlayerInterface::Execute_GetXP(EffectProp.SourceCharacter);
 		const auto NewLevel = IPlayerInterface::Execute_FindLevelForXP(EffectProp.SourceCharacter, CurrentXP + LocalIncomingXP);
-		const auto NewLevelUp = NewLevel - CurrentLevel;
 
-		if (NewLevelUp > 0)
+		if (const auto NewLevelUp = NewLevel - CurrentLevel; NewLevelUp > 0)
 		{
 			const auto AttributePointReward = IPlayerInterface::Execute_GetAttributePointReward(EffectProp.SourceCharacter, CurrentLevel);
 			const auto SpellPointReward = IPlayerInterface::Execute_GetSpellPointReward(EffectProp.SourceCharacter, CurrentLevel);
@@ -300,7 +303,41 @@ void UAuraAttributeSet::HandleInComingXP(const FEffectProperties& EffectProp)
 
 void UAuraAttributeSet::DeBuff(const FEffectProperties& EffectProp)
 {
-	
+	const auto& GameplayTags = FAuraGameplayTags::Get();
+	auto EffectContext = EffectProp.SourceASC->MakeEffectContext();
+	EffectContext.AddSourceObject(EffectProp.SourceAvatarActor);
+
+	const auto DamageType = UAuraAbilitySystemFuncLibrary::GetDamageType(EffectProp.EffectContextHandle);
+	const auto DeBuffDamage = UAuraAbilitySystemFuncLibrary::GetDeBuffDamage(EffectProp.EffectContextHandle);
+	const auto DeBuffDuration = UAuraAbilitySystemFuncLibrary::GetDeBuffDuration(EffectProp.EffectContextHandle);
+	const auto DeBuffFrequency = UAuraAbilitySystemFuncLibrary::GetDeBuffFrequency(EffectProp.EffectContextHandle);
+
+	const auto DeBuffName = FName{ FString::Printf(TEXT("DynamicDeBuff_%s"), *DamageType.ToString()) };
+	const auto Effect = NewObject<UGameplayEffect>(GetTransientPackage(), DeBuffName);
+
+	Effect->DurationPolicy = EGameplayEffectDurationType::HasDuration;
+	Effect->Period = DeBuffFrequency;
+	Effect->DurationMagnitude = FScalableFloat(DeBuffDuration);
+	Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.DamageTypesToDeBuffs[DamageType]);
+	Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;
+	Effect->StackLimitCount = 1;
+
+	const int32 Index = Effect->Modifiers.Num();
+	Effect->Modifiers.Add(FGameplayModifierInfo{});
+	auto& ModifierInfo = Effect->Modifiers[Index];
+
+	ModifierInfo.ModifierMagnitude = FScalableFloat{DeBuffDamage};
+	ModifierInfo.ModifierOp = EGameplayModOp::Additive;
+	ModifierInfo.Attribute = GetIncomingDamageAttribute();
+
+	if (const auto MutableSpec = new FGameplayEffectSpec{Effect, EffectContext, 1.f})
+	{
+		const auto AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(MutableSpec->GetContext().Get());
+		const auto DeBuffDamageType = MakeShareable(new FGameplayTag{DamageType});
+		AuraEffectContext->SetDamageType(DeBuffDamageType);
+
+		EffectProp.TargetASC->ApplyGameplayEffectSpecToSelf(*MutableSpec);
+	}
 }
 
 void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProp)
