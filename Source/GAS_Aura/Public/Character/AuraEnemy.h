@@ -85,6 +85,6 @@ public:
 	virtual AActor* GetCombatTarget_Implementation() const override;
 
 	// Combat Interface
-	virtual int32 GetPlayerLevel_Implementation() override;;
-	virtual void Die() override;
+	virtual int32 GetPlayerLevel_Implementation() override;
+	virtual void Die(const FVector& DeathImpulse) override;
 };

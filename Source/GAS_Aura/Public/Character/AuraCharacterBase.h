@@ -110,7 +110,7 @@ protected:
 	virtual FOnDeathSignature GetOnDeathDelegate() override;
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) const override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
-	virtual void Die() override;
+	virtual void Die(const FVector& DeathImpulse) override;
 	virtual bool IsDead_Implementation() const override;
 	virtual AActor* GetAvatar_Implementation() override;
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
@@ -128,7 +128,7 @@ public:
 	UAttributeSet* GetAttributeSet() const { return AS; }
 	
 	UFUNCTION(NetMulticast, Reliable, Category="Aura")
-	void Multicast_HandleDeath();
+	void Multicast_HandleDeath(const FVector& DeathImpulse);
 	
 	void Dissolve();
 	UFUNCTION(BlueprintNativeEvent, Category="Aura|Material")

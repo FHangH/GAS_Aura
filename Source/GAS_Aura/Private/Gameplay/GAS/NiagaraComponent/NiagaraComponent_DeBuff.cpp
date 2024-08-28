@@ -37,7 +37,17 @@ void UNiagaraComponent_DeBuff::BeginPlay()
 
 void UNiagaraComponent_DeBuff::OnDeBuffTagChanged(const FGameplayTag CallBackTag, const int32 NewCount)
 {
-	NewCount > 0 ? Activate() : Deactivate();
+	if (IsValid(GetOwner()) &&
+		GetOwner()->Implements<UCombatInterface>() &&
+		ICombatInterface::Execute_IsDead(GetOwner()) &&
+		NewCount > 0)
+	{
+		 Activate();
+	}
+	else
+	{
+		Deactivate();
+	}
 }
 
 void UNiagaraComponent_DeBuff::OnOwnerDeath(AActor* DeadActor)
