@@ -38,7 +38,13 @@ protected:
 	float DeBuffDuration { 5.f };
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|Impulse")
-	float DeathImpulseMagnitude { 10000.f };
+	float DeathImpulseMagnitude { 1000.f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|Impulse")
+	float KnockBackForceMagnitude { 200.f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|Impulse")
+	float KnockBackChance { 10.f };
 	
 	/* Function */
 public:
@@ -48,5 +54,6 @@ public:
 	UFUNCTION(BlueprintPure, Category="Aura")
 	static FTaggedMontage GetRandomTaggedMontage(const TArray<FTaggedMontage>& TaggedMontages);
 
-	FDamageEffectParams MakeDamageEffectParamsFromClassDefaults(TObjectPtr<AActor> TargetActor = nullptr) const;
+	UFUNCTION(BlueprintPure, Category="Aura")
+	FDamageEffectParams MakeDamageEffectParamsFromClassDefaults(AActor* TargetActor = nullptr) const;
 };

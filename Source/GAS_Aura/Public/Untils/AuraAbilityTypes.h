@@ -14,44 +14,53 @@ struct FDamageEffectParams
 
 	FDamageEffectParams(){}
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
 	TObjectPtr<UObject> WorldContextObject { nullptr };
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffectClass { nullptr };
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
 	TObjectPtr<UAbilitySystemComponent> SourceASComponent { nullptr };
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
 	TObjectPtr<UAbilitySystemComponent> TargetASComponent { nullptr };
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
 	float BaseDamage { 0.f };
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
 	float AbilityLevel { 1.f };
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
 	FGameplayTag DamageType { FGameplayTag{} };
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
 	float DeBuffChance { 0.f };
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
 	float DeBuffDamage { 0.f };
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
 	float DeBuffDuration { 0.f };
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
 	float DeBuffFrequency { 0.f };
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
 	float DeathImpulseMagnitude { 0.f };
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
 	FVector DeathImpulse { FVector::ZeroVector };
+
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
+	float KnockBackForceMagnitude { 0.f };
+
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
+	float KnockBackChance { 0.f };
+
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
+	FVector KnockBackForce { FVector::ZeroVector };
 };
 
 USTRUCT(BlueprintType)
@@ -83,6 +92,9 @@ protected:
 
 	UPROPERTY()
 	FVector DeathImpulse { FVector::ZeroVector };
+
+	UPROPERTY()
+	FVector KnockBackForce { FVector::ZeroVector };
 	
 	/* Function */
 public:
@@ -99,6 +111,7 @@ public:
 	FORCEINLINE float GetDeBuffFrequency() const { return DeBuffFrequency; }
 	FORCEINLINE TSharedPtr<FGameplayTag> GetDamageType() const { return DamageType; }
 	FORCEINLINE FVector GetDeathImpulse() const { return DeathImpulse; }
+	FORCEINLINE FVector GetKnockBackForce() const { return KnockBackForce; }
 
 	// Set
 	FORCEINLINE void SetIsCriticalHit(const bool bNewCriticalHit) { bIsCriticalHit = bNewCriticalHit; }
@@ -109,6 +122,7 @@ public:
 	FORCEINLINE void SetDeBuffFrequency(const float InDeBuffFrequency) { DeBuffFrequency = InDeBuffFrequency; }
 	FORCEINLINE void SetDamageType(const TSharedPtr<FGameplayTag>& InDamageType) { DamageType = InDamageType; }
 	FORCEINLINE void SetDeathImpulse(const FVector& InDeathImpulse) { DeathImpulse = InDeathImpulse; }
+	FORCEINLINE void SetKnockBackForce(const FVector& InKnockBackFore) { KnockBackForce = InKnockBackFore; }
 };
 
 template<>

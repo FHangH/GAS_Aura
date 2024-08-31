@@ -9,7 +9,7 @@ UScriptStruct* FAuraGameplayEffectContext::GetScriptStruct() const
 
 bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bool& bOutSuccess)
 {
-	uint16 RepBits = 0;
+	uint32 RepBits = 0;
 	if (Ar.IsSaving())
 	{
 		if (bReplicateInstigator && Instigator.IsValid())
@@ -72,9 +72,13 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 		{
 			RepBits |= 1 << 14;
 		}
+		if (!KnockBackForce.IsZero())
+		{
+			RepBits |= 1 << 15;
+		}
 	}
 
-	Ar.SerializeBits(&RepBits, 15);
+	Ar.SerializeBits(&RepBits, 16);
 
 	if (RepBits & (1 << 0))
 	{
@@ -154,6 +158,10 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 	if (RepBits & (1 << 14))
 	{
 		DeathImpulse.NetSerialize(Ar, Map, bOutSuccess);
+	}
+	if (RepBits & (1 << 15))
+	{
+		KnockBackForce.NetSerialize(Ar, Map, bOutSuccess);
 	}
 		
 	if (Ar.IsLoading())
