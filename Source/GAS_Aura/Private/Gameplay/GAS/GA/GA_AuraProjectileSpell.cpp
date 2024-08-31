@@ -50,6 +50,5 @@ void UGA_AuraProjectileSpell::SpawnProjectile(
 		
 	if (!Projectile) return;
 	Projectile->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults();
-		
 	Projectile->FinishSpawning(Transform);
 }
