@@ -260,6 +260,13 @@ void UAuraAttributeSet::HandleInComingDamage(const FEffectProperties& EffectProp
 			FGameplayTagContainer TagContainer;
 			TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
 			EffectProp.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+
+			// KnockBack
+			const auto KnockBackForce = UAuraAbilitySystemFuncLibrary::GetKnockBackForce(EffectProp.EffectContextHandle);
+			if (KnockBackForce.IsNearlyZero(1.f))
+			{
+				EffectProp.TargetCharacter->LaunchCharacter(KnockBackForce, true, true);
+			}
 		}
 
 		const auto IsBlocked = UAuraAbilitySystemFuncLibrary::IsBlockedHit(EffectProp.EffectContextHandle);

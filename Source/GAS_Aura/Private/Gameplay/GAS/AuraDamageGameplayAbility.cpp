@@ -35,7 +35,7 @@ FTaggedMontage UAuraDamageGameplayAbility::GetRandomTaggedMontage(const TArray<F
 	return TaggedMontages[FMath::RandRange(0, TaggedMontages.Num() - 1)];
 }
 
-FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassDefaults(const TObjectPtr<AActor> TargetActor) const
+FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassDefaults(AActor* TargetActor) const
 {
 	FDamageEffectParams Params;
 	Params.WorldContextObject = GetAvatarActorFromActorInfo();
@@ -50,5 +50,18 @@ FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassD
 	Params.DeBuffDuration = DeBuffDuration;
 	Params.DeBuffFrequency = DeBuffFrequency;
 	Params.DeathImpulseMagnitude = DeathImpulseMagnitude;
+	Params.KnockBackForceMagnitude = KnockBackForceMagnitude;
+	Params.KnockBackChance = KnockBackChance;
+
+	if (IsValid(TargetActor))
+	{
+		auto Rotation = (TargetActor->GetActorLocation() - GetAvatarActorFromActorInfo()->GetActorLocation()).Rotation();
+		Rotation.Pitch = 45.f;
+
+		const auto ToTarget = Rotation.Vector();
+		Params.DeathImpulse = ToTarget * DeathImpulseMagnitude;
+		Params.KnockBackForce = ToTarget * KnockBackForceMagnitude;
+	}
+	
 	return Params;
 }

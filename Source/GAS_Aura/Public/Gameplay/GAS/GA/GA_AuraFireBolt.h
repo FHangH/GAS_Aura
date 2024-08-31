@@ -12,12 +12,18 @@ class GAS_AURA_API UGA_AuraFireBolt : public UGA_AuraProjectileSpell
 	GENERATED_BODY()
 
 	/* Property */
-private:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura", meta=(AllowPrivateAccess=true))
-	int32 NumProjectiles { 5 };
+protected:
+	UPROPERTY(EditAnywhere, Category="Aura")
+	float ProjectileSpread { 90.f };
+
+	UPROPERTY(EditAnywhere, Category="Aura")
+	int32 MaxNumProjectiles { 5 };
 	
 	/* Function */
 public:
 	virtual FString GetDescription(const int32 Level) override;
 	virtual FString GetNextLevelDescription(const int32 Level) override;
+
+	UFUNCTION(BlueprintCallable, Category="Aura")
+	void SpawnProjectiles(const FVector& ProjectileTargetLocation, const FGameplayTag& SocketTag, const bool bOverridePitch = false, const float PitchOverride = 0.f, AActor* HomingTarget = nullptr);
 };
