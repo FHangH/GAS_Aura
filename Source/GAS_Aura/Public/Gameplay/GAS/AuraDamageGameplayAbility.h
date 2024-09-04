@@ -38,10 +38,10 @@ protected:
 	float DeBuffDuration { 5.f };
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|Impulse")
-	float DeathImpulseMagnitude { 1000.f };
+	float DeathImpulseMagnitude { 18000.f };
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|Impulse")
-	float KnockBackForceMagnitude { 200.f };
+	float KnockBackForceMagnitude { 5000.f };
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|Impulse")
 	float KnockBackChance { 10.f };

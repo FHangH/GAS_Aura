@@ -111,7 +111,7 @@ void AAuraProjectile::OnSphereStartOverlap(UPrimitiveComponent* OverlappedCompon
 			auto Rotation = GetActorRotation();
 			Rotation.Pitch = 45.f;
 			const auto KnockBackDirection = Rotation.Vector();
-			DamageEffectParams.KnockBackForce *= KnockBackDirection * DamageEffectParams.KnockBackForceMagnitude;
+			DamageEffectParams.KnockBackForce = KnockBackDirection * DamageEffectParams.KnockBackForceMagnitude;
 		}
 		DamageEffectParams.TargetASComponent = TargetASC;
 		UAuraAbilitySystemFuncLibrary::ApplyDamageEffect(DamageEffectParams);

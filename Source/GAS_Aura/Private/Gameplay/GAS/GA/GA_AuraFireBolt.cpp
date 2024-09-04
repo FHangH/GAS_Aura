@@ -4,6 +4,7 @@
 #include "Gameplay/GAS/GA/GA_AuraFireBolt.h"
 #include "Gameplay/Actor/AuraProjectile.h"
 #include "Interaction/CombatInterface.h"
+#include "Untils/AuraAbilitySystemFuncLibrary.h"
 #include "Untils/AuraLog.h"
 
 FString UGA_AuraFireBolt::GetDescription(const int32 Level)
@@ -71,22 +72,23 @@ void UGA_AuraFireBolt::SpawnProjectiles(
 	}
 
 	const auto Forward = Rotation.Vector();
-	const auto LeftOfSpread = Forward.RotateAngleAxis(-ProjectileSpread / 2.f, FVector::UpVector);
-	const auto RightOfSpread = Forward.RotateAngleAxis(ProjectileSpread / 2.f, FVector::UpVector);
-	
-	//NumProjectiles = FMath::Min(MaxNumProjectiles, GetAbilityLevel());
-	if (NumProjectiles > 1)
+	const auto Rotations = UAuraAbilitySystemFuncLibrary::EvenlySpacedRotators(Forward, FVector::UpVector, ProjectileSpread, NumProjectiles);
+
+	for (const auto& Rot : Rotations)
 	{
-		const auto DeltaSpread = ProjectileSpread / (NumProjectiles - 1);
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(SocketLocation);
+		SpawnTransform.SetRotation(Rot.Quaternion());
+
+		const auto Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
+			ProjectileClass,
+			SpawnTransform,
+			GetOwningActorFromActorInfo(),
+			Cast<APawn>(GetOwningActorFromActorInfo()),
+			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
 		
-		for (int32 i = 0; i < NumProjectiles; ++i)
-		{
-			const auto Direction = LeftOfSpread.RotateAngleAxis(DeltaSpread * i, FVector::UpVector);
-			const auto Start = SocketLocation + FVector{0, 0, 10};
-			const auto End = Start + Direction * 75.f;
-		}
-	}
-	else
-	{
+		if (!Projectile) return;
+		Projectile->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults();
+		Projectile->FinishSpawning(SpawnTransform);
 	}
 }
