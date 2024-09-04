@@ -331,6 +331,54 @@ void UAuraAbilitySystemFuncLibrary::GetLivePlayersWithRadius(
 	}
 }
 
+TArray<FRotator> UAuraAbilitySystemFuncLibrary::EvenlySpacedRotators(
+	const FVector& Forward, const FVector& Axis, const float Spread, const int32 NumRotators)
+{
+	TArray<FRotator> Rotators;
+	
+	const auto LeftOfSpread = Forward.RotateAngleAxis(-Spread / 2.f, Axis);
+	if (NumRotators > 1)
+	{
+		const auto DeltaSpread = Spread / (NumRotators - 1);
+		
+		for (int32 i = 0; i < NumRotators; ++i)
+		{
+			const auto Direction = LeftOfSpread.RotateAngleAxis(DeltaSpread * i, FVector::UpVector);
+			Rotators.Add(Direction.Rotation());
+		}
+	}
+	else
+	{
+		Rotators.Add(Forward.Rotation());
+	}
+	return Rotators;
+}
+
+TArray<FVector> UAuraAbilitySystemFuncLibrary::EvenlyRotatedVectors(
+	const FVector& Forward, const FVector& Axis, const float Spread, const int32 NumberVectors)
+{
+	TArray<FVector> Vectors;
+
+	const auto LeftOfSpread = Forward.RotateAngleAxis(-Spread / 2.f, Axis);
+	if (NumberVectors > 1)
+	{
+		const auto DeltaSpread = Spread / (NumberVectors - 1);
+		
+		for (int32 i = 0; i < NumberVectors; ++i)
+		{
+			const auto Direction = LeftOfSpread.RotateAngleAxis(DeltaSpread * i, FVector::UpVector);
+			Vectors.Add(Direction);
+		}
+	}
+	else
+	{
+		Vectors.Add(Forward);
+	}
+
+	return Vectors;
+}
+
+// Check
 bool UAuraAbilitySystemFuncLibrary::IsNotFriend(const AActor* FirstActor, const AActor* SecondActor)
 {
 	if (!FirstActor ||!SecondActor) return false;

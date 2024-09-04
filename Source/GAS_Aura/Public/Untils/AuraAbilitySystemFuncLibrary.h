@@ -118,6 +118,13 @@ public:
 	static void GetLivePlayersWithRadius(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingPlayers, const TArray<AActor*>& ActorsToIgnore, const float Radius, const FVector& SphereOrigin);
 
 	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayMechanics")
+	static TArray<FRotator> EvenlySpacedRotators(const FVector& Forward, const FVector& Axis, const float Spread, const int32 NumRotators);
+
+	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayMechanics")
+	static TArray<FVector> EvenlyRotatedVectors(const FVector& Forward, const FVector& Axis, const float Spread, const int32 NumberVectors);
+
+	// Check
+	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|Check")
 	static bool IsNotFriend(const AActor* FirstActor, const AActor* SecondActor);
 
 	// XP Reward
