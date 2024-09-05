@@ -6,6 +6,7 @@
 #include "Interaction/CombatInterface.h"
 #include "Untils/AuraAbilitySystemFuncLibrary.h"
 #include "Untils/AuraLog.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 FString UGA_AuraFireBolt::GetDescription(const int32 Level)
 {
@@ -51,8 +52,7 @@ FString UGA_AuraFireBolt::GetNextLevelDescription(const int32 Level)
 }
 
 void UGA_AuraFireBolt::SpawnProjectiles(
-	const FVector& ProjectileTargetLocation, const FGameplayTag& SocketTag,
-	const bool bOverridePitch, const float PitchOverride, AActor* HomingTarget)
+	const FVector& ProjectileTargetLocation, const FGameplayTag& SocketTag, const bool bOverridePitch, const float PitchOverride, AActor* HomingTarget)
 {
 	if (!GetAvatarActorFromActorInfo()->HasAuthority()) return;
 	
@@ -72,7 +72,8 @@ void UGA_AuraFireBolt::SpawnProjectiles(
 	}
 
 	const auto Forward = Rotation.Vector();
-	const auto Rotations = UAuraAbilitySystemFuncLibrary::EvenlySpacedRotators(Forward, FVector::UpVector, ProjectileSpread, NumProjectiles);
+	const auto EffectiveNumProjectiles = FMath::Min(NumProjectiles, GetAbilityLevel());
+	const auto Rotations = UAuraAbilitySystemFuncLibrary::EvenlySpacedRotators(Forward, FVector::UpVector, ProjectileSpread, EffectiveNumProjectiles);
 
 	for (const auto& Rot : Rotations)
 	{
@@ -89,6 +90,20 @@ void UGA_AuraFireBolt::SpawnProjectiles(
 		
 		if (!Projectile) return;
 		Projectile->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults();
+
+		if (HomingTarget && HomingTarget->Implements<UCombatInterface>())
+		{
+			Projectile->GetProjectileMovementComponent()->HomingTargetComponent = HomingTarget->GetRootComponent();
+		}
+		else
+		{
+			Projectile->SetHomingTargetSceneComponent(NewObject<USceneComponent>(USceneComponent::StaticClass()));
+			Projectile->GetHomingTargetSceneComponent()->SetWorldLocation(ProjectileTargetLocation);
+			Projectile->GetProjectileMovementComponent()->HomingTargetComponent = Projectile->GetHomingTargetSceneComponent();
+		}
+		Projectile->GetProjectileMovementComponent()->HomingAccelerationMagnitude = FMath::RandRange(HomingAccelerationMin, HomingAccelerationMax);
+		Projectile->GetProjectileMovementComponent()->bIsHomingProjectile = IsLaunchHomingProjectiles;
+
 		Projectile->FinishSpawning(SpawnTransform);
 	}
 }

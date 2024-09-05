@@ -18,6 +18,9 @@ class GAS_AURA_API AAuraProjectile : public AActor
 
 	/* Property */
 protected:
+	UPROPERTY(VisibleAnywhere, Category="Aura")
+	TObjectPtr<USceneComponent> HomingTargetSceneComponent;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Aura")
 	TObjectPtr<USphereComponent> SphereComponent;
 
@@ -37,9 +40,9 @@ protected:
 	TObjectPtr<UAudioComponent> LoopingSoundComponent;
 
 	UPROPERTY(EditAnywhere, Category="Aura")
-	float LifeTime {10.f};
+	float LifeTime { 10.f };
 
-	bool bIsHit {false};
+	bool bIsHit { false };
 
 public:
 	UPROPERTY(BlueprintReadWrite, Category="Aura", meta=(ExposeOnSpawn=true, AllowPrivateAccess=true))
@@ -49,10 +52,20 @@ public:
 public:
 	AAuraProjectile();
 
+	// Get
+	FORCEINLINE TObjectPtr<USceneComponent> GetHomingTargetSceneComponent() const { return HomingTargetSceneComponent; }
+	FORCEINLINE TObjectPtr<UProjectileMovementComponent> GetProjectileMovementComponent() const { return ProjectileMovementComponent; }
+
+	// Set
+	FORCEINLINE void SetHomingTargetSceneComponent(const TObjectPtr<USceneComponent> InHomingTarget) { HomingTargetSceneComponent = InHomingTarget; }
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Destroyed() override;
 
+	UFUNCTION()
+	bool IsValidOverlap(const AActor* OtherActor) const;
+	
 	UFUNCTION()
 	void OnHit();
 	
