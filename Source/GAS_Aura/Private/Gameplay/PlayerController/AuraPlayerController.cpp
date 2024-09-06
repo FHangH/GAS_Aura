@@ -8,6 +8,7 @@
 #include "InputActionValue.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Components/SplineComponent.h"
 #include "GameFramework/Character.h"
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
@@ -357,6 +358,16 @@ void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 				CachedDestination = NavPath->PathPoints[NavPath->PathPoints.Num() - 1];
 				bAutoRunning = true;
 			}
+
+			if (ClickNiagaraSystem)
+			{
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CachedDestination);
+			}
+			else
+			{
+				UE_LOG(Aura, Warning, TEXT("ClickNiagaraSystem is nullptr"));
+			}
+			
 			StartTickTimerHandle_AutoRun();
 		}
 		FollowTime = 0.f;
