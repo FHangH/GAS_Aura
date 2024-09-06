@@ -8,6 +8,7 @@
 #include "Untils/TickRate.h"
 #include "AuraPlayerController.generated.h"
 
+class UNiagaraSystem;
 class UDamageTextWidgetComponent;
 class USplineComponent;
 class UAuraAbilitySystemComponent;
@@ -73,8 +74,11 @@ private:
 	UPROPERTY(EditAnywhere, Category="Aura|TopDownMove|AutoRun")
 	float AutoRunAcceptanceRadius {50.f};
 
-	UPROPERTY(VisibleDefaultsOnly, Category="Aura|TopDownMove")
+	UPROPERTY(VisibleDefaultsOnly, Category="Aura|TopDownMove|Spline")
 	TObjectPtr<USplineComponent> SplineComponent;
+
+	UPROPERTY(EditAnywhere, Category="Aura|TopDownMove|Niagara")
+	TObjectPtr<UNiagaraSystem> ClickNiagaraSystem;
 
 	// AutoRun Tick Timer
 	UPROPERTY(BlueprintReadWrite, Category="Aura|Tick|AutoRun", meta=(AllowPrivateAccess=true))
