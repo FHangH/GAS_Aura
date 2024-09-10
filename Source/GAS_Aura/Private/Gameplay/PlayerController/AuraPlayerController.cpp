@@ -144,7 +144,7 @@ void AAuraPlayerController::CursorTrace()
 	 * E. LastActor is valid && ThisActor is valid && ThisActor == LastActor
 	 *		- Do nothing
 	 */
-//region OldCode
+#pragma region OldCode
 	/*if (LastActor == nullptr)
 	{
 		if (ThisActor!= nullptr)
@@ -178,7 +178,7 @@ void AAuraPlayerController::CursorTrace()
 			}
 		}
 	}*/
-//endregion
+#pragma endregion
 	if (LastActor != ThisActor)
 	{
 		if (LastActor) LastActor->UnHighLightActor();
@@ -310,16 +310,20 @@ void AAuraPlayerController::ClearTickTimerHandle_AutoRun()
 }
 
 // Bind All Actions Use InputTag With DataAsset_AuraInputConfig
-void AAuraPlayerController::AbilityInputPressed(FGameplayTag InputTag)
+void AAuraPlayerController::AbilityInputPressed(const FGameplayTag InputTag)
 {
 	if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
 		bTargeting = ThisActor ? true : false;
 		bAutoRunning = false;
 	}
+	if (GetASComponent())
+	{
+		GetASComponent()->AbilityInputPressed(InputTag);
+	}
 }
 
-void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
+void AAuraPlayerController::AbilityInputReleased(const FGameplayTag InputTag)
 {
 	if (!GetASComponent()) return;
 
@@ -361,7 +365,10 @@ void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 
 			if (ClickNiagaraSystem)
 			{
-				UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CachedDestination);
+				// TODO: Spawn Niagara System At Click Location Not NavPath Last PointLocation (Z not true)
+				auto ClickSpawnLocation = CachedDestination;
+				ClickSpawnLocation.Z = 0.f;
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, ClickSpawnLocation);
 			}
 			else
 			{
@@ -375,7 +382,7 @@ void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 	}
 }
 
-void AAuraPlayerController::AbilityInputHeld(FGameplayTag InputTag)
+void AAuraPlayerController::AbilityInputHeld(const FGameplayTag InputTag)
 {
 	if (!GetASComponent()) return;
 

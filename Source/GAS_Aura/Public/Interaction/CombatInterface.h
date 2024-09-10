@@ -83,4 +83,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
 	ECharacterClassType GetCharacterClassType();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
+	void SetInShockLoop(const bool bInShockLoop);
 };

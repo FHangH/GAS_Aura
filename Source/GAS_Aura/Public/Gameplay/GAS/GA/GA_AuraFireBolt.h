@@ -20,10 +20,10 @@ protected:
 	int32 MaxNumProjectiles { 5 };
 
 	UPROPERTY(EditAnywhere, Category="Aura")
-	float HomingAccelerationMin { 1600.f };
+	float HomingAccelerationMin { 3200.f };
 
 	UPROPERTY(EditAnywhere, Category="Aura")
-	float HomingAccelerationMax { 3200.f };
+	float HomingAccelerationMax { 6400.f };
 
 	UPROPERTY(EditAnywhere, Category="Aura")
 	bool IsLaunchHomingProjectiles { true };
