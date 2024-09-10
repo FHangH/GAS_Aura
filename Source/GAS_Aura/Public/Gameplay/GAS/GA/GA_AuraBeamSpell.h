@@ -22,11 +22,14 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category="Aura|Beam")
 	TObjectPtr<APlayerController> OwnerPlayerController;
 
+	UPROPERTY(BlueprintReadWrite, Category="Aura|Beam")
+	TObjectPtr<ACharacter> OwnerCharacter;
+
 	/* Function */
 public:
 	UFUNCTION(BlueprintCallable, Category="Aura")
 	void StoreMouseDataInfo(const FHitResult& HitResult);
 
 	UFUNCTION(BlueprintCallable, Category="Aura")
-	void StoreOwnerPlayerController();
+	void StoreOwners();
 };
