@@ -87,7 +87,11 @@ protected:
 	TObjectPtr<USoundBase> DeathSound;
 	
 	// Status
+	UPROPERTY(BlueprintReadWrite, Category="Aura|Status")
 	bool bIsDead { false };
+	
+	UPROPERTY(BlueprintReadWrite, Category="Aura|Status")
+	bool bInShockLoop { false };
 
 	// Minions
 	int32 MinionsCount { 0 };
