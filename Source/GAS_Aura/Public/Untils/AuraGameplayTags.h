@@ -112,6 +112,12 @@ public:
  FGameplayTag DeBuff_Damage;
  FGameplayTag DeBuff_Frequency;
  FGameplayTag DeBuff_Duration;
+
+ // Block Tags
+ FGameplayTag Player_Block_InputPressed;
+ FGameplayTag Player_Block_InputHeld;
+ FGameplayTag Player_Block_InputReleased;
+ FGameplayTag Player_Block_CursorTrace;
  
  /* Function */
 public:

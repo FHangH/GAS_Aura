@@ -108,6 +108,8 @@ void AAuraPlayerController::SetupInputComponent()
 
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 {
+	if (GetASComponent() && GetASComponent()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed)) return;
+	
 	const auto InputAxisVector = InputActionValue.Get<FVector2d>();
 	const auto ForwardDirection =
 		FRotationMatrix(FRotator{0.f, GetControlRotation().Yaw, 0.f}).GetUnitAxis(EAxis::X);
@@ -124,6 +126,14 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 void AAuraPlayerController::CursorTrace()
 {
 	if (!IsCursorTraceMode) return;
+	if (GetASComponent() && GetASComponent()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_CursorTrace))
+	{
+		if (LastActor) LastActor->UnHighLightActor();
+		if (ThisActor) ThisActor->UnHighLightActor();
+		LastActor = nullptr;
+		ThisActor = nullptr;
+		return;
+	}
 	
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHitResult);
 	if (!CursorHitResult.bBlockingHit) return;
@@ -312,6 +322,8 @@ void AAuraPlayerController::ClearTickTimerHandle_AutoRun()
 // Bind All Actions Use InputTag With DataAsset_AuraInputConfig
 void AAuraPlayerController::AbilityInputPressed(const FGameplayTag InputTag)
 {
+	if (GetASComponent() && GetASComponent()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed)) return;
+	
 	if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
 		bTargeting = ThisActor ? true : false;
@@ -325,7 +337,7 @@ void AAuraPlayerController::AbilityInputPressed(const FGameplayTag InputTag)
 
 void AAuraPlayerController::AbilityInputReleased(const FGameplayTag InputTag)
 {
-	if (!GetASComponent()) return;
+	if (GetASComponent() && GetASComponent()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputReleased)) return;
 
 	if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
@@ -362,19 +374,21 @@ void AAuraPlayerController::AbilityInputReleased(const FGameplayTag InputTag)
 				CachedDestination = NavPath->PathPoints[NavPath->PathPoints.Num() - 1];
 				bAutoRunning = true;
 			}
-
-			if (ClickNiagaraSystem)
-			{
-				// TODO: Spawn Niagara System At Click Location Not NavPath Last PointLocation (Z not true)
-				auto ClickSpawnLocation = CachedDestination;
-				ClickSpawnLocation.Z = 0.f;
-				UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, ClickSpawnLocation);
-			}
-			else
-			{
-				UE_LOG(Aura, Warning, TEXT("ClickNiagaraSystem is nullptr"));
-			}
 			
+			if (GetASComponent() && !GetASComponent()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed))
+			{
+				if (ClickNiagaraSystem)
+				{
+					// TODO: Spawn Niagara System At Click Location Not NavPath Last PointLocation (Z not true)
+					auto ClickSpawnLocation = CachedDestination;
+					ClickSpawnLocation.Z = 0.f;
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, ClickSpawnLocation);
+				}
+				else
+				{
+					UE_LOG(Aura, Warning, TEXT("ClickNiagaraSystem is nullptr"));
+				}
+			}
 			StartTickTimerHandle_AutoRun();
 		}
 		FollowTime = 0.f;
@@ -384,7 +398,7 @@ void AAuraPlayerController::AbilityInputReleased(const FGameplayTag InputTag)
 
 void AAuraPlayerController::AbilityInputHeld(const FGameplayTag InputTag)
 {
-	if (!GetASComponent()) return;
+	if (GetASComponent() && GetASComponent()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputHeld)) return;
 
 	// Not LMB => Execute GA
 	if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
