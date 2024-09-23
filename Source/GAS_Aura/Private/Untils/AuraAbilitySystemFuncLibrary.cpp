@@ -331,6 +331,41 @@ void UAuraAbilitySystemFuncLibrary::GetLivePlayersWithRadius(
 	}
 }
 
+void UAuraAbilitySystemFuncLibrary::GetClosestTargets(
+	const int32 MaxTargets, const TArray<AActor*>& InActors, const FVector& Origin, TArray<AActor*>& OutClosestActors)
+{
+	if (InActors.Num() <= MaxTargets)
+	{
+		OutClosestActors = InActors;
+		return;
+	}
+
+	auto InActorsToCheck = InActors;
+	int32 NumberTargetsFound { 0 };
+
+	while (NumberTargetsFound < MaxTargets)
+	{
+		if (InActorsToCheck.Num() <= 0) break;
+		
+		auto ClosestDistance = TNumericLimits<double>::Max();
+		AActor* ClosestActor { nullptr };
+
+		for (const auto PotentialTarget : InActorsToCheck)
+		{
+			const auto Distance = (PotentialTarget->GetActorLocation() - Origin).Length();
+
+			if (Distance < ClosestDistance)
+			{
+				ClosestDistance = Distance;
+				ClosestActor = PotentialTarget;
+			}
+		}
+		InActorsToCheck.Remove(ClosestActor);
+		OutClosestActors.AddUnique(ClosestActor);
+		++NumberTargetsFound;
+	}
+}
+
 TArray<FRotator> UAuraAbilitySystemFuncLibrary::EvenlySpacedRotators(
 	const FVector& Forward, const FVector& Axis, const float Spread, const int32 NumRotators)
 {

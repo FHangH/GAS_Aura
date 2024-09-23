@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Untils/AuraAbilitySystemFuncLibrary.h"
 
 void UGA_AuraBeamSpell::StoreMouseDataInfo(const FHitResult& HitResult)
 {
@@ -59,4 +60,28 @@ void UGA_AuraBeamSpell::TraceFirstTarget(const FVector& BeamTargetLocation)
 			MouseHitActor = HitResult.GetActor();
 		}
 	}
+}
+
+void UGA_AuraBeamSpell::StoreAdditionalTargets(TArray<AActor*>& OutAdditionalTargets)
+{
+	TArray<AActor*> OverlappingActors;
+	TArray<AActor*> IgnoreActors;
+	IgnoreActors.AddUnique(GetAvatarActorFromActorInfo());
+	IgnoreActors.AddUnique(MouseHitActor);
+
+	UAuraAbilitySystemFuncLibrary::GetLivePlayersWithRadius(
+		GetAvatarActorFromActorInfo(),
+		OverlappingActors,
+		IgnoreActors,
+		850.f,
+		MouseHitActor->GetActorLocation());
+
+	//const auto NumAdditionalTargets = FMath::Min(GetAbilityLevel() - 1, MaxNumShockTargets);
+	const int32 NumAdditionalTargets = MaxNumShockTargets;
+	
+	UAuraAbilitySystemFuncLibrary::GetClosestTargets(
+		NumAdditionalTargets,
+		OverlappingActors,
+		MouseHitActor->GetActorLocation(),
+		OutAdditionalTargets);
 }
