@@ -118,6 +118,9 @@ public:
 	static void GetLivePlayersWithRadius(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingPlayers, const TArray<AActor*>& ActorsToIgnore, const float Radius, const FVector& SphereOrigin);
 
 	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayMechanics")
+	static void GetClosestTargets(const int32 MaxTargets, const TArray<AActor*>& InActors, const FVector& Origin, TArray<AActor*>& OutClosestActors);
+	
+	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayMechanics")
 	static TArray<FRotator> EvenlySpacedRotators(const FVector& Forward, const FVector& Axis, const float Spread, const int32 NumRotators);
 
 	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayMechanics")
