@@ -54,7 +54,7 @@ void UGA_AuraBeamSpell::TraceFirstTarget(const FVector& BeamTargetLocation)
 			HitResult,
 			true);
 
-		if (HitResult.IsValidBlockingHit())
+		if (HitResult.bBlockingHit)
 		{
 			MouseHitLocation = HitResult.ImpactPoint;
 			MouseHitActor = HitResult.GetActor();
