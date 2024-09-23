@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 #include "Untils/AuraCollision.h"
 #include "Untils/AuraGameplayTags.h"
 #include "Untils/AuraLog.h"
@@ -13,6 +14,8 @@
 AAuraCharacterBase::AAuraCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	bReplicates = true;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
@@ -44,6 +47,13 @@ void AAuraCharacterBase::BeginPlay()
 void AAuraCharacterBase::InitAbilityActorInfo()
 {
 	
+}
+
+void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AAuraCharacterBase, bInShockLoop);
 }
 
 FOnASComponentRegisteredSignature AAuraCharacterBase::GetOnAsComponentRegisteredDelegate()
@@ -138,6 +148,11 @@ void AAuraCharacterBase::IncrementMinionCount_Implementation(const int32 Amount)
 ECharacterClassType AAuraCharacterBase::GetCharacterClassType_Implementation()
 {
 	return CharacterClassType;
+}
+
+USkeletalMeshComponent* AAuraCharacterBase::GetWeaponMesh_Implementation() const
+{
+	return WeaponMeshComponent;
 }
 
 void AAuraCharacterBase::ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const
