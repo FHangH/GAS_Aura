@@ -3,6 +3,7 @@
 
 #include "Gameplay/GAS/AbilityTask/AT_TargetDataUnderMouse.h"
 #include "AbilitySystemComponent.h"
+#include "Untils/AuraCollision.h"
 
 void UAT_TargetDataUnderMouse::Activate()
 {
@@ -40,7 +41,7 @@ void UAT_TargetDataUnderMouse::SendMouseCursorData() const
 	FScopedPredictionWindow ScopedPrediction(AbilitySystemComponent.Get());
 	
 	FHitResult HitResult;
-	PC->GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
+	PC->GetHitResultUnderCursor(ECC_Target, false, HitResult);
 	
 	FGameplayAbilityTargetDataHandle DataHandle;
 	auto Data = new FGameplayAbilityTargetData_SingleTargetHit();
