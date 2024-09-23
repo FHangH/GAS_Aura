@@ -90,7 +90,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category="Aura|Status")
 	bool bIsDead { false };
 	
-	UPROPERTY(BlueprintReadWrite, Category="Aura|Status")
+	UPROPERTY(BlueprintReadWrite, Replicated, Category="Aura|Status")
 	bool bInShockLoop { false };
 
 	// Minions
@@ -108,6 +108,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo();
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	// Combat Interface
 	virtual FOnASComponentRegisteredSignature GetOnAsComponentRegisteredDelegate() override;
@@ -123,6 +124,7 @@ protected:
 	virtual int32 GetMinionCount_Implementation() const override;
 	virtual void IncrementMinionCount_Implementation(const int32 Amount) override;
 	virtual ECharacterClassType GetCharacterClassType_Implementation() override;
+	virtual USkeletalMeshComponent* GetWeaponMesh_Implementation() const override;
 
 	void ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const;
 	virtual void InitializeDefaultAttributes() const;
