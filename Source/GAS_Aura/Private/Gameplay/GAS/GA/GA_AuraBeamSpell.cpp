@@ -62,7 +62,7 @@ void UGA_AuraBeamSpell::TraceFirstTarget(const FVector& BeamTargetLocation)
 	}
 }
 
-void UGA_AuraBeamSpell::StoreAdditionalTargets(TArray<AActor*>& OutAdditionalTargets)
+void UGA_AuraBeamSpell::StoreAdditionalTargets(TArray<AActor*>& OutAdditionalTargets) const
 {
 	TArray<AActor*> OverlappingActors;
 	TArray<AActor*> IgnoreActors;

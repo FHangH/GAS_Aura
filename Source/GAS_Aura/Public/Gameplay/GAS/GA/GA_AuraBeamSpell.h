@@ -40,5 +40,5 @@ public:
 	void TraceFirstTarget(const FVector& BeamTargetLocation);
 
 	UFUNCTION(BlueprintCallable, Category="Aura")
-	void StoreAdditionalTargets(TArray<AActor*>& OutAdditionalTargets);
+	void StoreAdditionalTargets(TArray<AActor*>& OutAdditionalTargets) const;
 };
