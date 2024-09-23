@@ -32,4 +32,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Aura")
 	void StoreOwners();
+
+	UFUNCTION(BlueprintCallable, Category="Aura")
+	void TraceFirstTarget(const FVector& BeamTargetLocation);
 };
