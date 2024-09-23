@@ -56,4 +56,7 @@ public:
 
 	UFUNCTION(BlueprintPure, Category="Aura")
 	FDamageEffectParams MakeDamageEffectParamsFromClassDefaults(AActor* TargetActor = nullptr) const;
+
+	UFUNCTION(BlueprintPure, Category="Aura")
+	float GetDamageAtLevel() const;
 };
