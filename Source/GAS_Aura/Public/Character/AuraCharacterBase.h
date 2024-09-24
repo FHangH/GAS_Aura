@@ -85,6 +85,10 @@ protected:
 	// Sounds
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura|Sound")	
 	TObjectPtr<USoundBase> DeathSound;
+
+	// Walk Speed
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Property", meta=(AllowPrivateAccess=true))
+	float BaseWalkSpeed { 600.f };
 	
 	// Status
 	UPROPERTY(BlueprintReadWrite, Category="Aura|Status")
@@ -92,6 +96,9 @@ protected:
 	
 	UPROPERTY(BlueprintReadWrite, Replicated, Category="Aura|Status")
 	bool bInShockLoop { false };
+
+	UPROPERTY(BlueprintReadWrite, ReplicatedUsing="OnRep_IsStunned", Category="Aura|Status")
+	bool bIsStunned { false };
 
 	// Minions
 	int32 MinionsCount { 0 };
@@ -141,4 +148,11 @@ public:
 	void StartBodyDissolveTimeLine(UMaterialInstanceDynamic* DynamicMatIns);
 	UFUNCTION(BlueprintNativeEvent, Category="Aura|Material")
 	void StartWeaponDissolveTimeLine(UMaterialInstanceDynamic* DynamicMatIns);
+
+protected:
+	virtual void StunTagChanged(const FGameplayTag CallbackTag, const int32 NewCount);
+
+	// ReplicatedUsing
+	UFUNCTION()
+	virtual void OnRep_IsStunned();
 };

@@ -13,6 +13,7 @@
 #include "Gameplay/GAS/Data/DataAsset_LevelUpInfo.h"
 #include "Gameplay/PlayerController/AuraPlayerController.h"
 #include "UI/HUD/AuraHUD.h"
+#include "Untils/AuraGameplayTags.h"
 #include "Untils/AuraLog.h"
 
 AAuraCharacter::AAuraCharacter()
@@ -40,6 +41,8 @@ AAuraCharacter::AAuraCharacter()
 	bUseControllerRotationYaw = false;
 
 	CharacterClassType = ECharacterClassType::ECT_Elementalist;
+
+	BaseWalkSpeed = 600.f;
 }
 
 void AAuraCharacter::PossessedBy(AController* NewController)
@@ -69,6 +72,8 @@ void AAuraCharacter::InitAbilityActorInfo()
 		ASComponent = AuraPlayerState->GetAbilitySystemComponent();
 		AS = AuraPlayerState->GetAttributeSet();
 		OnASComponentRegisteredDelegate.Broadcast(ASComponent);
+		ASComponent->RegisterGameplayTagEvent(
+			FAuraGameplayTags::Get().DeBuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ThisClass::StunTagChanged);
 
 		if (const auto AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
 		{
@@ -187,4 +192,25 @@ void AAuraCharacter::MultiCast_LevelUpParticle_Implementation()
 		return;
 	}
 	UE_LOG(Aura, Warning, TEXT("LevelUpNiagaraComponent System Asset is not set"));
+}
+
+void AAuraCharacter::OnRep_IsStunned()
+{
+	if (CHECK_ABILITY_SYSTEM_COMPONENT(AuraASComponent))
+	{
+		FGameplayTagContainer BlockedTags;
+		BlockedTags.AddTag(FAuraGameplayTags::Get().Player_Block_CursorTrace);
+		BlockedTags.AddTag(FAuraGameplayTags::Get().Player_Block_InputPressed);
+		BlockedTags.AddTag(FAuraGameplayTags::Get().Player_Block_InputHeld);
+		BlockedTags.AddTag(FAuraGameplayTags::Get().Player_Block_InputReleased);
+
+		if (bIsStunned)
+		{
+			AuraASComponent->AddLooseGameplayTags(BlockedTags);
+		}
+		else
+		{
+			AuraASComponent->RemoveLooseGameplayTags(BlockedTags);
+		}
+	}
 }

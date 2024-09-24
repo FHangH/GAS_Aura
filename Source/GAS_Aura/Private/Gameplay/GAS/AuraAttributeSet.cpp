@@ -326,7 +326,17 @@ void UAuraAttributeSet::DeBuff(const FEffectProperties& EffectProp)
 	Effect->DurationPolicy = EGameplayEffectDurationType::HasDuration;
 	Effect->Period = DeBuffFrequency;
 	Effect->DurationMagnitude = FScalableFloat(DeBuffDuration);
-	Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.DamageTypesToDeBuffs[DamageType]);
+
+	const auto DeBuffTag = GameplayTags.DamageTypesToDeBuffs[DamageType];
+	Effect->InheritableOwnedTagsContainer.AddTag(DeBuffTag);
+	if (DeBuffTag.MatchesTagExact(GameplayTags.DeBuff_Stun))
+	{
+		Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.Player_Block_CursorTrace);
+		Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.Player_Block_InputPressed);
+		Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.Player_Block_InputHeld);
+		Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.Player_Block_InputReleased);
+	}
+
 	Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;
 	Effect->StackLimitCount = 1;
 

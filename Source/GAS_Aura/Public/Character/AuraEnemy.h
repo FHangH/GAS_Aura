@@ -21,19 +21,15 @@ class GAS_AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterfac
 private:
 	// Highlight Status
 	UPROPERTY(BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
-	bool bIsHighLight {false};
+	bool bIsHighLight { false };
 
 	// Hit Reacting
 	UPROPERTY(BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
-	bool bHitReacting {false};
-
-	// Walk Speed
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
-	float BaseWalkSpeed {250.f};
+	bool bHitReacting { false };
 
 	// Life
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
-	float LifeSpan {5.f};
+	float LifeSpan { 5.f };
 
 	// Combat Target
 	UPROPERTY(BlueprintReadWrite, Category="Aura|Enemy", meta=(AllowPrivateAccess=true))
@@ -42,7 +38,7 @@ private:
 protected:
 	// Level
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Enemy")
-	int32 Level {1};
+	int32 Level { 1 };
 
 	// Heath UI
 	UPROPERTY(BlueprintReadOnly, Category="Aura|Enemy")
@@ -76,6 +72,7 @@ protected:
 	void OnHealthChanged(const FOnAttributeChangeData& Data) const;
 	void OnMaxHealthChanged(const FOnAttributeChangeData& Data) const;
 	void HitReactTagChanged(const FGameplayTag CallBackTag, int32 NewCount);
+	void StunTagChanged(const FGameplayTag CallbackTag, const int32 NewCount) override;
 	
 public:
 	// Enemy Interface

@@ -34,6 +34,8 @@ AAuraEnemy::AAuraEnemy()
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = {0.f, 480.f, 0.f};
+
+	BaseWalkSpeed = 250.f;
 }
 
 void AAuraEnemy::BeginPlay()
@@ -83,6 +85,7 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 	AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
 	AuraAIController->RunBehaviorTree(BehaviorTree);
 	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName{"HitReacting"}, false);
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName{"Stunned"}, false);
 	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName{"RangedAttacker"}, CharacterClassType != ECharacterClassType::ECT_Warrior);
 }
 
@@ -92,6 +95,8 @@ void AAuraEnemy::InitAbilityActorInfo()
 	{
 		ASComponent->InitAbilityActorInfo(this, this);
 		Cast<UAuraAbilitySystemComponent>(ASComponent)->AbilityActorInfoSet();
+		ASComponent->RegisterGameplayTagEvent(
+			FAuraGameplayTags::Get().DeBuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ThisClass::StunTagChanged);
 
 		if (HasAuthority())
 		{
@@ -126,6 +131,14 @@ void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallBackTag, int32 NewCou
 	bHitReacting = NewCount > 0;
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSpeed;
 	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName{"HitReacting"}, bHitReacting);
+}
+
+void AAuraEnemy::StunTagChanged(const FGameplayTag CallbackTag, const int32 NewCount)
+{
+	Super::StunTagChanged(CallbackTag, NewCount);
+
+	if (!AuraAIController || !AuraAIController->GetBlackboardComponent()) return;
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName{"Stunned"}, bIsStunned);
 }
 
 void AAuraEnemy::HighLightActor()

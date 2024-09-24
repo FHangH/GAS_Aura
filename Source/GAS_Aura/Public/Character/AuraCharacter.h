@@ -66,4 +66,7 @@ private:
 	// RPC
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiCast_LevelUpParticle();
+
+	// ReplicatedUsing
+	virtual void OnRep_IsStunned() override;
 };
