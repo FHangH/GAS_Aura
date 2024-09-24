@@ -232,9 +232,16 @@ void AAuraCharacterBase::Multicast_HandleDeath_Implementation(const FVector& Dea
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation(), GetActorRotation());
 	}
+	if (NiagaraComponent_DeBuff_Burn)
+	{
+		NiagaraComponent_DeBuff_Burn->Deactivate();
+	}
 
 	bIsDead = true;
 	Dissolve();
+
+	// TODO Here Delegate Is Not Bound, GA_AuraBeamSpell Function: PrimaryTargetDied and AdditionalTargetDied Can not CallBack
+	OnDeathDelegate.Broadcast(this);
 }
 
 void AAuraCharacterBase::Dissolve()

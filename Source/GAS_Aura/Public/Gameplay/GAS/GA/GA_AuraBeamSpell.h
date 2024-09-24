@@ -41,4 +41,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Aura")
 	void StoreAdditionalTargets(TArray<AActor*>& OutAdditionalTargets) const;
+
+	UFUNCTION(BlueprintNativeEvent, Category="Aura")
+	void PrimaryTargetDied(AActor* DeadActor);
+
+	UFUNCTION(BlueprintNativeEvent, Category="Aura")
+	void AdditionalTargetDied(AActor* DeadActor);
 };
