@@ -10,6 +10,7 @@
 #include "Untils/AuraCollision.h"
 #include "Untils/AuraGameplayTags.h"
 #include "Untils/AuraLog.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AAuraCharacterBase::AAuraCharacterBase()
 {
@@ -41,12 +42,10 @@ UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
 void AAuraCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void AAuraCharacterBase::InitAbilityActorInfo()
 {
-	
 }
 
 void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -54,6 +53,7 @@ void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AAuraCharacterBase, bInShockLoop);
+	DOREPLIFETIME(AAuraCharacterBase, bIsStunned);
 }
 
 FOnASComponentRegisteredSignature AAuraCharacterBase::GetOnAsComponentRegisteredDelegate()
@@ -232,9 +232,16 @@ void AAuraCharacterBase::Multicast_HandleDeath_Implementation(const FVector& Dea
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation(), GetActorRotation());
 	}
+	if (NiagaraComponent_DeBuff_Burn)
+	{
+		NiagaraComponent_DeBuff_Burn->Deactivate();
+	}
 
 	bIsDead = true;
 	Dissolve();
+
+	// TODO Here Delegate Is Not Bound, GA_AuraBeamSpell Function: PrimaryTargetDied and AdditionalTargetDied Can not CallBack
+	OnDeathDelegate.Broadcast(this);
 }
 
 void AAuraCharacterBase::Dissolve()
@@ -251,6 +258,16 @@ void AAuraCharacterBase::Dissolve()
 		WeaponMeshComponent->SetMaterial(0, DynamicMatIns);
 		StartWeaponDissolveTimeLine(DynamicMatIns);
 	}
+}
+
+void AAuraCharacterBase::StunTagChanged(const FGameplayTag CallbackTag, const int32 NewCount)
+{
+	bIsStunned = NewCount > 0;
+	GetCharacterMovement()->MaxWalkSpeed = bIsStunned ? 0.f : BaseWalkSpeed;
+}
+
+void AAuraCharacterBase::OnRep_IsStunned()
+{
 }
 
 void AAuraCharacterBase::StartBodyDissolveTimeLine_Implementation(UMaterialInstanceDynamic* DynamicMatIns)

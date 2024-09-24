@@ -37,7 +37,7 @@ private:
 	UPROPERTY(EditAnywhere, Category="Aura|Input")
 	TObjectPtr<UInputAction> IA_SHIFT;
 	
-	bool bShiftKeyDown {false};
+	bool bShiftKeyDown { false };
 
 	UPROPERTY(EditAnywhere, Category="Aura|Input")
 	TObjectPtr<UDataAsset_AuraInputConfig> InputConfig;
@@ -53,26 +53,26 @@ private:
 	FTimerHandle TickTimerHandle_CursorTrace;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura|Tick|CursorTrace", meta=(AllowPrivateAccess=true))
-	ETICK_RATE TickTimerRate_CursorTrace {ETICK_RATE::ER_TICK_10};
+	ETICK_RATE TickTimerRate_CursorTrace { ETICK_RATE::ER_TICK_10 };
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura|Tick|CursorTrace", meta=(AllowPrivateAccess=true))
-	bool IsTickStart_CursorTrace {true};
-	bool IsNativeTick_CursorTrace {false};
+	bool IsTickStart_CursorTrace { true };
+	bool IsNativeTick_CursorTrace { false };
 
 	// Mouse Trace Target Actor
 	FHitResult CursorHitResult;
-	IEnemyInterface* LastActor {nullptr};
-	IEnemyInterface* ThisActor {nullptr};
+	IEnemyInterface* LastActor { nullptr };
+	IEnemyInterface* ThisActor { nullptr };
 
 	// Top Down Move For Mouse Click
-	FVector CachedDestination {FVector::Zero()};
-	float FollowTime {0.f};
-	float ShortPressThreshold {0.5f};
-	bool bAutoRunning {false};
-	bool bTargeting {false};
+	FVector CachedDestination { FVector::Zero() };
+	float FollowTime { 0.f };
+	float ShortPressThreshold { 0.5f };
+	bool bAutoRunning { false };
+	bool bTargeting { false };
 	
 	UPROPERTY(EditAnywhere, Category="Aura|TopDownMove|AutoRun")
-	float AutoRunAcceptanceRadius {50.f};
+	float AutoRunAcceptanceRadius { 50.f };
 
 	UPROPERTY(VisibleDefaultsOnly, Category="Aura|TopDownMove|Spline")
 	TObjectPtr<USplineComponent> SplineComponent;
@@ -85,18 +85,18 @@ private:
 	FTimerHandle TickTimerHandle_AutoRun;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura|Tick|AutoRun", meta=(AllowPrivateAccess=true))
-	ETICK_RATE TickTimerRate_AutoRun {ETICK_RATE::ER_TICK_Ultra};
+	ETICK_RATE TickTimerRate_AutoRun { ETICK_RATE::ER_TICK_Ultra };
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura|Tick|AutoRun", meta=(AllowPrivateAccess=true))
-	bool IsTickStart_AutoRun {true};
-	bool IsNativeTick_AutoRun {false};
+	bool IsTickStart_AutoRun { true };
+	bool IsNativeTick_AutoRun { false };
 
 	// DamageText Widget Component
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|WidgetComponent", meta=(AllowPrivateAccess=true))
 	TSubclassOf<UDamageTextWidgetComponent> DamageTextComponentClass;
 
 	// CursorTrace Mode
-	bool IsCursorTraceMode {true};
+	bool IsCursorTraceMode { true };
 
 	/* Function */
 public:
