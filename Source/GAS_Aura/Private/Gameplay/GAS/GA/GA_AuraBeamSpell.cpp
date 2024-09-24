@@ -61,6 +61,7 @@ void UGA_AuraBeamSpell::TraceFirstTarget(const FVector& BeamTargetLocation)
 		}
 	}
 
+	if (!MouseHitActor) return;
 	if (const auto CombatInterface = Cast<ICombatInterface>(MouseHitActor))
 	{
 		if (CombatInterface->GetOnDeathDelegate().IsAlreadyBound(this, &ThisClass::PrimaryTargetDied)) return;
