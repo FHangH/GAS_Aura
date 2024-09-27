@@ -13,6 +13,7 @@ DECLARE_MULTICAST_DELEGATE(FAbilityGivenDelegate);
 DECLARE_DELEGATE_OneParam(FForEachAbilityDelegate, const FGameplayAbilitySpec& /*Spec*/);
 DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilityStatusChangedDelegate, const FGameplayTag& /*AbilityTag*/, const FGameplayTag& /*StatusTag*/, const int32 /*AbilityLevel*/);
 DECLARE_MULTICAST_DELEGATE_FourParams(FAbilityEquippedDelegate, const FGameplayTag& /*AbilityTag*/, const FGameplayTag& /*StatusTag*/, const FGameplayTag& /*SlotTag*/, const FGameplayTag& /*PrevSlot*/);
+DECLARE_MULTICAST_DELEGATE_OneParam(FDeactivatePassiveAbilityDelegate, const FGameplayTag& /*AbilityTag*/);
 
 UCLASS()
 class GAS_AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
@@ -27,6 +28,7 @@ public:
 	FAbilityGivenDelegate OnAbilityGivenDelegate;
 	FAbilityStatusChangedDelegate OnAbilityStatusChangedDelegate;
 	FAbilityEquippedDelegate OnAbilityEquippedDelegate;
+	FDeactivatePassiveAbilityDelegate OnDeactivatePassiveAbilityDelegate;
 
 	/* Function */
 public:
