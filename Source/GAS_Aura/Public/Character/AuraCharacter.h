@@ -69,4 +69,5 @@ private:
 
 	// ReplicatedUsing
 	virtual void OnRep_IsStunned() override;
+	virtual void OnRep_IsBurned() override;
 };

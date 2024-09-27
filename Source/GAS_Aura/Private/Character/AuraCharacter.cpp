@@ -207,10 +207,25 @@ void AAuraCharacter::OnRep_IsStunned()
 		if (bIsStunned)
 		{
 			AuraASComponent->AddLooseGameplayTags(BlockedTags);
+			if (NiagaraComponent_DeBuff_Stun) NiagaraComponent_DeBuff_Stun->Activate();
 		}
 		else
 		{
 			AuraASComponent->RemoveLooseGameplayTags(BlockedTags);
+			if (NiagaraComponent_DeBuff_Stun) NiagaraComponent_DeBuff_Stun->Deactivate();
 		}
+	}
+}
+
+void AAuraCharacter::OnRep_IsBurned()
+{
+	if (!NiagaraComponent_DeBuff_Burn) return;
+	if (bIsBurned)
+	{
+		NiagaraComponent_DeBuff_Burn->Activate();
+	}
+	else
+	{
+		NiagaraComponent_DeBuff_Burn->Deactivate();
 	}
 }

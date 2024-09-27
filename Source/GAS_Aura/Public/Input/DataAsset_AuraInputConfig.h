@@ -16,7 +16,7 @@ struct FAuraInputAction
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
-	const UInputAction* InputAction {nullptr};
+	const UInputAction* InputAction { nullptr };
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
 	FGameplayTag InputTag {};

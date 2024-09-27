@@ -23,7 +23,7 @@ void UNiagaraComponent_DeBuff::BeginPlay()
 	}
 	else if (CombatInterface)
 	{
-		CombatInterface->GetOnAsComponentRegisteredDelegate().AddLambda([this](UAbilitySystemComponent* NewASC)
+		CombatInterface->GetOnAsComponentRegisteredDelegate().AddWeakLambda(this, [this](UAbilitySystemComponent* NewASC)
 		{
 			NewASC->RegisterGameplayTagEvent(DeBuff_Tag, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ThisClass::OnDeBuffTagChanged);
 		});
@@ -39,7 +39,7 @@ void UNiagaraComponent_DeBuff::OnDeBuffTagChanged(const FGameplayTag CallBackTag
 {
 	if (IsValid(GetOwner()) &&
 		GetOwner()->Implements<UCombatInterface>() &&
-		ICombatInterface::Execute_IsDead(GetOwner()) &&
+		!ICombatInterface::Execute_IsDead(GetOwner()) &&
 		NewCount > 0)
 	{
 		 Activate();

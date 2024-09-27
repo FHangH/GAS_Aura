@@ -90,8 +90,9 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 {
 	Super::PostGameplayEffectExecute(Data);
 
+	FEffectProperties EffectProperties;
 	SetEffectProperties(Data, EffectProperties);
-
+	
 	// Check IsDead
 	if (EffectProperties.TargetCharacter->Implements<UCombatInterface>() &&
 		ICombatInterface::Execute_IsDead(EffectProperties.SourceCharacter)) return;
@@ -364,7 +365,7 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 	EffectProp.EffectContextHandle = Data.EffectSpec.GetContext();
 	EffectProp.SourceASC = EffectProp.EffectContextHandle.GetOriginalInstigatorAbilitySystemComponent();
 
-	if (EffectProp.SourceASC &&
+	if (IsValid(EffectProp.SourceASC) &&
 		EffectProp.SourceASC->AbilityActorInfo.IsValid() &&
 		EffectProp.SourceASC->AbilityActorInfo->AvatarActor.IsValid())
 	{
@@ -375,7 +376,7 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 		{
 			if (const auto Pawn = Cast<APawn>(EffectProp.SourceAvatarActor))
 			{
-				EffectProp.SourceController = Cast<AController>(Pawn->GetController());
+				EffectProp.SourceController = Pawn->GetController();
 			}
 		}
 		if (EffectProp.SourceController)
@@ -390,6 +391,7 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 		EffectProp.TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
 		EffectProp.TargetCharacter = Cast<ACharacter>(EffectProp.TargetAvatarActor);
 		EffectProp.TargetASC = Data.Target.AbilityActorInfo->AbilitySystemComponent.Get();
+		UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(EffectProp.TargetAvatarActor);
 	}
 }
 
