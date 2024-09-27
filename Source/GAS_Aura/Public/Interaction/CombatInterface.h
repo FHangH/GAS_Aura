@@ -82,10 +82,16 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
 	ECharacterClassType GetCharacterClassType();
-
+	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
 	void SetInShockLoop(const bool bInShockLoop);
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
+	bool IsBeingShockLoop() const;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
+	void SetIsBeingShocked(const bool bInShockLoop);
+	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
 	USkeletalMeshComponent* GetWeaponMesh() const;
 };

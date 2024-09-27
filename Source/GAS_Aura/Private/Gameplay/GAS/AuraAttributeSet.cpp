@@ -258,13 +258,17 @@ void UAuraAttributeSet::HandleInComingDamage(const FEffectProperties& EffectProp
 		}
 		else
 		{
-			FGameplayTagContainer TagContainer;
-			TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
-			EffectProp.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			if (EffectProp.TargetCharacter->Implements<UCombatInterface>() &&
+				!ICombatInterface::Execute_IsBeingShockLoop(EffectProp.TargetCharacter))
+			{
+				FGameplayTagContainer TagContainer;
+				TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
+				EffectProp.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			}
 
 			// KnockBack
 			const auto KnockBackForce = UAuraAbilitySystemFuncLibrary::GetKnockBackForce(EffectProp.EffectContextHandle);
-			if (KnockBackForce.IsNearlyZero(1.f))
+			if (!KnockBackForce.IsNearlyZero(1.f))
 			{
 				EffectProp.TargetCharacter->LaunchCharacter(KnockBackForce, true, true);
 			}

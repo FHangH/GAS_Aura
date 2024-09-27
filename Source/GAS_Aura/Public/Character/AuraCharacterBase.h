@@ -98,7 +98,7 @@ protected:
 	bool bIsDead { false };
 	
 	UPROPERTY(BlueprintReadWrite, Replicated, Category="Aura|Status")
-	bool bInShockLoop { false };
+	bool bIsBeingShocked { false };
 
 	UPROPERTY(BlueprintReadWrite, ReplicatedUsing="OnRep_IsStunned", Category="Aura|Status")
 	bool bIsStunned { false };
@@ -138,6 +138,8 @@ protected:
 	virtual void IncrementMinionCount_Implementation(const int32 Amount) override;
 	virtual ECharacterClassType GetCharacterClassType_Implementation() override;
 	virtual USkeletalMeshComponent* GetWeaponMesh_Implementation() const override;
+	virtual bool IsBeingShockLoop_Implementation() const override;
+	virtual void SetIsBeingShocked_Implementation(const bool bInShockLoop) override;
 
 	void ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const;
 	virtual void InitializeDefaultAttributes() const;

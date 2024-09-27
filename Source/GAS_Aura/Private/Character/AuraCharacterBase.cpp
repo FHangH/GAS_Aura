@@ -56,7 +56,7 @@ void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(AAuraCharacterBase, bInShockLoop);
+	DOREPLIFETIME(AAuraCharacterBase, bIsBeingShocked);
 	DOREPLIFETIME(AAuraCharacterBase, bIsStunned);
 	DOREPLIFETIME(AAuraCharacterBase, bIsBurned);
 }
@@ -160,6 +160,16 @@ ECharacterClassType AAuraCharacterBase::GetCharacterClassType_Implementation()
 USkeletalMeshComponent* AAuraCharacterBase::GetWeaponMesh_Implementation() const
 {
 	return WeaponMeshComponent;
+}
+
+bool AAuraCharacterBase::IsBeingShockLoop_Implementation() const
+{
+	return bIsBeingShocked;
+}
+
+void AAuraCharacterBase::SetIsBeingShocked_Implementation(const bool bInShockLoop)
+{
+	bIsBeingShocked = bInShockLoop;
 }
 
 void AAuraCharacterBase::ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const
