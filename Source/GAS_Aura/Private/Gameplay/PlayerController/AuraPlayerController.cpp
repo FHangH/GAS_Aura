@@ -11,6 +11,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Components/SplineComponent.h"
 #include "GameFramework/Character.h"
+#include "Gameplay/Actor/MagicCircle.h"
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Input/AuraInputComponent.h"
 #include "Interaction/EnemyInterface.h"
@@ -126,6 +127,8 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 void AAuraPlayerController::CursorTrace()
 {
 	if (!IsCursorTraceMode) return;
+	UpdateMagicCircleLocation();
+	
 	if (GetASComponent() && GetASComponent()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_CursorTrace))
 	{
 		if (LastActor) LastActor->UnHighLightActor();
@@ -218,6 +221,36 @@ void AAuraPlayerController::AutoRun()
 	}
 }
 
+void AAuraPlayerController::ShowMagicCircle()
+{
+	if (IsValid(Decal_MagicCircleClass) && !IsValid(Decal_MagicCircle))
+	{
+		Decal_MagicCircle = GetWorld()->SpawnActor<AMagicCircle>(Decal_MagicCircleClass);
+	}
+	else
+	{
+		UE_LOG(Aura, Warning, TEXT("Maybe Decal_MagicCircleClass is nullptr in %s"), *GetName());
+	}
+}
+
+void AAuraPlayerController::HideMagicCircle()
+{
+	if (IsValid(Decal_MagicCircle))
+	{
+		Decal_MagicCircle->Destroy();
+		Decal_MagicCircle = nullptr;
+	}
+}
+
+void AAuraPlayerController::UpdateMagicCircleLocation() const
+{
+	if (Decal_MagicCircle)
+	{
+		Decal_MagicCircle->SetActorLocation(CursorHitResult.ImpactPoint);
+	}
+}
+
+// RPC
 void AAuraPlayerController::Client_ShowDamageNumber_Implementation(
 	const float DamageAmount, ACharacter* TargetCharacter, const bool IsBlockedHit, const bool IsCriticalHit)
 {

@@ -8,6 +8,7 @@
 #include "Untils/TickRate.h"
 #include "AuraPlayerController.generated.h"
 
+class AMagicCircle;
 class UNiagaraSystem;
 class UDamageTextWidgetComponent;
 class USplineComponent;
@@ -53,7 +54,7 @@ private:
 	FTimerHandle TickTimerHandle_CursorTrace;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura|Tick|CursorTrace", meta=(AllowPrivateAccess=true))
-	ETICK_RATE TickTimerRate_CursorTrace { ETICK_RATE::ER_TICK_10 };
+	ETICK_RATE TickTimerRate_CursorTrace { ETICK_RATE::ER_TICK_30 };
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura|Tick|CursorTrace", meta=(AllowPrivateAccess=true))
 	bool IsTickStart_CursorTrace { true };
@@ -98,6 +99,12 @@ private:
 	// CursorTrace Mode
 	bool IsCursorTraceMode { true };
 
+	// Decal
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Decal", meta=(AllowPrivateAccess=true))
+	TSubclassOf<AMagicCircle> Decal_MagicCircleClass;
+	UPROPERTY()
+	TObjectPtr<AMagicCircle> Decal_MagicCircle;
+	
 	/* Function */
 public:
 	AAuraPlayerController();
@@ -121,7 +128,15 @@ protected:
 	void CursorTrace();
 	void AutoRun();
 
+	// Decal
+	UFUNCTION(BlueprintCallable, Category="Aura")
+	void ShowMagicCircle();
+	UFUNCTION(BlueprintCallable, Category="Aura")
+	void HideMagicCircle();
+	void UpdateMagicCircleLocation() const;
+
 public:
+	// RPC
 	UFUNCTION(Client, Reliable, Category="Aura")
 	void Client_ShowDamageNumber(const float DamageAmount, ACharacter* TargetCharacter, const bool IsBlockedHit, const bool IsCriticalHit);
 
