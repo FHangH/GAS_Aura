@@ -100,7 +100,7 @@ void UAuraAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& In
 	}
 }
 
-void UAuraAbilitySystemComponent::ForEachAbility(const FForEachAbilityDelegate& Delegate)
+void UAuraAbilitySystemComponent::ForEachAbility(const FForEachAbilitySignature& Delegate)
 {
 	FScopedAbilityListLock ActiveScopedLock(*this);
 	
@@ -335,6 +335,7 @@ void UAuraAbilitySystemComponent::Server_EquipAbility_Implementation(const FGame
 				}
 				if (IsPassiveAbility(*SpecWithSlot))
 				{
+					MultiCast_ActivatePassiveEffect(GetAbilityTagFromSpec(*SpecWithSlot), false);
 					OnDeactivatePassiveAbilityDelegate.Broadcast(GetAbilityTagFromSpec(*SpecWithSlot));
 				}
 				ClearSlot(SpecWithSlot);
@@ -344,6 +345,7 @@ void UAuraAbilitySystemComponent::Server_EquipAbility_Implementation(const FGame
 			if (!AbilityHasAnySlot(AbilitySpec) && IsPassiveAbility(*AbilitySpec))
 			{
 				TryActivateAbility(AbilitySpec->Handle);
+				MultiCast_ActivatePassiveEffect(AbilityTag, true);
 			}
 			AssignSlotToAbility(*AbilitySpec, SlotTag);
 			
@@ -410,4 +412,9 @@ void UAuraAbilitySystemComponent::Server_SpendSpellPoint_Implementation(const FG
 		Client_UpdateAbilityStatus(AbilityTag, Status, AbilitySpec->Level);
 		MarkAbilitySpecDirty(*AbilitySpec);
 	}
+}
+
+void UAuraAbilitySystemComponent::MultiCast_ActivatePassiveEffect_Implementation(const FGameplayTag& AbilityTag, const bool bActivate)
+{
+	OnActivePassiveEffectDelegate.Broadcast(AbilityTag, bActivate);
 }

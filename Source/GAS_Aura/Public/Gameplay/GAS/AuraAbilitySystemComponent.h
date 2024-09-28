@@ -8,12 +8,13 @@
 
 class UAuraAbilitySystemComponent;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTagDelegate, const FGameplayTagContainer& /*AssetTags*/);
-DECLARE_MULTICAST_DELEGATE(FAbilityGivenDelegate);
-DECLARE_DELEGATE_OneParam(FForEachAbilityDelegate, const FGameplayAbilitySpec& /*Spec*/);
-DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilityStatusChangedDelegate, const FGameplayTag& /*AbilityTag*/, const FGameplayTag& /*StatusTag*/, const int32 /*AbilityLevel*/);
-DECLARE_MULTICAST_DELEGATE_FourParams(FAbilityEquippedDelegate, const FGameplayTag& /*AbilityTag*/, const FGameplayTag& /*StatusTag*/, const FGameplayTag& /*SlotTag*/, const FGameplayTag& /*PrevSlot*/);
-DECLARE_MULTICAST_DELEGATE_OneParam(FDeactivatePassiveAbilityDelegate, const FGameplayTag& /*AbilityTag*/);
+DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTagSignature, const FGameplayTagContainer& /*AssetTags*/);
+DECLARE_MULTICAST_DELEGATE(FAbilityGivenSignature);
+DECLARE_DELEGATE_OneParam(FForEachAbilitySignature, const FGameplayAbilitySpec& /*Spec*/);
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilityStatusChangedSignature, const FGameplayTag& /*AbilityTag*/, const FGameplayTag& /*StatusTag*/, const int32 /*AbilityLevel*/);
+DECLARE_MULTICAST_DELEGATE_FourParams(FAbilityEquippedSignature, const FGameplayTag& /*AbilityTag*/, const FGameplayTag& /*StatusTag*/, const FGameplayTag& /*SlotTag*/, const FGameplayTag& /*PrevSlot*/);
+DECLARE_MULTICAST_DELEGATE_OneParam(FDeactivatePassiveAbilitySignature, const FGameplayTag& /*AbilityTag*/);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FActivePassiveEffectSignature, const FGameplayTag& /*AbilityTag*/, const bool /*bActivate*/);
 
 UCLASS()
 class GAS_AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
@@ -24,11 +25,12 @@ class GAS_AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
 public:
 	bool bStartupAbilitiesGiven {false};
 	
-	FEffectAssetTagDelegate OnEffectAssetTagDelegate;
-	FAbilityGivenDelegate OnAbilityGivenDelegate;
-	FAbilityStatusChangedDelegate OnAbilityStatusChangedDelegate;
-	FAbilityEquippedDelegate OnAbilityEquippedDelegate;
-	FDeactivatePassiveAbilityDelegate OnDeactivatePassiveAbilityDelegate;
+	FEffectAssetTagSignature OnEffectAssetTagDelegate;
+	FAbilityGivenSignature OnAbilityGivenDelegate;
+	FAbilityStatusChangedSignature OnAbilityStatusChangedDelegate;
+	FAbilityEquippedSignature OnAbilityEquippedDelegate;
+	FDeactivatePassiveAbilitySignature OnDeactivatePassiveAbilityDelegate;
+	FActivePassiveEffectSignature OnActivePassiveEffectDelegate;
 
 	/* Function */
 public:
@@ -41,7 +43,7 @@ public:
 	void AbilityInputPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagHeld(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
-	void ForEachAbility(const FForEachAbilityDelegate& Delegate);
+	void ForEachAbility(const FForEachAbilitySignature& Delegate);
 	bool IsPassiveAbility(const FGameplayAbilitySpec& AbilitySpec) const;
 
 	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
@@ -85,4 +87,7 @@ public:
 	
 	UFUNCTION(Server, Reliable)
 	void Server_SpendSpellPoint(const FGameplayTag& AbilityTag);
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MultiCast_ActivatePassiveEffect(const FGameplayTag& AbilityTag, const bool bActivate);
 };

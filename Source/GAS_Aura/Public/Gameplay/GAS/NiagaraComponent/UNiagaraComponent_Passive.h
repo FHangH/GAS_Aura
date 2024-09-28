@@ -5,27 +5,25 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "NiagaraComponent.h"
-#include "NiagaraComponent_DeBuff.generated.h"
+#include "UNiagaraComponent_Passive.generated.h"
+
 
 UCLASS(ClassGroup=(Aura), meta=(BlueprintSpawnableComponent))
-class GAS_AURA_API UNiagaraComponent_DeBuff : public UNiagaraComponent
+class GAS_AURA_API UUNiagaraComponent_Passive : public UNiagaraComponent
 {
 	GENERATED_BODY()
 
 	/* Property */
 public:
 	UPROPERTY(EditDefaultsOnly, Category="Aura")
-	FGameplayTag DeBuff_Tag;
+	FGameplayTag PassiveSpell_Tag;
 
 	/* Function */
 public:
-	UNiagaraComponent_DeBuff();
+	UUNiagaraComponent_Passive();
 
 protected:
 	virtual void BeginPlay() override;
 
-	auto OnDeBuffTagChanged(const FGameplayTag CallBackTag, int32 NewCount) -> void;
-
-	UFUNCTION()
-	void OnOwnerDeath(AActor* DeadActor);
+	void OnPassiveActive(const FGameplayTag& AbilityTag, const bool bActivate);
 };

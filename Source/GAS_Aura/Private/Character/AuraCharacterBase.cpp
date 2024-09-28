@@ -14,9 +14,12 @@
 
 AAuraCharacterBase::AAuraCharacterBase()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	bReplicates = true;
+
+	SceneComponent_EffectAttach = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComp_EffectAttach"));
+	SceneComponent_EffectAttach->SetupAttachment(GetRootComponent());
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
@@ -29,6 +32,7 @@ AAuraCharacterBase::AAuraCharacterBase()
 	WeaponMeshComponent->SetupAttachment(GetMesh(), FName{"WeaponHandSocket"});
 	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+	// NiagaraComponent-DeBuff
 	NiagaraComponent_DeBuff_Burn = CreateDefaultSubobject<UNiagaraComponent_DeBuff>("NiagaraComp_DeBuff_Burn");
 	NiagaraComponent_DeBuff_Burn->SetupAttachment(GetRootComponent());
 	NiagaraComponent_DeBuff_Burn->DeBuff_Tag = FAuraGameplayTags::Get().DeBuff_Burn;
@@ -36,6 +40,19 @@ AAuraCharacterBase::AAuraCharacterBase()
 	NiagaraComponent_DeBuff_Stun = CreateDefaultSubobject<UNiagaraComponent_DeBuff>("NiagaraComp_DeBuff_Stun");
 	NiagaraComponent_DeBuff_Stun->SetupAttachment(GetRootComponent());
 	NiagaraComponent_DeBuff_Stun->DeBuff_Tag = FAuraGameplayTags::Get().DeBuff_Stun;
+
+	// NiagaraComponent-Passive
+	NiagaraComponent_Passive_HaloOfProtection = CreateDefaultSubobject<UUNiagaraComponent_Passive>("NiagaraComp_Passive_HaloOfProtection");
+	NiagaraComponent_Passive_HaloOfProtection->SetupAttachment(SceneComponent_EffectAttach);
+	NiagaraComponent_Passive_HaloOfProtection->PassiveSpell_Tag = FAuraGameplayTags::Get().Ability_Passive_HaloOfProtection;
+
+	NiagaraComponent_Passive_LifeSiphon = CreateDefaultSubobject<UUNiagaraComponent_Passive>("NiagaraComp_Passive_LifeSiphon");
+	NiagaraComponent_Passive_LifeSiphon->SetupAttachment(SceneComponent_EffectAttach);
+	NiagaraComponent_Passive_LifeSiphon->PassiveSpell_Tag = FAuraGameplayTags::Get().Ability_Passive_LifeSiphon;
+
+	NiagaraComponent_Passive_ManaSiphon = CreateDefaultSubobject<UUNiagaraComponent_Passive>("NiagaraComp_Passive_ManaSiphon");
+	NiagaraComponent_Passive_ManaSiphon->SetupAttachment(SceneComponent_EffectAttach);
+	NiagaraComponent_Passive_ManaSiphon->PassiveSpell_Tag = FAuraGameplayTags::Get().Ability_Passive_ManaSiphon;
 }
 
 UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
@@ -46,6 +63,16 @@ UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
 void AAuraCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void AAuraCharacterBase::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (SceneComponent_EffectAttach)
+	{
+		SceneComponent_EffectAttach->SetWorldRotation(FRotator::ZeroRotator);
+	}
 }
 
 void AAuraCharacterBase::InitAbilityActorInfo()
