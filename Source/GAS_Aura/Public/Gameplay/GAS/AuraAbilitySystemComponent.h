@@ -42,12 +42,13 @@ public:
 	void AbilityInputTagHeld(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 	void ForEachAbility(const FForEachAbilityDelegate& Delegate);
+	bool IsPassiveAbility(const FGameplayAbilitySpec& AbilitySpec) const;
 
 	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetStatusTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	FGameplayTag GetStatusFromAbilityTag(const FGameplayTag& AbilityTag);
-	FGameplayTag GetInputTagFromAbilityTag(const FGameplayTag& AbilityTag);
+	FGameplayTag GetSlotFromAbilityTag(const FGameplayTag& AbilityTag);
 
 	FGameplayAbilitySpec* GetSpecFromAbilityTag(const FGameplayTag& AbilityTag);
 	
@@ -56,9 +57,14 @@ public:
 
 	bool GetDescriptionFromAbilityTag(const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription);
 
-	static bool AbilityHasSlot(FGameplayAbilitySpec* Spec, const FGameplayTag& SlotTag);
-	void ClearSlot(FGameplayAbilitySpec* Spec);
+	// Slot
+	bool SlotIsEmpty(const FGameplayTag& SlotTag);
+	static bool AbilityHasSlot(const FGameplayAbilitySpec* Spec, const FGameplayTag& SlotTag);
+	static bool AbilityHasAnySlot(const FGameplayAbilitySpec* Spec);
+	FGameplayAbilitySpec* GetSpecWithSlot(const FGameplayTag& SlotTag);
+	static void ClearSlot(FGameplayAbilitySpec* Spec);
 	void ClearAbilitiesOfSlot(const FGameplayTag& SlotTag);
+	static void AssignSlotToAbility(FGameplayAbilitySpec& Spec, const FGameplayTag& SlotTag);
 
 	// RPC
 public:
