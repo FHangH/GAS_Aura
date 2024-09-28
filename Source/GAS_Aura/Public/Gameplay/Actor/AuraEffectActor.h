@@ -34,17 +34,17 @@ class GAS_AURA_API AAuraEffectActor : public AActor
 private:
 	// Enum Apply GE Policy
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Policy|Apply", meta=(AllowPrivateAccess=true))
-	EEffectApplicationPolicy InstantGE_ApplicationPolicy {EEffectApplicationPolicy::DoNotApply};
+	EEffectApplicationPolicy InstantGE_ApplicationPolicy { EEffectApplicationPolicy::DoNotApply };
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Policy|Apply", meta=(AllowPrivateAccess=true))
-	EEffectApplicationPolicy DurationGE_ApplicationPolicy {EEffectApplicationPolicy::DoNotApply};;
+	EEffectApplicationPolicy DurationGE_ApplicationPolicy { EEffectApplicationPolicy::DoNotApply };
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Policy|Apply", meta=(AllowPrivateAccess=true))
-	EEffectApplicationPolicy InfinityGE_ApplicationPolicy {EEffectApplicationPolicy::DoNotApply};;
+	EEffectApplicationPolicy InfinityGE_ApplicationPolicy { EEffectApplicationPolicy::DoNotApply };
 
 	// Enum Remove GE Policy
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Policy|Remove", meta=(AllowPrivateAccess=true))
-	EEffectRemovalPolicy InfinityGE_RemovalPolicy {EEffectRemovalPolicy::RemoveOnEndOverlap};
+	EEffectRemovalPolicy InfinityGE_RemovalPolicy { EEffectRemovalPolicy::RemoveOnEndOverlap };
 
 	// GameplayEffect Class
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|GE", meta=(AllowPrivateAccess=true))
@@ -60,14 +60,14 @@ private:
 	TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveGEHandles_Map;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|Level", meta=(AllowPrivateAccess=true))
-	float ActorLevel {1.f};
+	float ActorLevel { 1.f };
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura")
-	bool bDestroyOnEffectApplication {false};
+	bool bDestroyOnEffectApplication { false };
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura")
-	bool bApplyEffectsToEnemies {false};
+	bool bApplyEffectsToEnemies { false };
 	
 	/* Function */
 public:
