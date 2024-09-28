@@ -6,8 +6,9 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "Gameplay/GAS/Data/DataAsset_CharacterClassInfo.h"
-#include "Gameplay/GAS/NiagaraComponent/NiagaraComponent_DeBuff.h"
 #include "Interaction/CombatInterface.h"
+#include "Gameplay/GAS/NiagaraComponent/NiagaraComponent_DeBuff.h"
+#include "Gameplay/GAS/NiagaraComponent/UNiagaraComponent_Passive.h"
 #include "AuraCharacterBase.generated.h"
 
 class UNiagaraSystem;
@@ -24,17 +25,30 @@ class GAS_AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystem
 	/* Property */
 protected:
 	// Components
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Aura|SceneComponent")
+	TObjectPtr<USceneComponent> SceneComponent_EffectAttach;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|Weapon")
 	TObjectPtr<USkeletalMeshComponent> WeaponMeshComponent;
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> ASComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|NiagaraComponent")
+	// NiagaraComponents
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|NiagaraComponent|DeBuff")
 	TObjectPtr<UNiagaraComponent_DeBuff> NiagaraComponent_DeBuff_Burn;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|NiagaraComponent")
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|NiagaraComponent|DeBuff")
 	TObjectPtr<UNiagaraComponent_DeBuff> NiagaraComponent_DeBuff_Stun;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|NiagaraComponent|Passive")
+	TObjectPtr<UUNiagaraComponent_Passive> NiagaraComponent_Passive_HaloOfProtection;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|NiagaraComponent|Passive")
+	TObjectPtr<UUNiagaraComponent_Passive> NiagaraComponent_Passive_LifeSiphon;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|NiagaraComponent|Passive")
+	TObjectPtr<UUNiagaraComponent_Passive> NiagaraComponent_Passive_ManaSiphon;
 
 	// Attributes
 	UPROPERTY(BlueprintReadOnly, Category="Aura|AS")
@@ -120,6 +134,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 	virtual void InitAbilityActorInfo();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	

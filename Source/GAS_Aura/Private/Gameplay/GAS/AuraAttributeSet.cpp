@@ -300,10 +300,16 @@ void UAuraAttributeSet::HandleInComingXP(const FEffectProperties& EffectProp)
 
 		if (const auto NewLevelUp = NewLevel - CurrentLevel; NewLevelUp > 0)
 		{
-			const auto AttributePointReward = IPlayerInterface::Execute_GetAttributePointReward(EffectProp.SourceCharacter, CurrentLevel);
-			const auto SpellPointReward = IPlayerInterface::Execute_GetSpellPointReward(EffectProp.SourceCharacter, CurrentLevel);
-				
 			IPlayerInterface::Execute_AddToPlayerLevel(EffectProp.SourceCharacter, NewLevelUp);
+			auto AttributePointReward { 0 };
+			auto SpellPointReward { 0 };
+			
+			for (int32 i = 0; i < NewLevelUp; ++i)
+			{
+				AttributePointReward += IPlayerInterface::Execute_GetAttributePointReward(EffectProp.SourceCharacter, CurrentLevel + i);
+				SpellPointReward += IPlayerInterface::Execute_GetSpellPointReward(EffectProp.SourceCharacter, CurrentLevel + i);
+			}
+			
 			IPlayerInterface::Execute_AddToAttributePoints(EffectProp.SourceCharacter, AttributePointReward);
 			IPlayerInterface::Execute_AddToSpellPoints(EffectProp.SourceCharacter, SpellPointReward);
 			bTopOffHealth = true;

@@ -180,6 +180,22 @@ void AAuraCharacter::LevelUp_Implementation()
 	MultiCast_LevelUpParticle();
 }
 
+void AAuraCharacter::ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial)
+{
+	if (const auto AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+	{
+		AuraPlayerController->ShowMagicCircle(DecalMaterial);
+	}
+}
+
+void AAuraCharacter::HideMagicCircle_Implementation()
+{
+	if (const auto AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+	{
+		AuraPlayerController->HideMagicCircle();
+	}
+}
+
 void AAuraCharacter::MultiCast_LevelUpParticle_Implementation()
 {
 	if (LevelUpNiagaraComponent->GetAsset())

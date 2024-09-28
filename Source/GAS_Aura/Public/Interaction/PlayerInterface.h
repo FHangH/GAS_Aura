@@ -50,4 +50,10 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Player")
 	void LevelUp();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Player")
+	void ShowMagicCircle(UMaterialInterface* DecalMaterial = nullptr);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Player")
+	void HideMagicCircle();
 };

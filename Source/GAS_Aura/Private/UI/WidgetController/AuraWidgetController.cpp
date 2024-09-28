@@ -54,7 +54,7 @@ void UAuraWidgetController::BroadcastAbilityInfo()
 {
 	if (!GetAuraASC()->bStartupAbilitiesGiven) return;
 
-	FForEachAbilityDelegate ForEachAbilityDelegate;
+	FForEachAbilitySignature ForEachAbilityDelegate;
 	ForEachAbilityDelegate.BindLambda([this](const FGameplayAbilitySpec& AbilitySpec)
 	{
 		auto DA_AbilityInfo = DataAsset_AbilityInfo->FindAbilityInfoForTag(AuraASComponent->GetAbilityTagFromSpec(AbilitySpec));
