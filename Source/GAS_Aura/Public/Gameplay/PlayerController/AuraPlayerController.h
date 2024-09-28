@@ -128,11 +128,13 @@ protected:
 	void CursorTrace();
 	void AutoRun();
 
+public:
 	// Decal
 	UFUNCTION(BlueprintCallable, Category="Aura")
-	void ShowMagicCircle();
+	void ShowMagicCircle(UMaterialInterface* DecalMaterial = nullptr);
 	UFUNCTION(BlueprintCallable, Category="Aura")
 	void HideMagicCircle();
+protected:
 	void UpdateMagicCircleLocation() const;
 
 public:

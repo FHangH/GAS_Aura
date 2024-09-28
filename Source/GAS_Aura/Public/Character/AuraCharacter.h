@@ -61,6 +61,8 @@ protected:
 	virtual void AddToAttributePoints_Implementation(const int32 InAttributePoints) override;
 	virtual void AddToSpellPoints_Implementation(const int32 InSpellPoints) override;
 	virtual void LevelUp_Implementation() override;
+	virtual void ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial) override;
+	virtual void HideMagicCircle_Implementation() override;
 
 private:
 	// RPC

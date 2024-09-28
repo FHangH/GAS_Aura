@@ -12,7 +12,7 @@ class GAS_AURA_API AMagicCircle : public AActor
 	GENERATED_BODY()
 
 	/* Property */
-protected:
+public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|DecalComponent")
 	TObjectPtr<UDecalComponent> Decal_MagicCircle;
 	

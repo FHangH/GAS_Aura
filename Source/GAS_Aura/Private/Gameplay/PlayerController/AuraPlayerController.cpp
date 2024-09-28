@@ -9,6 +9,7 @@
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Components/DecalComponent.h"
 #include "Components/SplineComponent.h"
 #include "GameFramework/Character.h"
 #include "Gameplay/Actor/MagicCircle.h"
@@ -221,11 +222,20 @@ void AAuraPlayerController::AutoRun()
 	}
 }
 
-void AAuraPlayerController::ShowMagicCircle()
+void AAuraPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial)
 {
 	if (IsValid(Decal_MagicCircleClass) && !IsValid(Decal_MagicCircle))
 	{
 		Decal_MagicCircle = GetWorld()->SpawnActor<AMagicCircle>(Decal_MagicCircleClass);
+
+		if (DecalMaterial)
+		{
+			Decal_MagicCircle->Decal_MagicCircle->SetMaterial(0, DecalMaterial);
+		}
+		else
+		{
+			UE_LOG(Aura, Warning, TEXT("DecalMaterial is nullptr in %s"), *GetName());
+		}
 	}
 	else
 	{
