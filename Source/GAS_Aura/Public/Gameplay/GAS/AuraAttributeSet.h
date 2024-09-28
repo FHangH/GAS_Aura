@@ -54,23 +54,23 @@ struct FEffectProperties
 	
 	// Source
 	UPROPERTY()
-	UAbilitySystemComponent* SourceASC {nullptr};
+	UAbilitySystemComponent* SourceASC { nullptr };
 	UPROPERTY()
-	AActor* SourceAvatarActor {nullptr};
+	AActor* SourceAvatarActor { nullptr };
 	UPROPERTY()
-	AController* SourceController {nullptr};
+	AController* SourceController { nullptr };
 	UPROPERTY()
-	ACharacter* SourceCharacter {nullptr};
+	ACharacter* SourceCharacter { nullptr };
 
 	// Target
 	UPROPERTY()
-	UAbilitySystemComponent* TargetASC {nullptr};
+	UAbilitySystemComponent* TargetASC { nullptr };
 	UPROPERTY()
-	AActor* TargetAvatarActor {nullptr};
+	AActor* TargetAvatarActor { nullptr };
 	UPROPERTY()
-	AController* TargetController {nullptr};
+	AController* TargetController { nullptr };
 	UPROPERTY()
-	ACharacter* TargetCharacter {nullptr};
+	ACharacter* TargetCharacter { nullptr };
 };
 
 UCLASS()
@@ -175,7 +175,7 @@ public:
 	
 	// EffectContextHandle, ASC, Avatar, Controller, Character
 	UPROPERTY(BlueprintReadOnly, Category="Aura|AS")
-	FEffectProperties EffectProperties {};
+	FEffectProperties EffectProperties_Old {};
 
 	// Use GameplayTag Call back Delegate To return Attributes Property
 	/*

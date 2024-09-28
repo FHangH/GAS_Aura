@@ -32,6 +32,10 @@ AAuraCharacterBase::AAuraCharacterBase()
 	NiagaraComponent_DeBuff_Burn = CreateDefaultSubobject<UNiagaraComponent_DeBuff>("NiagaraComp_DeBuff_Burn");
 	NiagaraComponent_DeBuff_Burn->SetupAttachment(GetRootComponent());
 	NiagaraComponent_DeBuff_Burn->DeBuff_Tag = FAuraGameplayTags::Get().DeBuff_Burn;
+
+	NiagaraComponent_DeBuff_Stun = CreateDefaultSubobject<UNiagaraComponent_DeBuff>("NiagaraComp_DeBuff_Stun");
+	NiagaraComponent_DeBuff_Stun->SetupAttachment(GetRootComponent());
+	NiagaraComponent_DeBuff_Stun->DeBuff_Tag = FAuraGameplayTags::Get().DeBuff_Stun;
 }
 
 UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
@@ -52,16 +56,17 @@ void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(AAuraCharacterBase, bInShockLoop);
+	DOREPLIFETIME(AAuraCharacterBase, bIsBeingShocked);
 	DOREPLIFETIME(AAuraCharacterBase, bIsStunned);
+	DOREPLIFETIME(AAuraCharacterBase, bIsBurned);
 }
 
-FOnASComponentRegisteredSignature AAuraCharacterBase::GetOnAsComponentRegisteredDelegate()
+FOnASComponentRegisteredSignature& AAuraCharacterBase::GetOnAsComponentRegisteredDelegate()
 {
 	return OnASComponentRegisteredDelegate;
 }
 
-FOnDeathSignature AAuraCharacterBase::GetOnDeathDelegate()
+FOnDeathSignature& AAuraCharacterBase::GetOnDeathDelegate()
 {
 	return OnDeathDelegate;
 }
@@ -96,6 +101,8 @@ UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
 
 void AAuraCharacterBase::Die(const FVector& DeathImpulse)
 {
+	bIsDead = true;
+	
 	if (WeaponMeshComponent)
 	{
 		WeaponMeshComponent->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
@@ -155,6 +162,16 @@ USkeletalMeshComponent* AAuraCharacterBase::GetWeaponMesh_Implementation() const
 	return WeaponMeshComponent;
 }
 
+bool AAuraCharacterBase::IsBeingShockLoop_Implementation() const
+{
+	return bIsBeingShocked;
+}
+
+void AAuraCharacterBase::SetIsBeingShocked_Implementation(const bool bInShockLoop)
+{
+	bIsBeingShocked = bInShockLoop;
+}
+
 void AAuraCharacterBase::ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const
 {
 	if (ASComponent)
@@ -209,6 +226,11 @@ void AAuraCharacterBase::AddCharacterAbilities() const
 
 void AAuraCharacterBase::Multicast_HandleDeath_Implementation(const FVector& DeathImpulse)
 {
+	bIsDead = true;
+	
+	// TODO Here Delegate Is Not Bound, GA_AuraBeamSpell Function: PrimaryTargetDied and AdditionalTargetDied Can not CallBack
+	OnDeathDelegate.Broadcast(this);
+	
 	if (WeaponMeshComponent)
 	{
 		WeaponMeshComponent->SetSimulatePhysics(true);
@@ -236,12 +258,12 @@ void AAuraCharacterBase::Multicast_HandleDeath_Implementation(const FVector& Dea
 	{
 		NiagaraComponent_DeBuff_Burn->Deactivate();
 	}
-
-	bIsDead = true;
+	if (NiagaraComponent_DeBuff_Stun)
+	{
+		NiagaraComponent_DeBuff_Stun->Deactivate();
+	}
+	
 	Dissolve();
-
-	// TODO Here Delegate Is Not Bound, GA_AuraBeamSpell Function: PrimaryTargetDied and AdditionalTargetDied Can not CallBack
-	OnDeathDelegate.Broadcast(this);
 }
 
 void AAuraCharacterBase::Dissolve()
@@ -267,6 +289,10 @@ void AAuraCharacterBase::StunTagChanged(const FGameplayTag CallbackTag, const in
 }
 
 void AAuraCharacterBase::OnRep_IsStunned()
+{
+}
+
+void AAuraCharacterBase::OnRep_IsBurned()
 {
 }
 

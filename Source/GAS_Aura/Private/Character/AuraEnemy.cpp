@@ -116,11 +116,13 @@ void AAuraEnemy::InitializeDefaultAttributes() const
 
 void AAuraEnemy::OnHealthChanged(const FOnAttributeChangeData& Data) const
 {
+	if (!ASComponent) return;
 	OnHealthChangedDelegate.Broadcast(Data.NewValue);
 }
 
 void AAuraEnemy::OnMaxHealthChanged(const FOnAttributeChangeData& Data) const
 {
+	if (!ASComponent) return;
 	OnMaxHealthChangedDelegate.Broadcast(Data.NewValue);
 }
 
@@ -176,6 +178,8 @@ int32 AAuraEnemy::GetPlayerLevel_Implementation()
 
 void AAuraEnemy::Die(const FVector& DeathImpulse)
 {
+	bIsDead = true;
+	
 	SetLifeSpan(LifeSpan);
 
 	if (AuraAIController)

@@ -43,8 +43,9 @@ class GAS_AURA_API ICombatInterface
 	GENERATED_BODY()
 
 public:
-	virtual FOnASComponentRegisteredSignature GetOnAsComponentRegisteredDelegate() = 0;
-	virtual FOnDeathSignature GetOnDeathDelegate() = 0;
+	virtual FOnASComponentRegisteredSignature& GetOnAsComponentRegisteredDelegate() = 0;
+	virtual FOnDeathSignature& GetOnDeathDelegate() = 0;
+	virtual void Die(const FVector& DeathImpulse) = 0;
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interface|Combat")
 	int32 GetPlayerLevel();
@@ -57,8 +58,6 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
 	UAnimMontage* GetHitReactMontage();
-
-	virtual void Die(const FVector& DeathImpulse) = 0;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
 	bool IsDead() const;
@@ -83,10 +82,16 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
 	ECharacterClassType GetCharacterClassType();
-
+	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
 	void SetInShockLoop(const bool bInShockLoop);
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
+	bool IsBeingShockLoop() const;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
+	void SetIsBeingShocked(const bool bInShockLoop);
+	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Combat")
 	USkeletalMeshComponent* GetWeaponMesh() const;
 };

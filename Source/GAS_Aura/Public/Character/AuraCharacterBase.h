@@ -33,6 +33,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|NiagaraComponent")
 	TObjectPtr<UNiagaraComponent_DeBuff> NiagaraComponent_DeBuff_Burn;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|NiagaraComponent")
+	TObjectPtr<UNiagaraComponent_DeBuff> NiagaraComponent_DeBuff_Stun;
+
 	// Attributes
 	UPROPERTY(BlueprintReadOnly, Category="Aura|AS")
 	TObjectPtr<UAttributeSet> AS;
@@ -95,10 +98,13 @@ protected:
 	bool bIsDead { false };
 	
 	UPROPERTY(BlueprintReadWrite, Replicated, Category="Aura|Status")
-	bool bInShockLoop { false };
+	bool bIsBeingShocked { false };
 
 	UPROPERTY(BlueprintReadWrite, ReplicatedUsing="OnRep_IsStunned", Category="Aura|Status")
 	bool bIsStunned { false };
+
+	UPROPERTY(BlueprintReadWrite, ReplicatedUsing="OnRep_IsBurned", Category="Aura|Status")
+	bool bIsBurned { false };
 
 	// Minions
 	int32 MinionsCount { 0 };
@@ -118,8 +124,8 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	// Combat Interface
-	virtual FOnASComponentRegisteredSignature GetOnAsComponentRegisteredDelegate() override;
-	virtual FOnDeathSignature GetOnDeathDelegate() override;
+	virtual FOnASComponentRegisteredSignature& GetOnAsComponentRegisteredDelegate() override;
+	virtual FOnDeathSignature& GetOnDeathDelegate() override;
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) const override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual void Die(const FVector& DeathImpulse) override;
@@ -132,6 +138,8 @@ protected:
 	virtual void IncrementMinionCount_Implementation(const int32 Amount) override;
 	virtual ECharacterClassType GetCharacterClassType_Implementation() override;
 	virtual USkeletalMeshComponent* GetWeaponMesh_Implementation() const override;
+	virtual bool IsBeingShockLoop_Implementation() const override;
+	virtual void SetIsBeingShocked_Implementation(const bool bInShockLoop) override;
 
 	void ApplyEffectToSelf(const TSubclassOf<UGameplayEffect> GameplayEffectClass, const float Level) const;
 	virtual void InitializeDefaultAttributes() const;
@@ -155,4 +163,7 @@ protected:
 	// ReplicatedUsing
 	UFUNCTION()
 	virtual void OnRep_IsStunned();
+
+	UFUNCTION()
+	virtual void OnRep_IsBurned();
 };

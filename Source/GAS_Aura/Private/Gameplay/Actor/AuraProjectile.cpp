@@ -18,7 +18,6 @@ AAuraProjectile::AAuraProjectile()
 	PrimaryActorTick.bCanEverTick = false;
 
 	bReplicates = true;
-	InitialLifeSpan = LifeTime;
 
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	RootComponent = SphereComponent;
@@ -39,7 +38,6 @@ void AAuraProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	InitialLifeSpan = LifeTime;
 	SetLifeSpan(LifeTime);
 	SetReplicateMovement(true);
 
@@ -110,6 +108,7 @@ void AAuraProjectile::OnHit()
 void AAuraProjectile::OnSphereStartOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (!DamageEffectParams.SourceASComponent) return;
 	if (!IsValidOverlap(OtherActor)) return;
 	if (!bIsHit) OnHit();
 	

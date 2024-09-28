@@ -60,16 +60,18 @@ void AAuraHUD::InitOverlayMain(APlayerController* PC, APlayerState* PS, UAbility
 {
 	if (IsValid(OverlayMainWidgetClass))
 	{
-		OverlayMainWidget = CreateWidget<UAuraUserWidget>(GetWorld(), OverlayMainWidgetClass);
-		if (OverlayMainWidget)
+		if (const auto Widget = CreateWidget<UUserWidget>(GetWorld(), OverlayMainWidgetClass))
 		{
-			const auto Widget = Cast<UUserWidget>(OverlayMainWidget);
-			const FWidgetControllerParams WidgetControllerParams {PC, PS, ASC, AS};
-			const auto WidgetController = GetOverlayMainWidgetController(WidgetControllerParams);
+			OverlayMainWidget = Cast<UAuraUserWidget>(Widget);
+			if (OverlayMainWidget)
+			{
+				const FWidgetControllerParams WidgetControllerParams {PC, PS, ASC, AS};
+				const auto WidgetController = GetOverlayMainWidgetController(WidgetControllerParams);
 
-			OverlayMainWidget->SetWidgetController(WidgetController);
-			WidgetController->BroadcastInitValues();
-			Widget->AddToViewport();
+				OverlayMainWidget->SetWidgetController(WidgetController);
+				WidgetController->BroadcastInitValues();
+				Widget->AddToViewport();
+			}
 		}
 	}
 	else
