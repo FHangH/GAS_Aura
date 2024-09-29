@@ -9,47 +9,47 @@ APointCollection::APointCollection()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	SceneComponent_Pt_0 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt_0"));
+	SceneComponent_Pt_0 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt0"));
 	ImmutablePts.Add(SceneComponent_Pt_0);
 	SetRootComponent(SceneComponent_Pt_0);
 	
-	SceneComponent_Pt_1 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt_1"));
+	SceneComponent_Pt_1 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt1"));
 	ImmutablePts.Add(SceneComponent_Pt_1);
 	SceneComponent_Pt_1->SetupAttachment(RootComponent);
 	
-	SceneComponent_Pt_2 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt_2"));
+	SceneComponent_Pt_2 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt2"));
 	ImmutablePts.Add(SceneComponent_Pt_2);
 	SceneComponent_Pt_2->SetupAttachment(RootComponent);
 	
-	SceneComponent_Pt_3 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt_3"));
+	SceneComponent_Pt_3 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt3"));
 	ImmutablePts.Add(SceneComponent_Pt_3);
 	SceneComponent_Pt_3->SetupAttachment(RootComponent);
 	
-	SceneComponent_Pt_4 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt_4"));
+	SceneComponent_Pt_4 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt4"));
 	ImmutablePts.Add(SceneComponent_Pt_4);
 	SceneComponent_Pt_4->SetupAttachment(RootComponent);
 	
-	SceneComponent_Pt_5 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt_5"));
+	SceneComponent_Pt_5 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt5"));
 	ImmutablePts.Add(SceneComponent_Pt_5);
 	SceneComponent_Pt_5->SetupAttachment(RootComponent);
 	
-	SceneComponent_Pt_6 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt_6"));
+	SceneComponent_Pt_6 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt6"));
 	ImmutablePts.Add(SceneComponent_Pt_6);
 	SceneComponent_Pt_6->SetupAttachment(RootComponent);
 	
-	SceneComponent_Pt_7 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt_7"));
+	SceneComponent_Pt_7 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt7"));
 	ImmutablePts.Add(SceneComponent_Pt_7);
 	SceneComponent_Pt_7->SetupAttachment(RootComponent);
 	
-	SceneComponent_Pt_8 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt_8"));
+	SceneComponent_Pt_8 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt8"));
 	ImmutablePts.Add(SceneComponent_Pt_8);
 	SceneComponent_Pt_8->SetupAttachment(RootComponent);
 	
-	SceneComponent_Pt_9 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt_9"));
+	SceneComponent_Pt_9 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt9"));
 	ImmutablePts.Add(SceneComponent_Pt_9);
 	SceneComponent_Pt_9->SetupAttachment(RootComponent);
 	
-	SceneComponent_Pt_10 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt_10"));
+	SceneComponent_Pt_10 = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent_Pt10"));
 	ImmutablePts.Add(SceneComponent_Pt_10);
 	SceneComponent_Pt_10->SetupAttachment(RootComponent);
 	
@@ -115,7 +115,7 @@ TArray<USceneComponent*> APointCollection::GetGroundPoints(const FVector& Ground
 
     if (!SceneComponent_Pt_0)
     {
-        UE_LOG(LogTemp, Error, TEXT("SceneComponent_Pt_0 is null!"));
+        UE_LOG(LogTemp, Error, TEXT("SceneComponent_Pt0 is null!"));
         return ArrayCopy; // 提前返回
     }
 
