@@ -71,6 +71,7 @@ public:
  
  FGameplayTag Ability_Fire_FireBolt;
  FGameplayTag Ability_Lightning_Electrocute;
+ FGameplayTag Ability_Arcane_ArcaneShards;
 
  FGameplayTag Ability_Passive_HaloOfProtection;
  FGameplayTag Ability_Passive_LifeSiphon;
