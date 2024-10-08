@@ -168,6 +168,8 @@ void UEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPara
 		const auto CaptureDef = Map_TagsToCaptureDef[ResistanceTag];
 
 		float DamageTypeValue = GESpec.GetSetByCallerMagnitude(DamageTypeTag, false);
+		if (DamageTypeValue <= 0.f) continue;
+		
 		float Resistance = 0.f;
 		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(CaptureDef, EvaluateParams, Resistance);
 		Resistance = FMath::Clamp(Resistance, 0.f, 100.f);

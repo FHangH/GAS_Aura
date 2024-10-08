@@ -54,9 +54,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|RadialDamage")
 	float RadialDamageOuterRadius { 0.f };
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|RadialDamage")
-	FVector RadialDamageOrigin { FVector::ZeroVector };
 	
 	/* Function */
 public:
@@ -67,7 +64,7 @@ public:
 	static FTaggedMontage GetRandomTaggedMontage(const TArray<FTaggedMontage>& TaggedMontages);
 
 	UFUNCTION(BlueprintPure, Category="Aura")
-	FDamageEffectParams MakeDamageEffectParamsFromClassDefaults(AActor* TargetActor = nullptr) const;
+	FDamageEffectParams MakeDamageEffectParamsFromClassDefaults(AActor* TargetActor = nullptr, FVector InRadialDamageOrigin = FVector::ZeroVector) const;
 
 	UFUNCTION(BlueprintPure, Category="Aura")
 	float GetDamageAtLevel() const;
