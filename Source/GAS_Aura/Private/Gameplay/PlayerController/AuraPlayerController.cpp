@@ -17,6 +17,7 @@
 #include "Input/AuraInputComponent.h"
 #include "Interaction/EnemyInterface.h"
 #include "UI/Widget/DamageTextWidgetComponent.h"
+#include "Untils/AuraCollision.h"
 #include "Untils/AuraGameplayTags.h"
 
 AAuraPlayerController::AAuraPlayerController()
@@ -138,8 +139,9 @@ void AAuraPlayerController::CursorTrace()
 		ThisActor = nullptr;
 		return;
 	}
-	
-	GetHitResultUnderCursor(ECC_Visibility, false, CursorHitResult);
+
+	const auto TraceChannel = IsValid(Decal_MagicCircle) ? ECC_ExcludePlayers : ECC_Visibility;
+	GetHitResultUnderCursor(TraceChannel, false, CursorHitResult);
 	if (!CursorHitResult.bBlockingHit) return;
 
 	LastActor = ThisActor;
