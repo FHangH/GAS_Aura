@@ -45,6 +45,18 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|Impulse")
 	float KnockBackChance { 10.f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|RadialDamage")
+	bool bIsRadialDamage { false };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|RadialDamage")
+	float RadialDamageInnerRadius { 0.f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|RadialDamage")
+	float RadialDamageOuterRadius { 0.f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Aura|RadialDamage")
+	FVector RadialDamageOrigin { FVector::ZeroVector };
 	
 	/* Function */
 public:
