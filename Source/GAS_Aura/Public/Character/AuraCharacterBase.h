@@ -124,8 +124,10 @@ protected:
 	int32 MinionsCount { 0 };
 
 	// Combat Interface
+	// Delegate
 	FOnASComponentRegisteredSignature OnASComponentRegisteredDelegate;
 	FOnDeathSignature OnDeathDelegate;
+	FOnDamageSignature OnDamageDelegate;
 	
 	/* Function */
 public:
@@ -137,10 +139,12 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void InitAbilityActorInfo();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	
 	// Combat Interface
 	virtual FOnASComponentRegisteredSignature& GetOnAsComponentRegisteredDelegate() override;
 	virtual FOnDeathSignature& GetOnDeathDelegate() override;
+	virtual FOnDamageSignature& GetOnDamageDelegate() override;
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) const override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual void Die(const FVector& DeathImpulse) override;

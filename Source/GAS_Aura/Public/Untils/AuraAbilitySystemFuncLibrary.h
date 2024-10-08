@@ -59,6 +59,7 @@ public:
 	static UDataAsset_AbilityInfo* GetAbilityInfo(const UObject* WorldContextObject);
 
 	// Gameplay Effect
+	// Is Bool && Get
 	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayEffect")
 	static bool IsBlockedHit(const FGameplayEffectContextHandle& EffectContextHandle);
 
@@ -67,6 +68,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayEffect")
 	static bool IsSuccessfulDeBuff(const FGameplayEffectContextHandle& EffectContextHandle);
+
+	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayEffect")
+	static bool IsRadialDamage(const FGameplayEffectContextHandle& EffectContextHandle);
 
 	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayEffect")
 	static float GetDeBuffDamage(const FGameplayEffectContextHandle& EffectContextHandle);
@@ -86,6 +90,16 @@ public:
 	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayEffect")
 	static FVector GetKnockBackForce(const FGameplayEffectContextHandle& EffectContextHandle);
 
+	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayEffect")
+	static float GetRadialDamageInnerRadius(const FGameplayEffectContextHandle& EffectContextHandle);
+
+	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayEffect")
+	static float GetRadialDamageOuterRadius(const FGameplayEffectContextHandle& EffectContextHandle);
+
+	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayEffect")
+	static FVector GetRadialDamageOrigin(const FGameplayEffectContextHandle& EffectContextHandle);
+
+	// Set
 	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|GameplayEffect")
 	static void SetIsBlockedHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const bool bIsBlockedHit);
 
@@ -94,6 +108,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|GameplayEffect")
 	static void SetIsSuccessfulDeBuff(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const bool bIsSuccessfulDeBuff);
+
+	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|GameplayEffect")
+	static void SetIsRadialDamage(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const bool bIsRadialDamage);
 
 	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|GameplayEffect")
 	static void SetDeBuffDamage(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const float InDamage);
@@ -112,6 +129,15 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|GameplayEffect")
 	static void SetKnockBackForce(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const FVector& InKnockBackForce);
+
+	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|GameplayEffect")
+	static void SetRadialDamageInnerRadius(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const float InInnerRadius);
+
+	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|GameplayEffect")
+	static void SetRadialDamageOuterRadius(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const float InOuterRadius);
+
+	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|GameplayEffect")
+	static void SetRadialDamageOrigin(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const FVector& InRadialDamageOrigin);
 
 	// Gameplay Mechanics
 	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayMechanics")
