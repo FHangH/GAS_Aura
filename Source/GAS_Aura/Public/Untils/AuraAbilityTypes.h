@@ -61,6 +61,18 @@ struct FDamageEffectParams
 
 	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
 	FVector KnockBackForce { FVector::ZeroVector };
+
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
+	bool bIsRadialDamage { false };
+
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
+	float RadialDamageInnerRadius { 0.f };
+
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
+	float RadialDamageOuterRadius { 0.f };
+
+	UPROPERTY(BlueprintReadWrite, Category="Aura|DamageEffectParam")
+	FVector RadialDamageOrigin { FVector::ZeroVector };
 };
 
 USTRUCT(BlueprintType)
@@ -95,6 +107,18 @@ protected:
 
 	UPROPERTY()
 	FVector KnockBackForce { FVector::ZeroVector };
+
+	UPROPERTY()
+	bool bIsRadialDamage { false };
+
+	UPROPERTY()
+	float RadialDamageInnerRadius { 0.f };
+
+	UPROPERTY()
+	float RadialDamageOuterRadius { 0.f };
+
+	UPROPERTY()
+	FVector RadialDamageOrigin { FVector::ZeroVector };
 	
 	/* Function */
 public:
@@ -112,6 +136,10 @@ public:
 	FORCEINLINE TSharedPtr<FGameplayTag> GetDamageType() const { return DamageType; }
 	FORCEINLINE FVector GetDeathImpulse() const { return DeathImpulse; }
 	FORCEINLINE FVector GetKnockBackForce() const { return KnockBackForce; }
+	FORCEINLINE bool IsRadialDamage() const { return bIsRadialDamage; }
+	FORCEINLINE float GetRadialDamageInnerRadius() const { return RadialDamageInnerRadius; }
+	FORCEINLINE float GetRadialDamageOuterRadius() const { return RadialDamageOuterRadius; }
+	FORCEINLINE FVector GetRadialDamageOrigin() const { return RadialDamageOrigin; }
 
 	// Set
 	FORCEINLINE void SetIsCriticalHit(const bool bNewCriticalHit) { bIsCriticalHit = bNewCriticalHit; }
@@ -123,6 +151,10 @@ public:
 	FORCEINLINE void SetDamageType(const TSharedPtr<FGameplayTag>& InDamageType) { DamageType = InDamageType; }
 	FORCEINLINE void SetDeathImpulse(const FVector& InDeathImpulse) { DeathImpulse = InDeathImpulse; }
 	FORCEINLINE void SetKnockBackForce(const FVector& InKnockBackFore) { KnockBackForce = InKnockBackFore; }
+	FORCEINLINE void SetIsRadialDamage(const bool bNewIsRadialDamage) { bIsRadialDamage = bNewIsRadialDamage; }
+	FORCEINLINE void SetRadialDamageInnerRadius(const float InRadialDamageInnerRadius) { RadialDamageInnerRadius = InRadialDamageInnerRadius; }
+	FORCEINLINE void SetRadialDamageOuterRadius(const float InRadialDamageOuterRadius) { RadialDamageOuterRadius = InRadialDamageOuterRadius; }
+	FORCEINLINE void SetRadialDamageOrigin(const FVector& InRadialDamageOrigin) { RadialDamageOrigin = InRadialDamageOrigin; }
 };
 
 template<>
