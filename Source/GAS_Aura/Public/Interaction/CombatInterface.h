@@ -13,6 +13,7 @@ class UAbilitySystemComponent;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnASComponentRegisteredSignature, UAbilitySystemComponent*);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathSignature, AActor*, DeadActor);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnDamageSignature, float /*DamageAmount*/);
 
 USTRUCT(BlueprintType)
 struct FTaggedMontage
@@ -45,6 +46,7 @@ class GAS_AURA_API ICombatInterface
 public:
 	virtual FOnASComponentRegisteredSignature& GetOnAsComponentRegisteredDelegate() = 0;
 	virtual FOnDeathSignature& GetOnDeathDelegate() = 0;
+	virtual FOnDamageSignature& GetOnDamageDelegate() = 0;
 	virtual void Die(const FVector& DeathImpulse) = 0;
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interface|Combat")

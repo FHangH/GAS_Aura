@@ -88,6 +88,13 @@ void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(AAuraCharacterBase, bIsBurned);
 }
 
+float AAuraCharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	const auto DamageTaken = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	OnDamageDelegate.Broadcast(DamageTaken);
+	return DamageTaken;
+}
+
 FOnASComponentRegisteredSignature& AAuraCharacterBase::GetOnAsComponentRegisteredDelegate()
 {
 	return OnASComponentRegisteredDelegate;
@@ -96,6 +103,11 @@ FOnASComponentRegisteredSignature& AAuraCharacterBase::GetOnAsComponentRegistere
 FOnDeathSignature& AAuraCharacterBase::GetOnDeathDelegate()
 {
 	return OnDeathDelegate;
+}
+
+FOnDamageSignature& AAuraCharacterBase::GetOnDamageDelegate()
+{
+	return OnDamageDelegate;
 }
 
 FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) const 
@@ -255,7 +267,6 @@ void AAuraCharacterBase::Multicast_HandleDeath_Implementation(const FVector& Dea
 {
 	bIsDead = true;
 	
-	// TODO Here Delegate Is Not Bound, GA_AuraBeamSpell Function: PrimaryTargetDied and AdditionalTargetDied Can not CallBack
 	OnDeathDelegate.Broadcast(this);
 	
 	if (WeaponMeshComponent)

@@ -6,6 +6,7 @@
 #include "Gameplay/GAS/AuraAttributeSet.h"
 #include "Gameplay/GAS/Data/DataAsset_CharacterClassInfo.h"
 #include "Interaction/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Untils/AuraAbilitySystemFuncLibrary.h"
 #include "Untils/AuraGameplayTags.h"
 #include "Untils/AuraLog.h"
@@ -140,15 +141,15 @@ void UEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPara
 	}
 
 	const auto GESpec = ExecutionParams.GetOwningSpec();
+	// Get Custom Effect Context => IsBlocked, IsCriticalHit for FloatingText Show Type
+	auto EffectContextHandle = GESpec.GetContext();
+	
 	const auto SourceTag = GESpec.CapturedSourceTags.GetAggregatedTags();
 	const auto TargetTag = GESpec.CapturedTargetTags.GetAggregatedTags();
 
 	FAggregatorEvaluateParameters EvaluateParams;
 	EvaluateParams.SourceTags = SourceTag;
 	EvaluateParams.TargetTags = TargetTag;
-
-	// Get Custom Effect Context => IsBlocked, IsCriticalHit for FloatingText Show Type
-	auto EffectContextHandle = GESpec.GetContext();
 
 	// DeBuff
 	DetermineDeBuff(ExecutionParams, GESpec, EvaluateParams, Map_TagsToCaptureDef);
@@ -160,7 +161,7 @@ void UEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPara
 	{
 		const auto DamageTypeTag = Pair.Key;
 		const auto ResistanceTag = Pair.Value;
-		if (!(Map_TagsToCaptureDef.Contains(ResistanceTag)))
+		if (!Map_TagsToCaptureDef.Contains(ResistanceTag))
 		{
 			UE_LOG(Aura, Warning, TEXT("Map_TagsToCaptureDef does not contain ResistanceTag: %s"), *ResistanceTag.ToString());
 		}
@@ -172,6 +173,31 @@ void UEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPara
 		Resistance = FMath::Clamp(Resistance, 0.f, 100.f);
 
 		DamageTypeValue *= (100.f - Resistance) / 100.f;
+
+		if (UAuraAbilitySystemFuncLibrary::IsRadialDamage(EffectContextHandle))
+		{
+			if (auto CombatInterface = Cast<ICombatInterface>(TargetAvatar))
+			{
+				CombatInterface->GetOnDamageDelegate().AddLambda([&](const float DamageAmount)
+				{
+					DamageTypeValue = DamageAmount;
+				});
+			}
+
+			UGameplayStatics::ApplyRadialDamageWithFalloff(
+				TargetAvatar,
+				DamageTypeValue,
+				0.f,
+				UAuraAbilitySystemFuncLibrary::GetRadialDamageOrigin(EffectContextHandle),
+				UAuraAbilitySystemFuncLibrary::GetRadialDamageInnerRadius(EffectContextHandle),
+				UAuraAbilitySystemFuncLibrary::GetRadialDamageOuterRadius(EffectContextHandle),
+				1.f,
+				UDamageType::StaticClass(),
+				TArray<AActor*>{},
+				SourceAvatar,
+				nullptr);
+		}
+		
 		Damage += DamageTypeValue;
 	}
 
