@@ -1,9 +1,9 @@
 ﻿// Copyright fangh.space
 
 
-#include "Gameplay/GAS/GA/GA_Electrocute.h"
+#include "Gameplay/GAS/GA/GA_AuraElectrocute.h"
 
-FString UGA_Electrocute::GetDescription(const int32 Level)
+FString UGA_AuraElectrocute::GetDescription(const int32 Level)
 {
 	const auto ScaledDamage = Damage.GetValueAtLevel(Level);
 	const auto ManaCost = FMath::Abs(GetManaCost(Level));
@@ -30,7 +30,7 @@ FString UGA_Electrocute::GetDescription(const int32 Level)
 			, Level, ManaCost, Cooldown, FMath::Min(Level, MaxNumShockTargets - 1), static_cast<int32>(ScaledDamage));
 }
 
-FString UGA_Electrocute::GetNextLevelDescription(const int32 Level)
+FString UGA_AuraElectrocute::GetNextLevelDescription(const int32 Level)
 {
 	const auto ScaledDamage = Damage.GetValueAtLevel(Level);
 	const auto ManaCost = FMath::Abs(GetManaCost(Level));

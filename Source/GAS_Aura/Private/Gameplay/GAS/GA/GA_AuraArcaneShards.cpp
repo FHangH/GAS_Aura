@@ -1,9 +1,9 @@
 ﻿// Copyright fangh.space
 
 
-#include "Gameplay/GAS/GA/GA_ArcaneShards.h"
+#include "Gameplay/GAS/GA/GA_AuraArcaneShards.h"
 
-FString UGA_ArcaneShards::GetDescription(const int32 Level)
+FString UGA_AuraArcaneShards::GetDescription(const int32 Level)
 {
 	const auto ScaledDamage = Damage.GetValueAtLevel(Level);
 	const auto ManaCost = FMath::Abs(GetManaCost(Level));
@@ -30,7 +30,7 @@ FString UGA_ArcaneShards::GetDescription(const int32 Level)
 			, Level, ManaCost, Cooldown, FMath::Min(Level, MaxNumShards), static_cast<int32>(ScaledDamage));
 }
 
-FString UGA_ArcaneShards::GetNextLevelDescription(const int32 Level)
+FString UGA_AuraArcaneShards::GetNextLevelDescription(const int32 Level)
 {
 	const auto ScaledDamage = Damage.GetValueAtLevel(Level);
 	const auto ManaCost = FMath::Abs(GetManaCost(Level));

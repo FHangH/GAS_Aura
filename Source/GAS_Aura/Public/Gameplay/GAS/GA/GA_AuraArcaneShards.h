@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Gameplay/GAS/AuraDamageGameplayAbility.h"
-#include "GA_ArcaneShards.generated.h"
+#include "GA_AuraArcaneShards.generated.h"
 
 UCLASS()
-class GAS_AURA_API UGA_ArcaneShards : public UAuraDamageGameplayAbility
+class GAS_AURA_API UGA_AuraArcaneShards : public UAuraDamageGameplayAbility
 {
 	GENERATED_BODY()
 
