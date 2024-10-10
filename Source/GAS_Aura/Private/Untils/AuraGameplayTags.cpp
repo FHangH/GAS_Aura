@@ -68,6 +68,7 @@ void FAuraGameplayTags::InitNativeGameplayTags()
 	GameplayTags.Ability_Summon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Ability.Summon"});
 	
 	GameplayTags.Ability_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Ability.Fire.FireBolt"});
+	GameplayTags.Ability_Fire_FireBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Ability.Fire.FireBlast"});
 	GameplayTags.Ability_Lightning_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Ability.Lightning.Electrocute"});
 	GameplayTags.Ability_Arcane_ArcaneShards = UGameplayTagsManager::Get().AddNativeGameplayTag(FName{"Ability.Arcane.ArcaneShards"});
 
