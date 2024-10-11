@@ -2,6 +2,9 @@
 
 
 #include "Gameplay/GAS/GA/GA_AuraFireBlast.h"
+#include "Gameplay/Actor/AuraFireBall.h"
+#include "Untils/AuraAbilitySystemFuncLibrary.h"
+#include "Untils/AuraLog.h"
 
 FString UGA_AuraFireBlast::GetDescription(const int32 Level)
 {
@@ -37,5 +40,34 @@ FString UGA_AuraFireBlast::GetNextLevelDescription(const int32 Level)
 
 TArray<AAuraFireBall*> UGA_AuraFireBlast::SpawnFireBalls()
 {
-	return TArray<AAuraFireBall*>{};
+	if (!IsValid(FireBallClass))
+	{
+		UE_LOG(Aura, Warning, TEXT("FireBallClass is not valid"));
+		return TArray<AAuraFireBall*>();
+	}
+
+	TArray<AAuraFireBall*> FireBalls;
+	const auto Forward = GetAvatarActorFromActorInfo()->GetActorForwardVector();
+	const auto Location = GetAvatarActorFromActorInfo()->GetActorLocation();
+	auto Rotators = UAuraAbilitySystemFuncLibrary::EvenlySpacedRotators(Forward, FVector::UpVector, 360.f, NumFireBalls);
+
+	for (const auto& Rotator : Rotators)
+	{
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(Location);
+		SpawnTransform.SetRotation(Rotator.Quaternion());
+
+		auto FireBall = GetWorld()->SpawnActorDeferred<AAuraFireBall>(
+			FireBallClass,
+			SpawnTransform,
+			GetOwningActorFromActorInfo(),
+			CurrentActorInfo->PlayerController->GetPawn(),
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+		if (!FireBall) continue;
+		FireBall->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults();
+		FireBall->FinishSpawning(SpawnTransform);
+		FireBalls.Add(FireBall);
+	}
+	return FireBalls;
 }
