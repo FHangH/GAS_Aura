@@ -34,3 +34,8 @@ FString UGA_AuraFireBlast::GetNextLevelDescription(const int32 Level)
 			"<Damage>%d</><Default> Radial fire damage with a chance to burn</>\n")
 			, Level, ManaCost, Cooldown, NumFireBalls, static_cast<int32>(ScaledDamage));
 }
+
+TArray<AAuraFireBall*> UGA_AuraFireBlast::SpawnFireBalls()
+{
+	return TArray<AAuraFireBall*>{};
+}
