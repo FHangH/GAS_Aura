@@ -66,6 +66,7 @@ TArray<AAuraFireBall*> UGA_AuraFireBlast::SpawnFireBalls()
 
 		if (!FireBall) continue;
 		FireBall->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults();
+		FireBall->ReturnToActor = GetAvatarActorFromActorInfo();
 		FireBall->FinishSpawning(SpawnTransform);
 		FireBalls.Add(FireBall);
 	}

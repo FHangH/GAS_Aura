@@ -11,11 +11,19 @@ class GAS_AURA_API AAuraFireBall : public AAuraProjectile
 {
 	GENERATED_BODY()
 
+	/* Property */
+public:
+	UPROPERTY(BlueprintReadOnly, Category = "Aura|FireBall")	
+	TObjectPtr<AActor> ReturnToActor;
+	
+	/* Function */
 public:
 	AAuraFireBall();
 
+	UFUNCTION(BlueprintNativeEvent, Category="Aura|FireBall")
+	void StartOutgoingTimeLine();
+
 protected:
 	virtual void BeginPlay() override;
-
 	virtual void OnSphereStartOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
-  };
+};
