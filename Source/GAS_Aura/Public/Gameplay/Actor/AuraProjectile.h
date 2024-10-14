@@ -66,7 +66,7 @@ protected:
 	UFUNCTION()
 	bool IsValidOverlap(const AActor* OtherActor) const;
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category="Aura")
 	void OnHit();
 	
 	UFUNCTION()
