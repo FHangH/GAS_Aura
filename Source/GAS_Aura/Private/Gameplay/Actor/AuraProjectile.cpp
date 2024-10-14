@@ -136,7 +136,7 @@ void AAuraProjectile::OnSphereStartOverlap(UPrimitiveComponent* OverlappedCompon
 		bIsHit = true;
 	}
 	
-	if (const auto TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+	/*if (const auto TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 	{
 		const auto DeathImpulse = GetActorForwardVector() * DamageEffectParams.DeathImpulseMagnitude;
 		DamageEffectParams.DeathImpulse = DeathImpulse;
@@ -151,5 +151,5 @@ void AAuraProjectile::OnSphereStartOverlap(UPrimitiveComponent* OverlappedCompon
 		DamageEffectParams.TargetASComponent = TargetASC;
 		UAuraAbilitySystemFuncLibrary::ApplyDamageEffect(DamageEffectParams);
 	}
-	Destroy();
+	Destroy();*/
 }
