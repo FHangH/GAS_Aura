@@ -3,7 +3,10 @@
 
 #include "Gameplay/Actor/AuraFireBall.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "GameplayCueManager.h"
+#include "Components/AudioComponent.h"
 #include "Untils/AuraAbilitySystemFuncLibrary.h"
+#include "Untils/AuraGameplayTags.h"
 
 AAuraFireBall::AAuraFireBall()
 {
@@ -35,4 +38,21 @@ void AAuraFireBall::OnSphereStartOverlap(UPrimitiveComponent* OverlappedComponen
 		DamageEffectParams.TargetASComponent = TargetASC;
 		UAuraAbilitySystemFuncLibrary::ApplyDamageEffect(DamageEffectParams);
 	}
+}
+
+void AAuraFireBall::OnHit()
+{
+	if (GetOwner())
+	{
+		FGameplayCueParameters CueParameters;
+		CueParameters.Location = GetActorLocation();
+		UGameplayCueManager::ExecuteGameplayCue_NonReplicated(GetOwner(), FAuraGameplayTags::Get().GameplayCue_FireBlast, CueParameters);
+	}
+	
+	if (LoopingSoundComponent)
+	{
+		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
+	}
+	bIsHit = true;
 }
