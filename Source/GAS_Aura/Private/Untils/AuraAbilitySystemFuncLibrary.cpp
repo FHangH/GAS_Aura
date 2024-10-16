@@ -372,6 +372,31 @@ void UAuraAbilitySystemFuncLibrary::SetRadialDamageOrigin(FGameplayEffectContext
 	}
 }
 
+void UAuraAbilitySystemFuncLibrary::SetIsRadialDamageEffectParam(FDamageEffectParams& DamageEffectParams, const bool bIsRadialDamageEffect, const float InInnerRadius, const float InOuterRadius, const FVector InRadialDamageOrigin)
+{
+	DamageEffectParams.bIsRadialDamage = bIsRadialDamageEffect;
+	DamageEffectParams.RadialDamageInnerRadius = InInnerRadius;
+	DamageEffectParams.RadialDamageOuterRadius = InOuterRadius;
+	DamageEffectParams.RadialDamageOrigin = InRadialDamageOrigin;
+}
+
+void UAuraAbilitySystemFuncLibrary::SetKnockBackDirection(FDamageEffectParams& DamageEffectParams, FVector InKnockBackDirection, const float Magnitude)
+{
+	InKnockBackDirection.Normalize();
+	DamageEffectParams.KnockBackForce = InKnockBackDirection * (Magnitude == 0.f ? DamageEffectParams.KnockBackForceMagnitude : 0.f);
+}
+
+void UAuraAbilitySystemFuncLibrary::SetDeathImpulseDirection(FDamageEffectParams& DamageEffectParams, FVector InDeathImpulseDirection, const float Magnitude)
+{
+	InDeathImpulseDirection.Normalize();
+	DamageEffectParams.DeathImpulse = InDeathImpulseDirection * (Magnitude == 0.f ? DamageEffectParams.DeathImpulseMagnitude : 0.f);
+}
+
+void UAuraAbilitySystemFuncLibrary::SetEffectParams(FDamageEffectParams& DamageEffectParams, UAbilitySystemComponent* InASC)
+{
+	DamageEffectParams.TargetASComponent = InASC;
+}
+
 // Gameplay Mechanics
 void UAuraAbilitySystemFuncLibrary::GetLivePlayersWithRadius(
 	const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingPlayers, const TArray<AActor*>& ActorsToIgnore,

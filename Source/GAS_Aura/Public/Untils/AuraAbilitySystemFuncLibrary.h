@@ -139,8 +139,20 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|GameplayEffect")
 	static void SetRadialDamageOrigin(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const FVector& InRadialDamageOrigin);
 
+	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|GameplayEffect")
+	static void SetIsRadialDamageEffectParam(UPARAM(ref) FDamageEffectParams& DamageEffectParams, const bool bIsRadialDamageEffect, const float InInnerRadius, const float InOuterRadius, const FVector InRadialDamageOrigin);
+
+	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|GameplayEffect")
+	static void SetKnockBackDirection(UPARAM(ref) FDamageEffectParams& DamageEffectParams, FVector InKnockBackDirection, float Magnitude = 0.f);
+
+	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|GameplayEffect")
+	static void SetDeathImpulseDirection(UPARAM(ref) FDamageEffectParams& DamageEffectParams, FVector InDeathImpulseDirection, float Magnitude = 0.f);
+
+	UFUNCTION(BlueprintCallable, Category="Aura|FuncLib|GameplayEffect")
+	static void SetEffectParams(UPARAM(ref) FDamageEffectParams& DamageEffectParams, UAbilitySystemComponent* InASC);
+	
 	// Gameplay Mechanics
-	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayMechanics")
+	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayMechanics", meta=(DefaultToSelf="WorldContextObject"))
 	static void GetLivePlayersWithRadius(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingPlayers, const TArray<AActor*>& ActorsToIgnore, const float Radius, const FVector& SphereOrigin);
 
 	UFUNCTION(BlueprintPure, Category="Aura|FuncLib|GameplayMechanics")

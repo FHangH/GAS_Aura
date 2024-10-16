@@ -16,6 +16,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Aura|FireBall")	
 	TObjectPtr<AActor> ReturnToActor;
 	
+	UPROPERTY(BlueprintReadWrite, Category = "Aura|FireBall")
+	FDamageEffectParams ExplosionDamageParams;
+	
 	/* Function */
 public:
 	AAuraFireBall();
