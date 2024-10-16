@@ -35,10 +35,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Aura")
 	TObjectPtr<USoundBase> LoopingSound;
-
+	
 	UPROPERTY(VisibleAnywhere, Category="Aura")
 	TObjectPtr<UAudioComponent> LoopingSoundComponent;
-
+	
 	UPROPERTY(EditAnywhere, Category="Aura")
 	float LifeTime { 10.f };
 
@@ -67,7 +67,7 @@ protected:
 	bool IsValidOverlap(const AActor* OtherActor) const;
 	
 	UFUNCTION(BlueprintCallable, Category="Aura")
-	void OnHit();
+	virtual void OnHit();
 	
 	UFUNCTION()
 	virtual void OnSphereStartOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
