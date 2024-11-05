@@ -11,7 +11,7 @@ public class GAS_Aura : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
 			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", 
-			"GameplayAbilities", "GameplayTags", "GameplayTasks", "NavigationSystem", "Niagara", "AIModule"
+			"GameplayAbilities", "GameplayTags", "GameplayTasks", "NavigationSystem", "Niagara", "AIModule", "ModelViewViewModel"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
