@@ -37,4 +37,13 @@ public:
 
 	UFUNCTION(BlueprintPure, Category="MVVM")
 	UMVVM_LoadSlot* GetMVVM_LoadSlotByIndex(const int32 Index) const;
+
+	UFUNCTION(BlueprintCallable, Category="MVVM")
+	void NewSlotButtonPressed(const int32 Slot, const FString& EnteredName);
+
+	UFUNCTION(BlueprintCallable, Category="MVVM")
+	void NewGameButtonPressed(const int32 Slot);
+
+	UFUNCTION(BlueprintCallable, Category="MVVM")
+	void SelectSlotButtonPressed(const int32 Slot);
 };
