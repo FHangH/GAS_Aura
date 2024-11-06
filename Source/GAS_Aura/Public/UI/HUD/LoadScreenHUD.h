@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "LoadScreenHUD.generated.h"
 
+class ULoadScreenWidget;
 class UMVVM_LoadScreen;
 
 UCLASS()
@@ -17,10 +18,10 @@ class GAS_AURA_API ALoadScreenHUD : public AHUD
 public:
 	// Widget
 	UPROPERTY(EditDefaultsOnly, Category="HUD|LoadScreen")
-	TSubclassOf<UUserWidget> LoadScreenWidgetClass;
+	TSubclassOf<ULoadScreenWidget> LoadScreenWidgetClass;
 
 	UPROPERTY(BlueprintReadOnly, Category="HUD|LoadScreen")
-	TObjectPtr<UUserWidget> LoadScreenWidget;
+	TObjectPtr<ULoadScreenWidget> LoadScreenWidget;
 
 	// MVVM
 	UPROPERTY(EditDefaultsOnly, Category="HUD|MVVM")

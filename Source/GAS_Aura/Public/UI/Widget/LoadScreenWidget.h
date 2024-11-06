@@ -10,4 +10,8 @@ UCLASS()
 class GAS_AURA_API ULoadScreenWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void BlueprintInitWidget();
 };
