@@ -9,6 +9,7 @@
 enum ESaveSlotStatus : uint8;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSetWidgetSwitcherIndexSignature, int32, WidgetSwitcherIndex);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEnableSelectSlotButtonSignature, bool, bEnable);
 
 UCLASS()
 class GAS_AURA_API UMVVM_LoadSlot : public UMVVMViewModelBase
@@ -19,6 +20,9 @@ class GAS_AURA_API UMVVM_LoadSlot : public UMVVMViewModelBase
 public:
 	UPROPERTY(BlueprintAssignable, Category="MVVM|LoadSlot")
 	FSetWidgetSwitcherIndexSignature SetWidgetSwitcherIndexDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category="MVVM|LoadSlot")
+	FEnableSelectSlotButtonSignature EnableSelectSlotButtonDelegate;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="MVVM|LoadSlot")
 	TEnumAsByte<ESaveSlotStatus> SlotStatus;
