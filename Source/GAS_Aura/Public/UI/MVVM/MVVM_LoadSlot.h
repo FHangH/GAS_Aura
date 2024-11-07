@@ -34,7 +34,7 @@ public:
 	FString LoadSlotName;
 
 	UPROPERTY(BlueprintReadWrite, Category="MVVM|LoadSlot")
-	FString SlotIndex;
+	int32 SlotIndex;
 
 	/* Function */
 public:
