@@ -19,6 +19,7 @@ class GAS_AURA_API AAuraGameModeBase : public AGameModeBase
 
 	/* Property */
 public:
+	// DataAsset
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Data|CharacterClassDefault")
 	TObjectPtr<UDataAsset_CharacterClassInfo> DA_CharacterClassInfo;
 
@@ -26,11 +27,24 @@ public:
 	TObjectPtr<UDataAsset_AbilityInfo> DA_AbilityInfo;
 
 	// SaveGame
-	// Slot
+	// Load Slot
 	UPROPERTY(EditDefaultsOnly, Category="Aura|SaveGame|Slot")
 	TSubclassOf<USaveGame> LoadScreenSaveGameClass;
 
+	// Maps
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Map")
+	FString DefaultMapName;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Map")
+	TSoftObjectPtr<UWorld> DefaultMap;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Map")
+	TMap<FString, TSoftObjectPtr<UWorld>> Map_Levels;
+
 	/* Function */
+protected:
+	virtual void BeginPlay() override;
+	
 public:
 	UFUNCTION(BlueprintCallable, Category="Aura|SaveGame")
 	void SaveSlotData(const UMVVM_LoadSlot* LoadSlot, const int32 SlotIndex) const;

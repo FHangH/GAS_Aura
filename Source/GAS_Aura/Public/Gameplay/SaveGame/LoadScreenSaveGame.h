@@ -28,6 +28,9 @@ public:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|LoadScreen")
 	FString PlayerName { "Default Name" };
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|LoadScreen")
+	FString MapName { "Default Map" };
 	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|LoadScreen")
 	TEnumAsByte<ESaveSlotStatus> SlotStatus { ESaveSlotStatus::ESSS_Vacant };
