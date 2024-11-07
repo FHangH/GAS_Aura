@@ -5,7 +5,7 @@
 
 void UMVVM_LoadSlot::InitializeSlot() const
 {
-	SetWidgetSwitcherIndexDelegate.Broadcast(2);
+	SetWidgetSwitcherIndexDelegate.Broadcast(SlotStatus.GetValue());
 }
 
 // Field Notifies

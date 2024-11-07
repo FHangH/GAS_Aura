@@ -6,6 +6,8 @@
 #include "MVVMViewModelBase.h"
 #include "MVVM_LoadSlot.generated.h"
 
+enum ESaveSlotStatus : uint8;
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSetWidgetSwitcherIndexSignature, int32, WidgetSwitcherIndex);
 
 UCLASS()
@@ -15,8 +17,11 @@ class GAS_AURA_API UMVVM_LoadSlot : public UMVVMViewModelBase
 
 	/* Property */
 public:
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, Category="MVVM|LoadSlot")
 	FSetWidgetSwitcherIndexSignature SetWidgetSwitcherIndexDelegate;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="MVVM|LoadSlot")
+	TEnumAsByte<ESaveSlotStatus> SlotStatus;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, Category="MVVM|LoadSlot")
 	FString PlayerName;

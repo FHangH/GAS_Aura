@@ -21,6 +21,22 @@ void AAuraGameModeBase::SaveSlotData(const UMVVM_LoadSlot* LoadSlot, const int32
 	}
 	const auto LoadScreenSaveGame = Cast<ULoadScreenSaveGame>(UGameplayStatics::CreateSaveGameObject(LoadScreenSaveGameClass));
 	LoadScreenSaveGame->PlayerName = LoadSlot->PlayerName;
+	LoadScreenSaveGame->SlotStatus = ESSS_Taken;
 		
 	UGameplayStatics::SaveGameToSlot(LoadScreenSaveGame, LoadSlot->LoadSlotName, SlotIndex);
+}
+
+ULoadScreenSaveGame* AAuraGameModeBase::GetSaveSlotData(const FString& SlotName, const int32 SlotIndex) const
+{
+	USaveGame* SaveGameObject;
+	if (UGameplayStatics::DoesSaveGameExist(SlotName, SlotIndex))
+	{
+		SaveGameObject = UGameplayStatics::LoadGameFromSlot(SlotName, SlotIndex);
+	}
+	else
+	{
+		SaveGameObject = UGameplayStatics::CreateSaveGameObject(LoadScreenSaveGameClass);
+	}
+	const auto LoadScreenSaveGame = Cast<ULoadScreenSaveGame>(SaveGameObject);
+	return LoadScreenSaveGame;
 }

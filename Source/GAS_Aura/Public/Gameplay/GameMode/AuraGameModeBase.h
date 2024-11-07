@@ -34,4 +34,7 @@ public:
 public:
 	UFUNCTION(BlueprintCallable, Category="Aura|SaveGame")
 	void SaveSlotData(const UMVVM_LoadSlot* LoadSlot, const int32 SlotIndex) const;
+
+	UFUNCTION(BlueprintPure, Category="Aura|SaveGame")
+	ULoadScreenSaveGame* GetSaveSlotData(const FString& SlotName, const int32 SlotIndex) const;
 };
