@@ -18,7 +18,7 @@ class GAS_AURA_API ALoadScreenHUD : public AHUD
 public:
 	// Widget
 	UPROPERTY(EditDefaultsOnly, Category="HUD|LoadScreen")
-	TSubclassOf<ULoadScreenWidget> LoadScreenWidgetClass;
+	TSubclassOf<UUserWidget> LoadScreenWidgetClass;
 
 	UPROPERTY(BlueprintReadOnly, Category="HUD|LoadScreen")
 	TObjectPtr<ULoadScreenWidget> LoadScreenWidget;

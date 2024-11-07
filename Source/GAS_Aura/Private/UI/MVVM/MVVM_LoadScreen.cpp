@@ -12,8 +12,8 @@ void UMVVM_LoadScreen::InitializeLoadSlots()
 		LoadSlot_1 = NewObject<UMVVM_LoadSlot>(this, MVVM_LoadSlotClass);
 		LoadSlot_2 = NewObject<UMVVM_LoadSlot>(this, MVVM_LoadSlotClass);
 		Map_LoadSlots.Add(0, LoadSlot_0);
-		Map_LoadSlots.Add(1, LoadSlot_0);
-		Map_LoadSlots.Add(2, LoadSlot_0);
+		Map_LoadSlots.Add(1, LoadSlot_1);
+		Map_LoadSlots.Add(2, LoadSlot_2);
 	}
 	else
 	{

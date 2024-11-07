@@ -20,5 +20,5 @@ public:
 
 	/* Function */
 public:
-	void InitializeSlot();
+	void InitializeSlot() const;
 };
