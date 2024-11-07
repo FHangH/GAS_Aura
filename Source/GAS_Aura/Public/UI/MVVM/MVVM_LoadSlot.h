@@ -18,7 +18,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FSetWidgetSwitcherIndexSignature SetWidgetSwitcherIndexDelegate;
 
-	UPROPERTY(BlueprintReadWrite, Category="MVVM|LoadSlot")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, Category="MVVM|LoadSlot")
 	FString PlayerName;
 
 	UPROPERTY(BlueprintReadWrite, Category="MVVM|LoadSlot")
@@ -30,4 +30,8 @@ public:
 	/* Function */
 public:
 	void InitializeSlot() const;
+
+	// Field Notifies
+	void SetPlayerName(const FString& InPlayerName);
+	FString GetPlayerName() const { return PlayerName; }
 };
