@@ -6,6 +6,9 @@
 #include "GameFramework/GameModeBase.h"
 #include "AuraGameModeBase.generated.h"
 
+class ULoadScreenSaveGame;
+class USaveGame;
+class UMVVM_LoadSlot;
 class UDataAsset_AbilityInfo;
 class UDataAsset_CharacterClassInfo;
 
@@ -21,4 +24,17 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Data|AbilityInfo")
 	TObjectPtr<UDataAsset_AbilityInfo> DA_AbilityInfo;
+
+	// SaveGame
+	// Slot
+	UPROPERTY(EditDefaultsOnly, Category="Aura|SaveGame|Slot")
+	TSubclassOf<USaveGame> LoadScreenSaveGameClass;
+
+	/* Function */
+public:
+	UFUNCTION(BlueprintCallable, Category="Aura|SaveGame")
+	void SaveSlotData(const UMVVM_LoadSlot* LoadSlot, const int32 SlotIndex) const;
+
+	UFUNCTION(BlueprintPure, Category="Aura|SaveGame")
+	ULoadScreenSaveGame* GetSaveSlotData(const FString& SlotName, const int32 SlotIndex) const;
 };

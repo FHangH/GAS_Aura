@@ -2,6 +2,9 @@
 
 
 #include "UI/MVVM/MVVM_LoadScreen.h"
+#include "Gameplay/GameMode/AuraGameModeBase.h"
+#include "Gameplay/SaveGame/LoadScreenSaveGame.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/MVVM/MVVM_LoadSlot.h"
 
 void UMVVM_LoadScreen::InitializeLoadSlots()
@@ -11,9 +14,14 @@ void UMVVM_LoadScreen::InitializeLoadSlots()
 		LoadSlot_0 = NewObject<UMVVM_LoadSlot>(this, MVVM_LoadSlotClass);
 		LoadSlot_1 = NewObject<UMVVM_LoadSlot>(this, MVVM_LoadSlotClass);
 		LoadSlot_2 = NewObject<UMVVM_LoadSlot>(this, MVVM_LoadSlotClass);
+		
+		LoadSlot_0->LoadSlotName = FString{ "LoadSlot_0" };
+		LoadSlot_1->LoadSlotName = FString{ "LoadSlot_1" };
+		LoadSlot_2->LoadSlotName = FString{ "LoadSlot_2" };
+		
 		Map_LoadSlots.Add(0, LoadSlot_0);
-		Map_LoadSlots.Add(1, LoadSlot_0);
-		Map_LoadSlots.Add(2, LoadSlot_0);
+		Map_LoadSlots.Add(1, LoadSlot_1);
+		Map_LoadSlots.Add(2, LoadSlot_2);
 	}
 	else
 	{
@@ -28,6 +36,13 @@ UMVVM_LoadSlot* UMVVM_LoadScreen::GetMVVM_LoadSlotByIndex(const int32 Index) con
 
 void UMVVM_LoadScreen::NewSlotButtonPressed(const int32 Slot, const FString& EnteredName)
 {
+	if (const auto AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
+	{
+		Map_LoadSlots[Slot]->SetPlayerName(EnteredName);
+		Map_LoadSlots[Slot]->SlotStatus = ESSS_Taken;
+		Map_LoadSlots[Slot]->InitializeSlot();
+		AuraGameMode->SaveSlotData(Map_LoadSlots[Slot], Slot);
+	}
 }
 
 void UMVVM_LoadScreen::NewGameButtonPressed(const int32 Slot)
@@ -37,4 +52,24 @@ void UMVVM_LoadScreen::NewGameButtonPressed(const int32 Slot)
 
 void UMVVM_LoadScreen::SelectSlotButtonPressed(const int32 Slot)
 {
+	for (const auto& LoadSlot : Map_LoadSlots)
+	{
+		LoadSlot.Value->EnableSelectSlotButtonDelegate.Broadcast(LoadSlot.Key != Slot);
+	}
+}
+
+void UMVVM_LoadScreen::LoadData()
+{
+	const auto AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this));
+	if (!AuraGameMode) return;
+
+	for (const auto& LoadSlot : Map_LoadSlots)
+	{
+		if (const auto SaveObject = AuraGameMode->GetSaveSlotData(LoadSlot.Value->LoadSlotName, LoadSlot.Key))
+		{
+			LoadSlot.Value->SetPlayerName(SaveObject->PlayerName);
+			LoadSlot.Value->SlotStatus = SaveObject->SlotStatus;
+			LoadSlot.Value->InitializeSlot();
+		}
+	}
 }

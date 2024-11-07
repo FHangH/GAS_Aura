@@ -46,4 +46,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="MVVM")
 	void SelectSlotButtonPressed(const int32 Slot);
+
+	UFUNCTION()
+	void LoadData();
 };

@@ -34,5 +34,11 @@ void ALoadScreenHUD::BeginPlay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("LoadScreenWidgetClass is null"));
 	}
+
+	// Load Slot Data To MVVM
+	if (MVVM_LoadScreen)
+	{
+		MVVM_LoadScreen->LoadData();
+	}
 }
  
