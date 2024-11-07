@@ -18,6 +18,15 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FSetWidgetSwitcherIndexSignature SetWidgetSwitcherIndexDelegate;
 
+	UPROPERTY(BlueprintReadWrite, Category="MVVM|LoadSlot")
+	FString PlayerName;
+
+	UPROPERTY(BlueprintReadWrite, Category="MVVM|LoadSlot")
+	FString LoadSlotName;
+
+	UPROPERTY(BlueprintReadWrite, Category="MVVM|LoadSlot")
+	FString SlotIndex;
+
 	/* Function */
 public:
 	void InitializeSlot() const;
