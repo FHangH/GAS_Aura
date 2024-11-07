@@ -54,4 +54,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Aura|SaveGame")
 	static void DeleteSlotData(const FString& SlotName, const int32 SlotIndex);
+
+	UFUNCTION(BlueprintCallable, Category="Aura|TravelMap")
+	void TravelToMap(UMVVM_LoadSlot* Slot);
 };

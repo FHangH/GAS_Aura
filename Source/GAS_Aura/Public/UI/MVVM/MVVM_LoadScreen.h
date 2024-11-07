@@ -58,6 +58,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="MVVM")
 	void DeleteSlotButtonPressed() const;
 
+	UFUNCTION(BlueprintCallable, Category="MVVM")
+	void PlayButtonPressed() const;
+	
 	UFUNCTION()
 	void LoadData();
 };
