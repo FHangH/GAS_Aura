@@ -27,14 +27,18 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="MVVM|LoadSlot")
 	TEnumAsByte<ESaveSlotStatus> SlotStatus;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, Category="MVVM|LoadSlot")
-	FString PlayerName;
-
-	UPROPERTY(BlueprintReadWrite, Category="MVVM|LoadSlot")
+	UPROPERTY(BlueprintReadWrite, Category="MVVM|LoadSlot", meta=(AllowPrivateAccess=true))
 	FString LoadSlotName;
 
-	UPROPERTY(BlueprintReadWrite, Category="MVVM|LoadSlot")
-	FString SlotIndex;
+	UPROPERTY(BlueprintReadWrite, Category="MVVM|LoadSlot", meta=(AllowPrivateAccess=true))
+	int32 SlotIndex;
+	
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, Category="MVVM|LoadSlot", meta=(AllowPrivateAccess=true))
+	FString PlayerName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, Category="MVVM|LoadSlot", meta=(AllowPrivateAccess=true))
+	FString MapName;
 
 	/* Function */
 public:
@@ -42,5 +46,7 @@ public:
 
 	// Field Notifies
 	void SetPlayerName(const FString& InPlayerName);
+	void SetMapName(const FString& InMapName);
 	FString GetPlayerName() const { return PlayerName; }
+	FString GetMapName() const { return MapName; }
 };
