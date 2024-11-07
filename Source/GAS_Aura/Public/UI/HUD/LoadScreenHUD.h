@@ -33,4 +33,6 @@ public:
 	/* Function */
 protected:
 	virtual void BeginPlay() override;
+
+	void SetUserInputMode() const;
 };

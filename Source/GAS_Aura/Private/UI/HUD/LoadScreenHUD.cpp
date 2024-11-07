@@ -2,6 +2,7 @@
 
 
 #include "UI/HUD/LoadScreenHUD.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/MVVM/MVVM_LoadScreen.h"
 #include "UI/Widget/LoadScreenWidget.h"
 
@@ -40,5 +41,17 @@ void ALoadScreenHUD::BeginPlay()
 	{
 		MVVM_LoadScreen->LoadData();
 	}
+
+	SetUserInputMode();
+}
+
+void ALoadScreenHUD::SetUserInputMode() const
+{
+	const auto PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	FInputModeUIOnly InputMode_OnlyUI;
+	InputMode_OnlyUI.SetWidgetToFocus(LoadScreenWidget->TakeWidget());
+	InputMode_OnlyUI.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+	PC->bShowMouseCursor = true;
+	PC->SetInputMode(InputMode_OnlyUI);
 }
  
