@@ -56,6 +56,12 @@ public:
 	UFUNCTION(BlueprintPure, Category="Aura|SaveGame")
 	ULoadScreenSaveGame* GetSaveSlotData(const FString& SlotName, const int32 SlotIndex) const;
 
+	UFUNCTION(BlueprintPure, Category="Aura|SaveGame")
+	ULoadScreenSaveGame* RetrieveInGameSaveData() const;
+
+	UFUNCTION(BlueprintCallable, Category="Aura|SaveGame")
+	void SaveInGameProgressData(ULoadScreenSaveGame* SaveObject) const;
+
 	UFUNCTION(BlueprintCallable, Category="Aura|SaveGame")
 	static void DeleteSlotData(const FString& SlotName, const int32 SlotIndex);
 

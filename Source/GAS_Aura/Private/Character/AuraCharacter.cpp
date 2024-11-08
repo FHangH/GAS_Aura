@@ -9,9 +9,12 @@
 #include "Gameplay/PlayerState/AuraPlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Gameplay/GameMode/AuraGameModeBase.h"
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Gameplay/GAS/Data/DataAsset_LevelUpInfo.h"
 #include "Gameplay/PlayerController/AuraPlayerController.h"
+#include "Gameplay/SaveGame/LoadScreenSaveGame.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/HUD/AuraHUD.h"
 #include "Untils/AuraGameplayTags.h"
 #include "Untils/AuraLog.h"
@@ -75,7 +78,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 		ASComponent->RegisterGameplayTagEvent(
 			FAuraGameplayTags::Get().DeBuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ThisClass::StunTagChanged);
 
-		if (const auto AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+		if (CHECK_PLAYER_CONTROLLER(AuraPlayerController))
 		{
 			const auto AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD());
 			AuraHUD->InitOverlayMain(AuraPlayerController, AuraPlayerState, ASComponent, AS);
@@ -182,7 +185,7 @@ void AAuraCharacter::LevelUp_Implementation()
 
 void AAuraCharacter::ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial)
 {
-	if (const auto AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+	if (CHECK_PLAYER_CONTROLLER(AuraPlayerController))
 	{
 		AuraPlayerController->ShowMagicCircle(DecalMaterial);
 		AuraPlayerController->bShowMouseCursor = false;
@@ -191,10 +194,22 @@ void AAuraCharacter::ShowMagicCircle_Implementation(UMaterialInterface* DecalMat
 
 void AAuraCharacter::HideMagicCircle_Implementation()
 {
-	if (const auto AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+	if (CHECK_PLAYER_CONTROLLER(AuraPlayerController))
 	{
 		AuraPlayerController->HideMagicCircle();
 		AuraPlayerController->bShowMouseCursor = true;
+	}
+}
+
+void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
+{
+	if (CHECK_GAME_MODE(AuraGameMode))
+	{
+		if (const auto SaveData = AuraGameMode->RetrieveInGameSaveData())
+		{
+			SaveData->PlayerStartTag = CheckPointTag;
+			AuraGameMode->SaveInGameProgressData(SaveData);
+		}
 	}
 }
 
