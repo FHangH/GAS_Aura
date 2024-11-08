@@ -2,6 +2,7 @@
 
 
 #include "Gameplay/GameMode/AuraGameModeBase.h"
+#include "GameFramework/PlayerStart.h"
 #include "GameFramework/SaveGame.h"
 #include "Gameplay/SaveGame/LoadScreenSaveGame.h"
 #include "Kismet/GameplayStatics.h"
@@ -12,6 +13,30 @@ void AAuraGameModeBase::BeginPlay()
 	Super::BeginPlay();
 
 	Map_Levels.Add(DefaultMapName, DefaultMap);
+}
+
+AActor* AAuraGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
+{
+	TArray<AActor*> Actors;
+	UGameplayStatics::GetAllActorsOfClass(this, APlayerStart::StaticClass(), Actors);
+
+	if (Actors.Num() > 0)
+	{
+		auto SelectedActor = Actors[0];
+		for (const auto& Actor : Actors)
+		{
+			if (const auto PlayerStart = Cast<APlayerStart>(Actor))
+			{
+				if (PlayerStart->PlayerStartTag == FName{ "PlayerTag" })
+				{
+					SelectedActor = PlayerStart;
+					break;
+				}
+			}
+		}
+		return SelectedActor;
+	}
+	return nullptr;
 }
 
 void AAuraGameModeBase::SaveSlotData(const UMVVM_LoadSlot* LoadSlot, const int32 SlotIndex) const
