@@ -32,6 +32,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category="MVVM|LoadSlot", meta=(AllowPrivateAccess=true))
 	int32 SlotIndex;
+
+	UPROPERTY(BlueprintReadWrite, Category="MVVM|LoadSlot", meta=(AllowPrivateAccess=true))
+	FName PlayerStartTag;
 	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, Category="MVVM|LoadSlot", meta=(AllowPrivateAccess=true))
