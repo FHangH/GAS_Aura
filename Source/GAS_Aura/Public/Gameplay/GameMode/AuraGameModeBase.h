@@ -37,6 +37,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Map")
 	TSoftObjectPtr<UWorld> DefaultMap;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Map")
+	FName DefaultPlayerStartTag;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Map")
 	TMap<FString, TSoftObjectPtr<UWorld>> Map_Levels;

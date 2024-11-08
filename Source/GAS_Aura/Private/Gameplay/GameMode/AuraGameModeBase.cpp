@@ -4,6 +4,7 @@
 #include "Gameplay/GameMode/AuraGameModeBase.h"
 #include "GameFramework/PlayerStart.h"
 #include "GameFramework/SaveGame.h"
+#include "Gameplay/GameInstance/AuraGameInstance.h"
 #include "Gameplay/SaveGame/LoadScreenSaveGame.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/MVVM/MVVM_LoadSlot.h"
@@ -17,17 +18,20 @@ void AAuraGameModeBase::BeginPlay()
 
 AActor* AAuraGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 {
+	const auto AuraGameInstance = Cast<UAuraGameInstance>(GetGameInstance());
+	
 	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsOfClass(this, APlayerStart::StaticClass(), Actors);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), Actors);
 
 	if (Actors.Num() > 0)
 	{
 		auto SelectedActor = Actors[0];
 		for (const auto& Actor : Actors)
 		{
+			if (!AuraGameInstance) break;
 			if (const auto PlayerStart = Cast<APlayerStart>(Actor))
 			{
-				if (PlayerStart->PlayerStartTag == FName{ "PlayerTag" })
+				if (PlayerStart->PlayerStartTag == AuraGameInstance->PlayerStartTag)
 				{
 					SelectedActor = PlayerStart;
 					break;
