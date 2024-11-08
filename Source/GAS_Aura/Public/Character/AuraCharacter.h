@@ -52,8 +52,10 @@ public:
 protected:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
-
 	virtual void InitAbilityActorInfo() override;
+
+	UFUNCTION(BlueprintCallable, Category="Aura")
+	void LoadProgress();
 
 	// Combat Interface
 	virtual int32 GetPlayerLevel_Implementation() override;

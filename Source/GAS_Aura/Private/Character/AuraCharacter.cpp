@@ -55,6 +55,7 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 
 	// Init Server
 	InitAbilityActorInfo();
+	LoadProgress();
 	AddCharacterAbilities();
 }
 
@@ -84,16 +85,38 @@ void AAuraCharacter::InitAbilityActorInfo()
 			const auto AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD());
 			AuraHUD->InitOverlayMain(AuraPlayerController, AuraPlayerState, ASComponent, AS);
 		}
-
-		InitializeDefaultAttributes();
 	}
 }
 
+void AAuraCharacter::LoadProgress()
+{
+	if (!CHECK_GAME_MODE(AuraGameMode) || !CHECK_PLAYER_STATE(AuraPlayerState)) return;
+	if (const auto SaveData = AuraGameMode->RetrieveInGameSaveData())
+	{
+		AuraPlayerState->SetLevel(SaveData->PlayerLevel);
+		AuraPlayerState->SetXP(SaveData->XP);
+		AuraPlayerState->SetAttributePoints(SaveData->AttributePoints);
+		AuraPlayerState->SetSpellPoints(SaveData->SpellPoints);
+
+		if (SaveData->IsFirstTimeLoadIn)
+		{
+			InitializeDefaultAttributes();
+			AddCharacterAbilities();
+		}
+		else
+		{
+			
+		}
+	}
+}
+
+// Combat Interface
 int32 AAuraCharacter::GetPlayerLevel_Implementation()
 {
 	return CHECK_PLAYER_STATE(AuraPlayerState) ? AuraPlayerState->GetPlayerLevel() : 0;
 }
 
+// Player Interface
 int32 AAuraCharacter::FindLevelForXP_Implementation(const int32 InXP)
 {
 	if (CHECK_PLAYER_STATE(AuraPlayerState))
@@ -216,6 +239,7 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 		SaveData->Intelligence = UAuraAttributeSet::GetIntelligenceAttribute().GetNumericValue(GetAttributeSet());
 		SaveData->Resilience = UAuraAttributeSet::GetResilienceAttribute().GetNumericValue(GetAttributeSet());
 		SaveData->Vigor = UAuraAttributeSet::GetVigorAttribute().GetNumericValue(GetAttributeSet());
+		SaveData->IsFirstTimeLoadIn = false;
 		
 		AuraGameMode->SaveInGameProgressData(SaveData);
 	}
