@@ -56,4 +56,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Player")
 	void HideMagicCircle();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|Player")
+	void SaveProgress(const FName& CheckPointTag);
 };

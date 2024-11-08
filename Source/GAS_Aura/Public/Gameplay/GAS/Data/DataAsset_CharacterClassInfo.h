@@ -42,6 +42,9 @@ class GAS_AURA_API UDataAsset_CharacterClassInfo : public UDataAsset
 public:
 	UPROPERTY(EditDefaultsOnly, Category="Aura Character Info")
 	TMap<ECharacterClassType, FCharacterClassDefaultInfo> Map_CharacterClassInformation;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura Common|Attributes")
+	TSubclassOf<UGameplayEffect> GE_PrimaryAttributes_SetByCaller;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Aura Common|Attributes")
 	TSubclassOf<UGameplayEffect> GE_SecondaryAttributes;

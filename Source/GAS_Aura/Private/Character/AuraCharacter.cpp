@@ -9,9 +9,13 @@
 #include "Gameplay/PlayerState/AuraPlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Gameplay/GameMode/AuraGameModeBase.h"
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
+#include "Gameplay/GAS/AuraAttributeSet.h"
 #include "Gameplay/GAS/Data/DataAsset_LevelUpInfo.h"
 #include "Gameplay/PlayerController/AuraPlayerController.h"
+#include "Gameplay/SaveGame/LoadScreenSaveGame.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/HUD/AuraHUD.h"
 #include "Untils/AuraGameplayTags.h"
 #include "Untils/AuraLog.h"
@@ -51,6 +55,7 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 
 	// Init Server
 	InitAbilityActorInfo();
+	LoadProgress();
 	AddCharacterAbilities();
 }
 
@@ -75,21 +80,43 @@ void AAuraCharacter::InitAbilityActorInfo()
 		ASComponent->RegisterGameplayTagEvent(
 			FAuraGameplayTags::Get().DeBuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ThisClass::StunTagChanged);
 
-		if (const auto AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+		if (CHECK_PLAYER_CONTROLLER(AuraPlayerController))
 		{
 			const auto AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD());
 			AuraHUD->InitOverlayMain(AuraPlayerController, AuraPlayerState, ASComponent, AS);
 		}
-
-		InitializeDefaultAttributes();
 	}
 }
 
+void AAuraCharacter::LoadProgress()
+{
+	if (!CHECK_GAME_MODE(AuraGameMode) || !CHECK_PLAYER_STATE(AuraPlayerState)) return;
+	if (const auto SaveData = AuraGameMode->RetrieveInGameSaveData())
+	{
+		AuraPlayerState->SetLevel(SaveData->PlayerLevel);
+		AuraPlayerState->SetXP(SaveData->XP);
+		AuraPlayerState->SetAttributePoints(SaveData->AttributePoints);
+		AuraPlayerState->SetSpellPoints(SaveData->SpellPoints);
+
+		if (SaveData->IsFirstTimeLoadIn)
+		{
+			InitializeDefaultAttributes();
+			AddCharacterAbilities();
+		}
+		else
+		{
+			
+		}
+	}
+}
+
+// Combat Interface
 int32 AAuraCharacter::GetPlayerLevel_Implementation()
 {
 	return CHECK_PLAYER_STATE(AuraPlayerState) ? AuraPlayerState->GetPlayerLevel() : 0;
 }
 
+// Player Interface
 int32 AAuraCharacter::FindLevelForXP_Implementation(const int32 InXP)
 {
 	if (CHECK_PLAYER_STATE(AuraPlayerState))
@@ -182,7 +209,7 @@ void AAuraCharacter::LevelUp_Implementation()
 
 void AAuraCharacter::ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial)
 {
-	if (const auto AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+	if (CHECK_PLAYER_CONTROLLER(AuraPlayerController))
 	{
 		AuraPlayerController->ShowMagicCircle(DecalMaterial);
 		AuraPlayerController->bShowMouseCursor = false;
@@ -191,10 +218,30 @@ void AAuraCharacter::ShowMagicCircle_Implementation(UMaterialInterface* DecalMat
 
 void AAuraCharacter::HideMagicCircle_Implementation()
 {
-	if (const auto AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+	if (CHECK_PLAYER_CONTROLLER(AuraPlayerController))
 	{
 		AuraPlayerController->HideMagicCircle();
 		AuraPlayerController->bShowMouseCursor = true;
+	}
+}
+
+void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
+{
+	if (!CHECK_GAME_MODE(AuraGameMode) || !CHECK_PLAYER_STATE(AuraPlayerState)) return;
+	if (const auto SaveData = AuraGameMode->RetrieveInGameSaveData())
+	{
+		SaveData->PlayerStartTag = CheckPointTag;
+		SaveData->PlayerLevel = AuraPlayerState->GetPlayerLevel();
+		SaveData->XP = AuraPlayerState->GetPlayerXP();
+		SaveData->AttributePoints = AuraPlayerState->GetAttributePoints();
+		SaveData->SpellPoints = AuraPlayerState->GetSpellPoints();
+		SaveData->Strength = UAuraAttributeSet::GetStrengthAttribute().GetNumericValue(GetAttributeSet());
+		SaveData->Intelligence = UAuraAttributeSet::GetIntelligenceAttribute().GetNumericValue(GetAttributeSet());
+		SaveData->Resilience = UAuraAttributeSet::GetResilienceAttribute().GetNumericValue(GetAttributeSet());
+		SaveData->Vigor = UAuraAttributeSet::GetVigorAttribute().GetNumericValue(GetAttributeSet());
+		SaveData->IsFirstTimeLoadIn = false;
+		
+		AuraGameMode->SaveInGameProgressData(SaveData);
 	}
 }
 

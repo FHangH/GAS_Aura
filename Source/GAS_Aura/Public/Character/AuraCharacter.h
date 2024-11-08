@@ -7,6 +7,9 @@
 #include "Interaction/PlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
+class UAuraGameInstance;
+class AAuraPlayerController;
+class AAuraGameModeBase;
 class UAuraAbilitySystemComponent;
 class AAuraPlayerState;
 class USpringArmComponent;
@@ -15,6 +18,9 @@ class UNiagaraComponent;
 
 #define CHECK_PLAYER_STATE(PlayerState) (PlayerState = (PlayerState == nullptr ? GetPlayerState<AAuraPlayerState>() : PlayerState))
 #define CHECK_ABILITY_SYSTEM_COMPONENT(AbilitySystemComponent) (AbilitySystemComponent = (AbilitySystemComponent == nullptr ? Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponent()) : AbilitySystemComponent))
+#define CHECK_PLAYER_CONTROLLER(AuraPlayerController) (AuraPlayerController = (AuraPlayerController == nullptr ? Cast<AAuraPlayerController>(GetController<AAuraPlayerController>()) : AuraPlayerController))
+#define CHECK_GAME_MODE(AuraGameMode) (AuraGameMode = (AuraGameMode == nullptr ? Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)) : AuraGameMode))
+//#define CHECK_GAME_INSTANCE(AuraGameInstance) (AuraGameInstance = (AuraGameInstance == nullptr ? Cast<UAuraGameInstance>(AuraGameMode->GetGameInstance()) : AuraGameInstance))
 
 UCLASS()
 class GAS_AURA_API AAuraCharacter : public AAuraCharacterBase, public IPlayerInterface
@@ -35,6 +41,9 @@ protected:
 private:
 	TObjectPtr<AAuraPlayerState> AuraPlayerState;
 	TObjectPtr<UAuraAbilitySystemComponent> AuraASComponent;
+	TObjectPtr<AAuraPlayerController> AuraPlayerController;
+	TObjectPtr<AAuraGameModeBase> AuraGameMode;
+	TObjectPtr<UAuraGameInstance> AuraGameInstance;
 	
 	/* Function */
 public:
@@ -43,8 +52,10 @@ public:
 protected:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
-
 	virtual void InitAbilityActorInfo() override;
+
+	UFUNCTION(BlueprintCallable, Category="Aura")
+	void LoadProgress();
 
 	// Combat Interface
 	virtual int32 GetPlayerLevel_Implementation() override;
@@ -63,6 +74,7 @@ protected:
 	virtual void LevelUp_Implementation() override;
 	virtual void ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial) override;
 	virtual void HideMagicCircle_Implementation() override;
+	virtual void SaveProgress_Implementation(const FName& CheckPointTag) override;
 
 private:
 	// RPC

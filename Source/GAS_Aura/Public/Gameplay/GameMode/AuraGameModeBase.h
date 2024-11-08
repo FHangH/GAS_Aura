@@ -37,6 +37,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Map")
 	TSoftObjectPtr<UWorld> DefaultMap;
+
+	UPROPERTY(EditDefaultsOnly, Category="Aura|Map")
+	FName DefaultPlayerStartTag;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Aura|Map")
 	TMap<FString, TSoftObjectPtr<UWorld>> Map_Levels;
@@ -44,6 +47,7 @@ public:
 	/* Function */
 protected:
 	virtual void BeginPlay() override;
+	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 	
 public:
 	UFUNCTION(BlueprintCallable, Category="Aura|SaveGame")
@@ -51,6 +55,12 @@ public:
 
 	UFUNCTION(BlueprintPure, Category="Aura|SaveGame")
 	ULoadScreenSaveGame* GetSaveSlotData(const FString& SlotName, const int32 SlotIndex) const;
+
+	UFUNCTION(BlueprintPure, Category="Aura|SaveGame")
+	ULoadScreenSaveGame* RetrieveInGameSaveData() const;
+
+	UFUNCTION(BlueprintCallable, Category="Aura|SaveGame")
+	void SaveInGameProgressData(ULoadScreenSaveGame* SaveObject) const;
 
 	UFUNCTION(BlueprintCallable, Category="Aura|SaveGame")
 	static void DeleteSlotData(const FString& SlotName, const int32 SlotIndex);

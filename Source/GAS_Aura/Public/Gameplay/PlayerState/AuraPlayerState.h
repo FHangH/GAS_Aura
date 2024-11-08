@@ -71,6 +71,8 @@ public:
 	// Set
 	void SetLevel(const int32 InLevel);
 	void SetXP(const int32 InXP);
+	void SetAttributePoints(const int32 InAttributePoints);
+	void SetSpellPoints(const int32 InSpellPoints);
 
 	// On RepNotify
 	UFUNCTION()
