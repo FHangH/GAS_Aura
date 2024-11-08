@@ -11,6 +11,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Gameplay/GameMode/AuraGameModeBase.h"
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
+#include "Gameplay/GAS/AuraAttributeSet.h"
 #include "Gameplay/GAS/Data/DataAsset_LevelUpInfo.h"
 #include "Gameplay/PlayerController/AuraPlayerController.h"
 #include "Gameplay/SaveGame/LoadScreenSaveGame.h"
@@ -203,13 +204,20 @@ void AAuraCharacter::HideMagicCircle_Implementation()
 
 void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 {
-	if (CHECK_GAME_MODE(AuraGameMode))
+	if (!CHECK_GAME_MODE(AuraGameMode) || !CHECK_PLAYER_STATE(AuraPlayerState)) return;
+	if (const auto SaveData = AuraGameMode->RetrieveInGameSaveData())
 	{
-		if (const auto SaveData = AuraGameMode->RetrieveInGameSaveData())
-		{
-			SaveData->PlayerStartTag = CheckPointTag;
-			AuraGameMode->SaveInGameProgressData(SaveData);
-		}
+		SaveData->PlayerStartTag = CheckPointTag;
+		SaveData->PlayerLevel = AuraPlayerState->GetPlayerLevel();
+		SaveData->XP = AuraPlayerState->GetPlayerXP();
+		SaveData->AttributePoints = AuraPlayerState->GetAttributePoints();
+		SaveData->SpellPoints = AuraPlayerState->GetSpellPoints();
+		SaveData->Strength = UAuraAttributeSet::GetStrengthAttribute().GetNumericValue(GetAttributeSet());
+		SaveData->Intelligence = UAuraAttributeSet::GetIntelligenceAttribute().GetNumericValue(GetAttributeSet());
+		SaveData->Resilience = UAuraAttributeSet::GetResilienceAttribute().GetNumericValue(GetAttributeSet());
+		SaveData->Vigor = UAuraAttributeSet::GetVigorAttribute().GetNumericValue(GetAttributeSet());
+		
+		AuraGameMode->SaveInGameProgressData(SaveData);
 	}
 }
 

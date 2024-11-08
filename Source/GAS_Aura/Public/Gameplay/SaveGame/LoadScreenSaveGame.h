@@ -37,4 +37,30 @@ public:
 	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|LoadScreen")
 	TEnumAsByte<ESaveSlotStatus> SlotStatus { ESaveSlotStatus::ESSS_Vacant };
+
+	// Player
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|Player")
+	int32 PlayerLevel { 0 };
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|Player")
+	int32 XP { 0 };
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|Player")
+	int32 SpellPoints { 0 };
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|Player")
+	int32 AttributePoints { 0 };
+
+	// Attributes
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|Attributes")
+	float Strength { 0.f };
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|Attributes")
+	float Intelligence { 0.f };
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|Attributes")
+	float Resilience { 0.f };
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|Attributes")
+	float Vigor { 0.f };
 };
