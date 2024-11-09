@@ -17,6 +17,9 @@ class GAS_AURA_API IHighLightInterface
 	GENERATED_BODY()
 
 public:
-	virtual void HighLightActor() = 0;
-	virtual void UnHighLightActor() = 0;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|HighLight")
+	void HighLightActor();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|HighLight")
+	void UnHighLightActor();
 };

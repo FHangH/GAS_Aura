@@ -77,8 +77,8 @@ protected:
 	
 public:
 	// HighLight Interface
-	virtual void HighLightActor() override;
-	virtual void UnHighLightActor() override;
+	virtual void HighLightActor_Implementation() override;
+	virtual void UnHighLightActor_Implementation() override;
 
 	// Enemy Interface
 	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;

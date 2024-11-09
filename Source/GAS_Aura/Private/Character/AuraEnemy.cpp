@@ -143,7 +143,7 @@ void AAuraEnemy::StunTagChanged(const FGameplayTag CallbackTag, const int32 NewC
 	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName{"Stunned"}, bIsStunned);
 }
 
-void AAuraEnemy::HighLightActor()
+void AAuraEnemy::HighLightActor_Implementation()
 {
 	bIsHighLight = true;
 	GetMesh()->SetRenderCustomDepth(true);
@@ -152,7 +152,7 @@ void AAuraEnemy::HighLightActor()
 	WeaponMeshComponent->SetCustomDepthStencilValue(RENDER_DEPTH_RED);
 }
 
-void AAuraEnemy::UnHighLightActor()
+void AAuraEnemy::UnHighLightActor_Implementation()
 {
 	bIsHighLight = false;
 	GetMesh()->SetRenderCustomDepth(false);

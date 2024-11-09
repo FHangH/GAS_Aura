@@ -15,6 +15,7 @@
 #include "Gameplay/Actor/MagicCircle.h"
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Input/AuraInputComponent.h"
+#include "Interaction/EnemyInterface.h"
 #include "Interaction/HighLightInterface.h"
 #include "UI/Widget/DamageTextWidgetComponent.h"
 #include "Untils/AuraCollision.h"
@@ -47,6 +48,22 @@ void AAuraPlayerController::SetCursorTraceMode_Implementation(const bool bEnable
 	}
 	StopTickTimerHandle_AutoRun();
 	StopTickTimerHandle_CursorTrace();
+}
+
+void AAuraPlayerController::HighLightActor(AActor* InActor)
+{
+	if (IsValid(InActor) && InActor->Implements<UHighLightInterface>())
+	{
+		if (InActor) IHighLightInterface::Execute_HighLightActor(InActor);
+	}
+}
+
+void AAuraPlayerController::UnHighLightActor(AActor* InActor)
+{
+	if (IsValid(InActor) && InActor->Implements<UHighLightInterface>())
+	{
+		if (InActor) IHighLightInterface::Execute_UnHighLightActor(InActor);
+	}
 }
 
 void AAuraPlayerController::BeginPlay()
@@ -133,8 +150,8 @@ void AAuraPlayerController::CursorTrace()
 	
 	if (GetASComponent() && GetASComponent()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_CursorTrace))
 	{
-		if (LastActor) LastActor->UnHighLightActor();
-		if (ThisActor) ThisActor->UnHighLightActor();
+		UnHighLightActor(LastActor);
+		UnHighLightActor(ThisActor);
 		LastActor = nullptr;
 		ThisActor = nullptr;
 		return;
@@ -145,12 +162,19 @@ void AAuraPlayerController::CursorTrace()
 	if (!CursorHitResult.bBlockingHit) return;
 
 	LastActor = ThisActor;
-	ThisActor = Cast<IHighLightInterface>(CursorHitResult.GetActor());
-
+	if (IsValid(CursorHitResult.GetActor()) && CursorHitResult.GetActor()->Implements<UHighLightInterface>())
+	{
+		ThisActor = CursorHitResult.GetActor();
+	}
+	else
+	{
+		ThisActor = nullptr;
+	}
+	
 	if (LastActor != ThisActor)
 	{
-		if (LastActor) LastActor->UnHighLightActor();
-		if (ThisActor) ThisActor->HighLightActor();
+		UnHighLightActor(LastActor);
+		HighLightActor(ThisActor);
 	}
 }
 
@@ -321,11 +345,16 @@ void AAuraPlayerController::AbilityInputPressed(const FGameplayTag InputTag)
 {
 	if (GetASComponent() && GetASComponent()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed)) return;
 	
-	if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
+	if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB) && IsValid(ThisActor))
 	{
-		bTargeting = ThisActor ? true : false;
+		TargetingStatus = ThisActor->Implements<UEnemyInterface>() ? ETargetingStatus::TargetingEnemy : ETargetingStatus::TargetingNonEnemy;
 		bAutoRunning = false;
 	}
+	else
+	{
+		TargetingStatus = ETargetingStatus::NoTargeting;	
+	}
+	
 	if (GetASComponent())
 	{
 		GetASComponent()->AbilityInputPressed(InputTag);
@@ -344,7 +373,7 @@ void AAuraPlayerController::AbilityInputReleased(const FGameplayTag InputTag)
 	GetASComponent()->AbilityInputTagReleased(InputTag);
 
 	// When FollowTime <= ShortPressThreshold, Character Auto Run To Target Location
-	if (!bTargeting && !bShiftKeyDown)
+	if (TargetingStatus != ETargetingStatus::TargetingEnemy && !bShiftKeyDown)
 	{
 		if (FollowTime <= ShortPressThreshold && GetCharacter())
 		{
@@ -355,7 +384,7 @@ void AAuraPlayerController::AbilityInputReleased(const FGameplayTag InputTag)
 			if (!NavPath)
 			{
 				FollowTime = 0.f;
-				bTargeting = false;
+				TargetingStatus = ETargetingStatus::NoTargeting;
 				return;
 			}
 			SplineComponent->ClearSplinePoints();
@@ -389,7 +418,7 @@ void AAuraPlayerController::AbilityInputReleased(const FGameplayTag InputTag)
 			StartTickTimerHandle_AutoRun();
 		}
 		FollowTime = 0.f;
-		bTargeting = false;
+		TargetingStatus = ETargetingStatus::NoTargeting;
 	}
 }
 
@@ -405,7 +434,7 @@ void AAuraPlayerController::AbilityInputHeld(const FGameplayTag InputTag)
 	}
 
 	// LMB && bTargeting Enemy => Execute GA
-	if (bTargeting || bShiftKeyDown)
+	if (TargetingStatus == ETargetingStatus::TargetingEnemy || bShiftKeyDown)
 	{
 		GetASComponent()->AbilityInputTagHeld(InputTag);
 	}
