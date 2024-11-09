@@ -8,6 +8,7 @@
 #include "Gameplay/GAS/Data/DataAsset_CharacterClassInfo.h"
 #include "Gameplay/PlayerController/AuraPlayerController.h"
 #include "Gameplay/PlayerState/AuraPlayerState.h"
+#include "Gameplay/SaveGame/LoadScreenSaveGame.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/HUD/AuraHUD.h"
@@ -82,7 +83,7 @@ USpellMenuWidgetController* UAuraAbilitySystemFuncLibrary::GetSpellMenuWidgetCon
 
 // CharacterClass TypeInfo
 void UAuraAbilitySystemFuncLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject,
-                                                                const ECharacterClassType ECT, const float Level, UAbilitySystemComponent* ASC)
+	const ECharacterClassType ECT, const float Level, UAbilitySystemComponent* ASC)
 {
 	if (!ASC || !WorldContextObject) return;
 
@@ -105,6 +106,37 @@ void UAuraAbilitySystemFuncLibrary::InitializeDefaultAttributes(const UObject* W
 	auto GE_VitalAttributeContextHandle = ASC->MakeEffectContext();
 	GE_VitalAttributeContextHandle.AddSourceObject(AvatarActor);
 	const auto SpecHandle_VitalAttributes = ASC->MakeOutgoingSpec(DA_CharacterClassTypeInfo->GE_VitalAttributes, Level, GE_VitalAttributeContextHandle);
+	ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle_VitalAttributes.Data.Get());
+}
+
+void UAuraAbilitySystemFuncLibrary::InitializeDefaultAttributesFromSaveData(const UObject* WorldContextObject,
+	UAbilitySystemComponent* ASC, ULoadScreenSaveGame* SaveGame)
+{
+	if (!ASC || !WorldContextObject || !SaveGame) return;
+
+	const auto DA_CharacterClassTypeInfo = GetCharacterClassInfo(WorldContextObject);
+	if (!DA_CharacterClassTypeInfo) return;
+
+	const auto GameplayTags = FAuraGameplayTags::Get();
+	const auto SourceAvatarActor = ASC->GetAvatarActor();
+	auto EffectContentHandle = ASC->MakeEffectContext();
+	EffectContentHandle.AddSourceObject(SourceAvatarActor);
+	const auto SpecHandle = ASC->MakeOutgoingSpec(DA_CharacterClassTypeInfo->GE_PrimaryAttributes_SetByCaller, SaveGame->PlayerLevel, EffectContentHandle);
+
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameplayTags.Attributes_Primary_Strength, SaveGame->Strength);
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameplayTags.Attributes_Primary_Intelligence, SaveGame->Intelligence);
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameplayTags.Attributes_Primary_Resilience, SaveGame->Resilience);
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameplayTags.Attributes_Primary_Vigor, SaveGame->Vigor);
+	ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+
+	auto GE_SecondaryAttributeContextHandle = ASC->MakeEffectContext();
+	GE_SecondaryAttributeContextHandle.AddSourceObject(SourceAvatarActor);
+	const auto SpecHandle_SecondaryAttributes = ASC->MakeOutgoingSpec(DA_CharacterClassTypeInfo->GE_SecondaryAttributes_Infinite, SaveGame->PlayerLevel, GE_SecondaryAttributeContextHandle);
+	ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle_SecondaryAttributes.Data.Get());
+
+	auto GE_VitalAttributeContextHandle = ASC->MakeEffectContext();
+	GE_VitalAttributeContextHandle.AddSourceObject(SourceAvatarActor);
+	const auto SpecHandle_VitalAttributes = ASC->MakeOutgoingSpec(DA_CharacterClassTypeInfo->GE_VitalAttributes, SaveGame->PlayerLevel, GE_VitalAttributeContextHandle);
 	ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle_VitalAttributes.Data.Get());
 }
 

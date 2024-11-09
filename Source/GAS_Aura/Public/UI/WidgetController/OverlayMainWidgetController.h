@@ -34,6 +34,7 @@ struct FUIWidgetRow : public FTableRowBase
 
 // Delegate
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLevelChangedSignature, int32, NewLevel, bool, IsLevelUp);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMessageWidgetRowSignature, FUIWidgetRow, Row);
 
 UCLASS(BlueprintType, Blueprintable)
@@ -60,7 +61,7 @@ public:
 	FOnAttributeChangedSignature OnXPPercentChangedDelegate;
 
 	UPROPERTY(BlueprintAssignable, Category="Aura|WidgetController|Level")
-	FOnPlayerStatusChangedSignature OnPlayerLevelChangedSignature;
+	FOnLevelChangedSignature OnPlayerLevelChangedSignature;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura|WidgetController|DataTable")
@@ -78,7 +79,7 @@ protected:
 	void OnMaxManaChanged(const FOnAttributeChangeData& Data) const;
 	void OnEffectAssetTag(const FGameplayTagContainer& AssetTags) const;
 	void OnXPChanged(const int32 NewXP);
-	void OnLevelChanged(const int32 NewLevel) const;
+	void OnLevelChanged(const int32 NewLevel, const bool IsLevelUp) const;
 	void OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& StatusSlot, const FGameplayTag& SlotTag, const FGameplayTag& PreviousSlot) const;
 
 	template<typename T>

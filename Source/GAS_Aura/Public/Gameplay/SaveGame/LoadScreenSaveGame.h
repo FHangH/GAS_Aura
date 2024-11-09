@@ -43,7 +43,7 @@ public:
 
 	// Player
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|Player")
-	int32 PlayerLevel { 0 };
+	int32 PlayerLevel { 1 };
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|Player")
 	int32 XP { 0 };

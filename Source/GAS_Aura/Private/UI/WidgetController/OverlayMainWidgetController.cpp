@@ -114,9 +114,9 @@ void UOverlayMainWidgetController::OnXPChanged(const int32 NewXP)
 	}
 }
 
-void UOverlayMainWidgetController::OnLevelChanged(const int32 NewLevel) const
+void UOverlayMainWidgetController::OnLevelChanged(const int32 NewLevel, const bool IsLevelUp) const
 {
-	OnPlayerLevelChangedSignature.Broadcast(NewLevel);
+	OnPlayerLevelChangedSignature.Broadcast(NewLevel, IsLevelUp);
 }
 
 void UOverlayMainWidgetController::OnAbilityEquipped(
