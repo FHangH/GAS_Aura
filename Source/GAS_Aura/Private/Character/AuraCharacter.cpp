@@ -227,7 +227,7 @@ void AAuraCharacter::HideMagicCircle_Implementation()
 
 void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 {
-	if (!CHECK_GAME_MODE(AuraGameMode) || !CHECK_PLAYER_STATE(AuraPlayerState)) return;
+	if (!CHECK_GAME_MODE(AuraGameMode) || !CHECK_PLAYER_STATE(AuraPlayerState) || !CHECK_ABILITY_SYSTEM_COMPONENT(AuraASComponent)) return;
 	if (const auto SaveData = AuraGameMode->RetrieveInGameSaveData())
 	{
 		SaveData->PlayerStartTag = CheckPointTag;
@@ -240,7 +240,27 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 		SaveData->Resilience = UAuraAttributeSet::GetResilienceAttribute().GetNumericValue(GetAttributeSet());
 		SaveData->Vigor = UAuraAttributeSet::GetVigorAttribute().GetNumericValue(GetAttributeSet());
 		SaveData->IsFirstTimeLoadIn = false;
+
+		if (!HasAuthority()) return;
+		FForEachAbilitySignature SaveAbilityDelegate;
 		
+		SaveAbilityDelegate.BindLambda([this, &SaveData](const FGameplayAbilitySpec& AbilitySpec)
+		{
+			const auto AbilityTag = AuraASComponent->GetAbilityTagFromSpec(AbilitySpec);
+			const auto AbilityInfo = UAuraAbilitySystemFuncLibrary::GetAbilityInfo(this);
+			const auto Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
+
+			FSavedAbility SavedAbility;
+			SavedAbility.GameplayAbilityClass = Info.Ability;
+			SavedAbility.AbilityLevel = AbilitySpec.Level;
+			SavedAbility.AbilitySlot = AuraASComponent->GetSlotFromAbilityTag(AbilityTag);
+			SavedAbility.AbilityStatus = AuraASComponent->GetStatusFromAbilityTag(AbilityTag);
+			SavedAbility.AbilityTag = AbilityTag;
+			SavedAbility.AbilityType = Info.AbilityType;
+			
+			SaveData->SavedAbilities.Add(SavedAbility);
+		});
+		AuraASComponent->ForEachAbility(SaveAbilityDelegate);
 		AuraGameMode->SaveInGameProgressData(SaveData);
 	}
 }
