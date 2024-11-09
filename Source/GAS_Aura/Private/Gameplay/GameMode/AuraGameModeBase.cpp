@@ -2,11 +2,14 @@
 
 
 #include "Gameplay/GameMode/AuraGameModeBase.h"
+#include "EngineUtils.h"
 #include "GameFramework/PlayerStart.h"
 #include "GameFramework/SaveGame.h"
 #include "Gameplay/GameInstance/AuraGameInstance.h"
 #include "Gameplay/SaveGame/LoadScreenSaveGame.h"
+#include "Interaction/SaveInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 #include "UI/MVVM/MVVM_LoadSlot.h"
 
 void AAuraGameModeBase::BeginPlay()
@@ -98,6 +101,91 @@ void AAuraGameModeBase::SaveInGameProgressData(ULoadScreenSaveGame* SaveObject) 
 		const auto InGameSlotIndex = AuraGameInstance->LoadSlotIndex;
 		AuraGameInstance->PlayerStartTag = SaveObject->PlayerStartTag;
 		UGameplayStatics::SaveGameToSlot(SaveObject, InGameLoadSlotName, InGameSlotIndex);
+	}
+}
+
+void AAuraGameModeBase::SaveWorldState(UWorld* World) const
+{
+	if (!World) return;
+	auto WorldName = World->GetMapName();
+	WorldName.RemoveFromStart(World->StreamingLevelsPrefix);
+
+	const auto AuraGIS = Cast<UAuraGameInstance>(GetGameInstance());
+	if (!AuraGIS) return;
+
+	if (auto SaveGame = GetSaveSlotData(AuraGIS->LoadSlotName, AuraGIS->LoadSlotIndex))
+	{
+		if (!SaveGame->HasMap(WorldName))
+		{
+			FSavedMap NewSavedMap;
+			NewSavedMap.MapAssetName = WorldName;
+			SaveGame->SavedMaps.Add(NewSavedMap);
+		}
+		auto SavedMap = SaveGame->GetSavedMapWithMapName(WorldName);
+		SavedMap.SavedActors.Empty();
+
+		for (FActorIterator It(World); It; ++It)
+		{
+			const auto Actor = *It;
+			if (!IsValid(Actor) || !Actor->Implements<USaveInterface>()) continue;
+
+			FSavedActor SavedActor;
+			SavedActor.ActorName = Actor->GetFName();
+			SavedActor.Transform = Actor->GetTransform();
+
+			FMemoryWriter MemoryWriter(SavedActor.Bytes);
+			FObjectAndNameAsStringProxyArchive Archive(MemoryWriter, true);
+			Archive.ArIsSaveGame = true;
+			Actor->Serialize(Archive);
+			SavedMap.SavedActors.AddUnique(SavedActor);
+		}
+
+		for (auto& MapToReplace : SaveGame->SavedMaps)
+		{
+			if (MapToReplace.MapAssetName == WorldName)
+			{
+				MapToReplace = SavedMap;
+			}
+		}
+		UGameplayStatics::SaveGameToSlot(SaveGame, AuraGIS->LoadSlotName, AuraGIS->LoadSlotIndex);
+	}
+}
+
+void AAuraGameModeBase::LoadWorldState(UWorld* World) const
+{
+	if (!World) return;
+	auto WorldName = World->GetMapName();
+	WorldName.RemoveFromStart(World->StreamingLevelsPrefix);
+
+	const auto AuraGIS = Cast<UAuraGameInstance>(GetGameInstance());
+	if (!AuraGIS) return;
+
+	if (UGameplayStatics::DoesSaveGameExist(AuraGIS->LoadSlotName, AuraGIS->LoadSlotIndex))
+	{
+		const auto SaveGame = Cast<ULoadScreenSaveGame>(UGameplayStatics::LoadGameFromSlot(AuraGIS->LoadSlotName, AuraGIS->LoadSlotIndex));
+		if (!SaveGame) return;
+		
+		for (FActorIterator It(World); It; ++It)
+		{
+			const auto Actor = *It;
+			if (!Actor->Implements<USaveInterface>()) continue;
+
+			for (const auto& SavedActor : SaveGame->GetSavedMapWithMapName(WorldName).SavedActors)
+			{
+				if (SavedActor.ActorName == Actor->GetFName())
+				{
+					if (ISaveInterface::Execute_ShouldLoadTransform(Actor))
+					{
+						Actor->SetActorTransform(SavedActor.Transform);
+					}
+					FMemoryReader MemoryReader(SavedActor.Bytes);
+					FObjectAndNameAsStringProxyArchive Archive(MemoryReader, true);
+					Archive.ArIsSaveGame = true;
+					Actor->Serialize(Archive);
+					ISaveInterface::Execute_LoadActor(Actor);
+				}
+			}
+		}
 	}
 }
 

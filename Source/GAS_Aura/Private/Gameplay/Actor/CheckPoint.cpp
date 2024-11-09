@@ -3,7 +3,9 @@
 
 #include "Gameplay/Actor/CheckPoint.h"
 #include "Components/SphereComponent.h"
+#include "Gameplay/GameMode/AuraGameModeBase.h"
 #include "Interaction/PlayerInterface.h"
+#include "Kismet/GameplayStatics.h"
 
 ACheckPoint::ACheckPoint(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -21,6 +23,19 @@ ACheckPoint::ACheckPoint(const FObjectInitializer& ObjectInitializer) : Super(Ob
 	SphereComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 }
 
+bool ACheckPoint::ShouldLoadTransform_Implementation()
+{
+	return false;
+}
+
+void ACheckPoint::LoadActor_Implementation()
+{
+	if (IsReached)
+	{
+		HandleGlowEffects();
+	}
+}
+
 void ACheckPoint::BeginPlay()
 {
 	Super::BeginPlay();
@@ -33,6 +48,12 @@ void ACheckPoint::OnSphereStartOverlap(UPrimitiveComponent* OverlappedComponent,
 {
 	if (OtherActor && OtherActor->Implements<UPlayerInterface>())
 	{
+		IsReached = true;
+
+		if (const auto AuraGM = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
+		{
+			AuraGM->SaveWorldState(GetWorld());
+		}
 		IPlayerInterface::Execute_SaveProgress(OtherActor, PlayerStartTag);
 		HandleGlowEffects();
 	}

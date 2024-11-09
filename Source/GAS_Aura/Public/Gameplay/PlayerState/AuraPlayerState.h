@@ -11,7 +11,8 @@ class UDataAsset_LevelUpInfo;
 class UAttributeSet;
 class UAbilitySystemComponent;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerStateChangedDelegate, int32 /*StateValue*/);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerStateChangedSignature, int32 /*StateValue*/);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnPlayerLevelChangedSignature, int32 /*StateValue*/, bool /*IsLevelUp*/);
 
 UCLASS()
 class GAS_AURA_API AAuraPlayerState : public APlayerState, public IAbilitySystemInterface
@@ -40,10 +41,10 @@ protected:
 	
 public:
 	// Delegate
-	FOnPlayerStateChangedDelegate OnLevelChangedDelegate;
-	FOnPlayerStateChangedDelegate OnXPChangedDelegate;
-	FOnPlayerStateChangedDelegate OnAttributePointChangedDelegate;
-	FOnPlayerStateChangedDelegate OnSpellPointChangedDelegate;
+	FOnPlayerLevelChangedSignature OnLevelChangedDelegate;
+	FOnPlayerStateChangedSignature OnXPChangedDelegate;
+	FOnPlayerStateChangedSignature OnAttributePointChangedDelegate;
+	FOnPlayerStateChangedSignature OnSpellPointChangedDelegate;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Aura")
 	TObjectPtr<UDataAsset_LevelUpInfo> DA_LevelUpInfo;

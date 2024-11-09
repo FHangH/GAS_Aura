@@ -17,6 +17,7 @@
 #include "Gameplay/SaveGame/LoadScreenSaveGame.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/HUD/AuraHUD.h"
+#include "Untils/AuraAbilitySystemFuncLibrary.h"
 #include "Untils/AuraGameplayTags.h"
 #include "Untils/AuraLog.h"
 
@@ -56,7 +57,11 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 	// Init Server
 	InitAbilityActorInfo();
 	LoadProgress();
-	AddCharacterAbilities();
+
+	if (CHECK_GAME_MODE(AuraGameMode))
+	{
+		AuraGameMode->LoadWorldState(GetWorld());
+	}
 }
 
 void AAuraCharacter::OnRep_PlayerState()
@@ -90,14 +95,9 @@ void AAuraCharacter::InitAbilityActorInfo()
 
 void AAuraCharacter::LoadProgress()
 {
-	if (!CHECK_GAME_MODE(AuraGameMode) || !CHECK_PLAYER_STATE(AuraPlayerState)) return;
+	if (!CHECK_GAME_MODE(AuraGameMode) || !CHECK_PLAYER_STATE(AuraPlayerState) || !CHECK_ABILITY_SYSTEM_COMPONENT(AuraASComponent)) return;
 	if (const auto SaveData = AuraGameMode->RetrieveInGameSaveData())
 	{
-		AuraPlayerState->SetLevel(SaveData->PlayerLevel);
-		AuraPlayerState->SetXP(SaveData->XP);
-		AuraPlayerState->SetAttributePoints(SaveData->AttributePoints);
-		AuraPlayerState->SetSpellPoints(SaveData->SpellPoints);
-
 		if (SaveData->IsFirstTimeLoadIn)
 		{
 			InitializeDefaultAttributes();
@@ -105,7 +105,13 @@ void AAuraCharacter::LoadProgress()
 		}
 		else
 		{
+			AuraASComponent->AddCharacterAbilitiesFromSaveData(SaveData);
+			AuraPlayerState->SetLevel(SaveData->PlayerLevel);
+			AuraPlayerState->SetXP(SaveData->XP);
+			AuraPlayerState->SetAttributePoints(SaveData->AttributePoints);
+			AuraPlayerState->SetSpellPoints(SaveData->SpellPoints);
 			
+			UAuraAbilitySystemFuncLibrary::InitializeDefaultAttributesFromSaveData(this, AuraASComponent, SaveData);
 		}
 	}
 }
@@ -227,7 +233,7 @@ void AAuraCharacter::HideMagicCircle_Implementation()
 
 void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 {
-	if (!CHECK_GAME_MODE(AuraGameMode) || !CHECK_PLAYER_STATE(AuraPlayerState)) return;
+	if (!CHECK_GAME_MODE(AuraGameMode) || !CHECK_PLAYER_STATE(AuraPlayerState) || !CHECK_ABILITY_SYSTEM_COMPONENT(AuraASComponent)) return;
 	if (const auto SaveData = AuraGameMode->RetrieveInGameSaveData())
 	{
 		SaveData->PlayerStartTag = CheckPointTag;
@@ -240,7 +246,28 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 		SaveData->Resilience = UAuraAttributeSet::GetResilienceAttribute().GetNumericValue(GetAttributeSet());
 		SaveData->Vigor = UAuraAttributeSet::GetVigorAttribute().GetNumericValue(GetAttributeSet());
 		SaveData->IsFirstTimeLoadIn = false;
+
+		if (!HasAuthority()) return;
+		FForEachAbilitySignature SaveAbilityDelegate;
+		SaveData->SavedAbilities.Empty();
 		
+		SaveAbilityDelegate.BindLambda([this, &SaveData](const FGameplayAbilitySpec& AbilitySpec)
+		{
+			const auto AbilityTag = AuraASComponent->GetAbilityTagFromSpec(AbilitySpec);
+			const auto AbilityInfo = UAuraAbilitySystemFuncLibrary::GetAbilityInfo(this);
+			const auto Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
+
+			FSavedAbility SavedAbility;
+			SavedAbility.GameplayAbilityClass = Info.Ability;
+			SavedAbility.AbilityLevel = AbilitySpec.Level;
+			SavedAbility.AbilitySlot = AuraASComponent->GetSlotFromAbilityTag(AbilityTag);
+			SavedAbility.AbilityStatus = AuraASComponent->GetStatusFromAbilityTag(AbilityTag);
+			SavedAbility.AbilityTag = AbilityTag;
+			SavedAbility.AbilityType = Info.AbilityType;
+			
+			SaveData->SavedAbilities.AddUnique(SavedAbility);
+		});
+		AuraASComponent->ForEachAbility(SaveAbilityDelegate);
 		AuraGameMode->SaveInGameProgressData(SaveData);
 	}
 }

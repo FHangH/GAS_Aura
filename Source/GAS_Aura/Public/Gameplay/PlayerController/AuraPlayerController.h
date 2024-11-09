@@ -8,6 +8,7 @@
 #include "Untils/TickRate.h"
 #include "AuraPlayerController.generated.h"
 
+class IHighLightInterface;
 class AMagicCircle;
 class UNiagaraSystem;
 class UDamageTextWidgetComponent;
@@ -19,8 +20,15 @@ struct FTimerHandle;
 struct FGameplayTag;
 class UDataAsset_AuraInputConfig;
 class UInputAction;
-class IEnemyInterface;
 class UInputMappingContext;
+
+UENUM(BlueprintType)
+enum class ETargetingStatus : uint8
+{
+	TargetingEnemy,
+	TargetingNonEnemy,
+	NoTargeting
+};
 
 UCLASS()
 class GAS_AURA_API AAuraPlayerController : public APlayerController, public ICursorTraceInterface
@@ -62,15 +70,17 @@ private:
 
 	// Mouse Trace Target Actor
 	FHitResult CursorHitResult;
-	IEnemyInterface* LastActor { nullptr };
-	IEnemyInterface* ThisActor { nullptr };
+	UPROPERTY()
+	TObjectPtr<AActor> LastActor;
+	UPROPERTY()
+	TObjectPtr<AActor> ThisActor;
 
 	// Top Down Move For Mouse Click
 	FVector CachedDestination { FVector::Zero() };
 	float FollowTime { 0.f };
 	float ShortPressThreshold { 0.5f };
 	bool bAutoRunning { false };
-	bool bTargeting { false };
+	ETargetingStatus TargetingStatus {ETargetingStatus::NoTargeting };
 	
 	UPROPERTY(EditAnywhere, Category="Aura|TopDownMove|AutoRun")
 	float AutoRunAcceptanceRadius { 50.f };
@@ -114,6 +124,10 @@ public:
 
 	// CursorTrace Interface
 	virtual void SetCursorTraceMode_Implementation(bool bEnable) override;
+
+	// Highlight
+	static void HighLightActor(AActor* InActor);
+	static void UnHighLightActor(AActor* InActor);
 
 protected:
 	virtual void BeginPlay() override;
