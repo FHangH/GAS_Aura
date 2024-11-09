@@ -101,6 +101,15 @@ void AAuraGameModeBase::SaveInGameProgressData(ULoadScreenSaveGame* SaveObject) 
 	}
 }
 
+void AAuraGameModeBase::SaveWorldState()
+{
+	if (auto SaveObject = RetrieveInGameSaveData())
+	{
+		//SaveObject->SaveActors.Append(SaveActors);
+		SaveInGameProgressData(SaveObject);
+	}
+}
+
 void AAuraGameModeBase::DeleteSlotData(const FString& SlotName, const int32 SlotIndex)
 {
 	if (UGameplayStatics::DoesSaveGameExist(SlotName, SlotIndex))

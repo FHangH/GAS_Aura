@@ -18,6 +18,38 @@ enum ESaveSlotStatus : uint8
 };
 
 USTRUCT(BlueprintType)
+struct FSavedActor
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="SaveGame|Actor")
+	FName ActorName {};
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="SaveGame|Actor")
+	FTransform Transform {};
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="SaveGame|Actor")
+	TArray<uint8> Bytes;
+};
+
+inline bool operator==(const FSavedActor& Left, const FSavedActor& Right)
+{
+	return Left.ActorName == Right.ActorName;
+}
+
+USTRUCT(BlueprintType)
+struct FSavedMap
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="SaveGame|Map")
+	FString MapAssetName {};
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="SaveGame|Map")
+	TArray<FSavedActor> SavedActors;
+};
+
+USTRUCT(BlueprintType)
 struct FSavedAbility
 {
 	GENERATED_BODY()
@@ -41,12 +73,18 @@ struct FSavedAbility
 	int32 AbilityLevel { 1 };
 };
 
+inline bool operator==(const FSavedAbility& Left, const FSavedAbility& Right)
+{
+	return Left.AbilityTag.MatchesTagExact(Right.AbilityTag);
+}
+
 UCLASS()
 class GAS_AURA_API ULoadScreenSaveGame : public USaveGame
 {
 	GENERATED_BODY()
 
 public:
+	/* Property */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|LoadScreen")
 	FString SlotName {};
 
@@ -97,4 +135,11 @@ public:
 	// Abilities
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|Abilities")
 	TArray<FSavedAbility> SavedAbilities;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|Abilities")
+	TArray<FSavedMap> SavedMaps;
+
+	/* Function */
+	FSavedMap GetSavedMapWithMapName(const FString& InMapName);
+	bool HasMap(const FString& InMapName);
 };

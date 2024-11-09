@@ -90,7 +90,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 
 void AAuraCharacter::LoadProgress()
 {
-	if (!CHECK_GAME_MODE(AuraGameMode) || !CHECK_PLAYER_STATE(AuraPlayerState)) return;
+	if (!CHECK_GAME_MODE(AuraGameMode) || !CHECK_PLAYER_STATE(AuraPlayerState) || !CHECK_ABILITY_SYSTEM_COMPONENT(AuraASComponent)) return;
 	if (const auto SaveData = AuraGameMode->RetrieveInGameSaveData())
 	{
 		if (SaveData->IsFirstTimeLoadIn)
@@ -100,6 +100,7 @@ void AAuraCharacter::LoadProgress()
 		}
 		else
 		{
+			AuraASComponent->AddCharacterAbilitiesFromSaveData(SaveData);
 			AuraPlayerState->SetLevel(SaveData->PlayerLevel);
 			AuraPlayerState->SetXP(SaveData->XP);
 			AuraPlayerState->SetAttributePoints(SaveData->AttributePoints);
@@ -243,6 +244,7 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 
 		if (!HasAuthority()) return;
 		FForEachAbilitySignature SaveAbilityDelegate;
+		SaveData->SavedAbilities.Empty();
 		
 		SaveAbilityDelegate.BindLambda([this, &SaveData](const FGameplayAbilitySpec& AbilitySpec)
 		{
@@ -258,7 +260,7 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 			SavedAbility.AbilityTag = AbilityTag;
 			SavedAbility.AbilityType = Info.AbilityType;
 			
-			SaveData->SavedAbilities.Add(SavedAbility);
+			SaveData->SavedAbilities.AddUnique(SavedAbility);
 		});
 		AuraASComponent->ForEachAbility(SaveAbilityDelegate);
 		AuraGameMode->SaveInGameProgressData(SaveData);

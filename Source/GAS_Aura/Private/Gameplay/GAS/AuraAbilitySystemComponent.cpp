@@ -5,6 +5,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Gameplay/GAS/AuraGameplayAbility.h"
 #include "Gameplay/GAS/Data/DataAsset_AbilityInfo.h"
+#include "Gameplay/SaveGame/LoadScreenSaveGame.h"
 #include "Interaction/PlayerInterface.h"
 #include "Untils/AuraAbilitySystemFuncLibrary.h"
 #include "Untils/AuraGameplayTags.h"
@@ -48,8 +49,39 @@ void UAuraAbilitySystemComponent::AddCharacterPassiveAbilities(const TArray<TSub
 	for (const auto& GAClass : StartUpPassiveAbilities)
 	{
 		auto GASpec = FGameplayAbilitySpec{GAClass, 1};
+		GASpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Ability_Status_Equipped);
 		GiveAbilityAndActivateOnce(GASpec);
 	}
+}
+
+void UAuraAbilitySystemComponent::AddCharacterAbilitiesFromSaveData(ULoadScreenSaveGame* SaveGame)
+{
+	for (const auto& Data : SaveGame->SavedAbilities)
+	{
+		const auto LoadedAbilityClass = Data.GameplayAbilityClass;
+		auto LoadedAbilitySpec = FGameplayAbilitySpec{ LoadedAbilityClass, Data.AbilityLevel };
+
+		LoadedAbilitySpec.DynamicAbilityTags.AddTag(Data.AbilitySlot);
+		LoadedAbilitySpec.DynamicAbilityTags.AddTag(Data.AbilityStatus);
+		
+		if (Data.AbilityType == FAuraGameplayTags::Get().Ability_Type_Offensive)
+		{
+			GiveAbility(LoadedAbilitySpec);
+		}
+		else if (Data.AbilityType == FAuraGameplayTags::Get().Ability_Type_Passive)
+		{
+			if (Data.AbilityStatus.MatchesTagExact(FAuraGameplayTags::Get().Ability_Status_Equipped))
+			{
+				GiveAbilityAndActivateOnce(LoadedAbilitySpec);
+			}
+			else
+			{
+				GiveAbility(LoadedAbilitySpec);
+			}
+		}
+	}
+	bStartupAbilitiesGiven = true;
+	OnAbilityGivenDelegate.Broadcast();
 }
 
 void UAuraAbilitySystemComponent::AbilityInputPressed(const FGameplayTag& InputTag)
@@ -342,13 +374,17 @@ void UAuraAbilitySystemComponent::Server_EquipAbility_Implementation(const FGame
 			}
 
 			// Ability Doesn't Yet Have a Slot (It is not active)
-			if (!AbilityHasAnySlot(AbilitySpec) && IsPassiveAbility(*AbilitySpec))
+			if (!AbilityHasAnySlot(AbilitySpec))
 			{
-				TryActivateAbility(AbilitySpec->Handle);
-				MultiCast_ActivatePassiveEffect(AbilityTag, true);
+				if (IsPassiveAbility(*AbilitySpec))
+				{
+					TryActivateAbility(AbilitySpec->Handle);
+					MultiCast_ActivatePassiveEffect(AbilityTag, true);
+				}
+				AbilitySpec->DynamicAbilityTags.RemoveTag(GetStatusTagFromSpec(*AbilitySpec));
+				AbilitySpec->DynamicAbilityTags.AddTag(GameplayTags.Ability_Status_Equipped);
 			}
 			AssignSlotToAbility(*AbilitySpec, SlotTag);
-			
 			MarkAbilitySpecDirty(*AbilitySpec);
 		}
 		Client_EquipAbility(AbilityTag, GameplayTags.Ability_Status_Equipped, SlotTag, PrevSlot);
