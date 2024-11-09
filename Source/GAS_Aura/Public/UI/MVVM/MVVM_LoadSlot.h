@@ -43,6 +43,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, Category="MVVM|LoadSlot", meta=(AllowPrivateAccess=true))
 	FString MapName;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, Category="MVVM|LoadSlot", meta=(AllowPrivateAccess=true))
+	int32 PlayerLevel;
+
 	/* Function */
 public:
 	void InitializeSlot() const;
@@ -50,6 +53,8 @@ public:
 	// Field Notifies
 	void SetPlayerName(const FString& InPlayerName);
 	void SetMapName(const FString& InMapName);
+	void SetPlayerLevel(const int32 InPlayerLevel);
 	FString GetPlayerName() const { return PlayerName; }
 	FString GetMapName() const { return MapName; }
+	int32 GetPlayerLevel() const { return PlayerLevel; }
 };
