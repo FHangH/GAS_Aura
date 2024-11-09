@@ -65,6 +65,11 @@ void AAuraCharacter::OnRep_PlayerState()
 
 	// Init Client
 	InitAbilityActorInfo();
+
+	if (CHECK_GAME_MODE(AuraGameMode))
+	{
+		//AuraGameMode->SaveWorldState();
+	}
 }
 
 void AAuraCharacter::InitAbilityActorInfo()

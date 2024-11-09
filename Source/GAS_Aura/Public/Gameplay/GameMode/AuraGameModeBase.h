@@ -63,7 +63,7 @@ public:
 	void SaveInGameProgressData(ULoadScreenSaveGame* SaveObject) const;
 
 	UFUNCTION(BlueprintCallable, Category="Aura|SaveGame")
-	void SaveWorldState();
+	void SaveWorldState(UWorld* World) const;
 
 	UFUNCTION(BlueprintCallable, Category="Aura|SaveGame")
 	static void DeleteSlotData(const FString& SlotName, const int32 SlotIndex);

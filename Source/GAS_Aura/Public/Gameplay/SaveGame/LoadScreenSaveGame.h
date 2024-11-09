@@ -140,6 +140,7 @@ public:
 	TArray<FSavedMap> SavedMaps;
 
 	/* Function */
+public:
 	FSavedMap GetSavedMapWithMapName(const FString& InMapName);
 	bool HasMap(const FString& InMapName);
 };

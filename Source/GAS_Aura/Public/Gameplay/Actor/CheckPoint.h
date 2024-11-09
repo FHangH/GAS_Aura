@@ -4,12 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerStart.h"
+#include "Interaction/SaveInterface.h"
 #include "CheckPoint.generated.h"
 
 class USphereComponent;
 
 UCLASS()
-class GAS_AURA_API ACheckPoint : public APlayerStart
+class GAS_AURA_API ACheckPoint : public APlayerStart, public ISaveInterface
 {
 	GENERATED_BODY()
 
@@ -20,6 +21,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category="Aura|CheckPoint")
 	TObjectPtr<USphereComponent> SphereComponent;
+
+public:
+	UPROPERTY(BlueprintReadOnly, SaveGame, Category="Aura|CheckPoint")
+	bool IsReached { false };
 
 	/* Function */
 public:
