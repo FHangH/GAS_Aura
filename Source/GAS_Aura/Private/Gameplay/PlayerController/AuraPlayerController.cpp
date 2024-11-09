@@ -15,7 +15,7 @@
 #include "Gameplay/Actor/MagicCircle.h"
 #include "Gameplay/GAS/AuraAbilitySystemComponent.h"
 #include "Input/AuraInputComponent.h"
-#include "Interaction/EnemyInterface.h"
+#include "Interaction/HighLightInterface.h"
 #include "UI/Widget/DamageTextWidgetComponent.h"
 #include "Untils/AuraCollision.h"
 #include "Untils/AuraGameplayTags.h"
@@ -145,7 +145,7 @@ void AAuraPlayerController::CursorTrace()
 	if (!CursorHitResult.bBlockingHit) return;
 
 	LastActor = ThisActor;
-	ThisActor = Cast<IEnemyInterface>(CursorHitResult.GetActor());
+	ThisActor = Cast<IHighLightInterface>(CursorHitResult.GetActor());
 
 	if (LastActor != ThisActor)
 	{

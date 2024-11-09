@@ -8,6 +8,7 @@
 #include "Untils/TickRate.h"
 #include "AuraPlayerController.generated.h"
 
+class IHighLightInterface;
 class AMagicCircle;
 class UNiagaraSystem;
 class UDamageTextWidgetComponent;
@@ -19,7 +20,6 @@ struct FTimerHandle;
 struct FGameplayTag;
 class UDataAsset_AuraInputConfig;
 class UInputAction;
-class IEnemyInterface;
 class UInputMappingContext;
 
 UCLASS()
@@ -62,8 +62,8 @@ private:
 
 	// Mouse Trace Target Actor
 	FHitResult CursorHitResult;
-	IEnemyInterface* LastActor { nullptr };
-	IEnemyInterface* ThisActor { nullptr };
+	IHighLightInterface* LastActor { nullptr };
+	IHighLightInterface* ThisActor { nullptr };
 
 	// Top Down Move For Mouse Click
 	FVector CachedDestination { FVector::Zero() };

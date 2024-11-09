@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
 #include "Interaction/EnemyInterface.h"
+#include "Interaction/HighLightInterface.h"
 #include "UI/WidgetController/OverlayMainWidgetController.h"
 #include "AuraEnemy.generated.h"
 
@@ -13,7 +14,7 @@ class UBehaviorTree;
 class AAuraAIController;
 
 UCLASS()
-class GAS_AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
+class GAS_AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface, public IHighLightInterface
 {
 	GENERATED_BODY()
 
@@ -72,12 +73,14 @@ protected:
 	void OnHealthChanged(const FOnAttributeChangeData& Data) const;
 	void OnMaxHealthChanged(const FOnAttributeChangeData& Data) const;
 	void HitReactTagChanged(const FGameplayTag CallBackTag, int32 NewCount);
-	void StunTagChanged(const FGameplayTag CallbackTag, const int32 NewCount) override;
+	virtual void StunTagChanged(const FGameplayTag CallbackTag, const int32 NewCount) override;
 	
 public:
-	// Enemy Interface
+	// HighLight Interface
 	virtual void HighLightActor() override;
 	virtual void UnHighLightActor() override;
+
+	// Enemy Interface
 	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
 	virtual AActor* GetCombatTarget_Implementation() const override;
 
