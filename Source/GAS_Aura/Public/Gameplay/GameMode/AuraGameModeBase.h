@@ -66,6 +66,9 @@ public:
 	void SaveWorldState(UWorld* World) const;
 
 	UFUNCTION(BlueprintCallable, Category="Aura|SaveGame")
+	void LoadWorldState(UWorld* World) const;
+
+	UFUNCTION(BlueprintCallable, Category="Aura|SaveGame")
 	static void DeleteSlotData(const FString& SlotName, const int32 SlotIndex);
 
 	UFUNCTION(BlueprintCallable, Category="Aura|TravelMap")

@@ -57,6 +57,11 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 	// Init Server
 	InitAbilityActorInfo();
 	LoadProgress();
+
+	if (CHECK_GAME_MODE(AuraGameMode))
+	{
+		AuraGameMode->LoadWorldState(GetWorld());
+	}
 }
 
 void AAuraCharacter::OnRep_PlayerState()
@@ -65,11 +70,6 @@ void AAuraCharacter::OnRep_PlayerState()
 
 	// Init Client
 	InitAbilityActorInfo();
-
-	if (CHECK_GAME_MODE(AuraGameMode))
-	{
-		//AuraGameMode->SaveWorldState();
-	}
 }
 
 void AAuraCharacter::InitAbilityActorInfo()

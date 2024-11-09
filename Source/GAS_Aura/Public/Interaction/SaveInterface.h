@@ -17,4 +17,9 @@ class GAS_AURA_API ISaveInterface
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interface|Save")
+	bool ShouldLoadTransform();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interface|Save")
+	void LoadActor();
 };

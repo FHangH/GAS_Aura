@@ -151,6 +151,44 @@ void AAuraGameModeBase::SaveWorldState(UWorld* World) const
 	}
 }
 
+void AAuraGameModeBase::LoadWorldState(UWorld* World) const
+{
+	if (!World) return;
+	auto WorldName = World->GetMapName();
+	WorldName.RemoveFromStart(World->StreamingLevelsPrefix);
+
+	const auto AuraGIS = Cast<UAuraGameInstance>(GetGameInstance());
+	if (!AuraGIS) return;
+
+	if (UGameplayStatics::DoesSaveGameExist(AuraGIS->LoadSlotName, AuraGIS->LoadSlotIndex))
+	{
+		const auto SaveGame = Cast<ULoadScreenSaveGame>(UGameplayStatics::LoadGameFromSlot(AuraGIS->LoadSlotName, AuraGIS->LoadSlotIndex));
+		if (!SaveGame) return;
+		
+		for (FActorIterator It(World); It; ++It)
+		{
+			const auto Actor = *It;
+			if (!Actor->Implements<USaveInterface>()) continue;
+
+			for (const auto& SavedActor : SaveGame->GetSavedMapWithMapName(WorldName).SavedActors)
+			{
+				if (SavedActor.ActorName == Actor->GetFName())
+				{
+					if (ISaveInterface::Execute_ShouldLoadTransform(Actor))
+					{
+						Actor->SetActorTransform(SavedActor.Transform);
+					}
+					FMemoryReader MemoryReader(SavedActor.Bytes);
+					FObjectAndNameAsStringProxyArchive Archive(MemoryReader, true);
+					Archive.ArIsSaveGame = true;
+					Actor->Serialize(Archive);
+					ISaveInterface::Execute_LoadActor(Actor);
+				}
+			}
+		}
+	}
+}
+
 void AAuraGameModeBase::DeleteSlotData(const FString& SlotName, const int32 SlotIndex)
 {
 	if (UGameplayStatics::DoesSaveGameExist(SlotName, SlotIndex))

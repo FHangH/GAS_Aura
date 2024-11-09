@@ -30,6 +30,10 @@ public:
 public:
 	explicit ACheckPoint(const FObjectInitializer& ObjectInitializer);
 
+	// Save Interface
+	virtual bool ShouldLoadTransform_Implementation() override;
+	virtual void LoadActor_Implementation() override;
+
 protected:
 	virtual void BeginPlay() override;
 
