@@ -95,7 +95,10 @@ public:
 	FString PlayerName { "Default Name" };
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|LoadScreen")
-	FString MapName { "Default Map" };
+	FString MapName { "Default Map Name" };
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|LoadScreen")
+	FString MapAssetName { "Default Map Asset Name" };
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="SaveGame|LoadScreen")
 	FName PlayerStartTag;

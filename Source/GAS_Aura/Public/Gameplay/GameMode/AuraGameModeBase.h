@@ -59,11 +59,14 @@ public:
 	UFUNCTION(BlueprintPure, Category="Aura|SaveGame")
 	ULoadScreenSaveGame* RetrieveInGameSaveData() const;
 
+	UFUNCTION(BlueprintPure, Category="Aura|SaveGame")
+	FString GetMapNameFromMapAssetName(const FString& MapAssetName) const;
+
 	UFUNCTION(BlueprintCallable, Category="Aura|SaveGame")
 	void SaveInGameProgressData(ULoadScreenSaveGame* SaveObject) const;
 
 	UFUNCTION(BlueprintCallable, Category="Aura|SaveGame")
-	void SaveWorldState(UWorld* World) const;
+	void SaveWorldState(UWorld* World, const FString& DestinationMapAssetName = "") const;
 
 	UFUNCTION(BlueprintCallable, Category="Aura|SaveGame")
 	void LoadWorldState(UWorld* World) const;

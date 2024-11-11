@@ -6,7 +6,7 @@
 #include "UObject/Interface.h"
 #include "SaveInterface.generated.h"
 
-UINTERFACE()
+UINTERFACE(MinimalAPI, BlueprintType, Category="Aura|Interface")
 class USaveInterface : public UInterface
 {
 	GENERATED_BODY()

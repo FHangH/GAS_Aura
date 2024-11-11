@@ -6,7 +6,7 @@
 #include "UObject/Interface.h"
 #include "EnemyInterface.generated.h"
 
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, BlueprintType, Category="Aura|Interface")
 class UEnemyInterface : public UInterface
 {
 	GENERATED_BODY()
