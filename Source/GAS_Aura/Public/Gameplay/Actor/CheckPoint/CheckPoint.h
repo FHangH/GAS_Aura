@@ -17,14 +17,14 @@ class GAS_AURA_API ACheckPoint : public APlayerStart, public ISaveInterface, pub
 	GENERATED_BODY()
 
 	/* Property */
-private:
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Aura|CheckPoint", meta=(AllowPrivateAccess=true))
+protected:
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Aura|CheckPoint")
 	TObjectPtr<UStaticMeshComponent> CheckPointMeshComponent;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Aura|CheckPoint", meta=(AllowPrivateAccess=true))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Aura|CheckPoint")
 	TObjectPtr<USphereComponent> SphereComponent;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Aura|CheckPoint", meta=(AllowPrivateAccess=true))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Aura|CheckPoint")
 	TObjectPtr<USceneComponent> MoveToSceneComponent;
 
 public:

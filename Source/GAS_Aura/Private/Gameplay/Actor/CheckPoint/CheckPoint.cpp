@@ -1,7 +1,7 @@
 ﻿// Copyright fangh.space
 
 
-#include "Gameplay/Actor/CheckPoint.h"
+#include "Gameplay/Actor/CheckPoint/CheckPoint.h"
 #include "Components/SphereComponent.h"
 #include "Gameplay/GameMode/AuraGameModeBase.h"
 #include "Interaction/PlayerInterface.h"
