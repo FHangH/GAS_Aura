@@ -6,7 +6,6 @@
 #include "Gameplay/GameMode/AuraGameModeBase.h"
 #include "Interaction/PlayerInterface.h"
 #include "Kismet/GameplayStatics.h"
-#include "Untils/RenderDepth.h"
 
 ACheckPoint::ACheckPoint(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -17,7 +16,7 @@ ACheckPoint::ACheckPoint(const FObjectInitializer& ObjectInitializer) : Super(Ob
 	CheckPointMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	CheckPointMeshComponent->SetCollisionResponseToAllChannels(ECR_Block);
 	CheckPointMeshComponent->SetRenderCustomDepth(false);
-	CheckPointMeshComponent->SetCustomDepthStencilValue(RENDER_DEPTH_TAN);
+	CheckPointMeshComponent->SetCustomDepthStencilValue(CustomRenderDepth);
 	CheckPointMeshComponent->MarkRenderStateDirty();
 	
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
@@ -34,7 +33,10 @@ void ACheckPoint::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ACheckPoint::OnSphereStartOverlap);
+	if (IsBindOverlapCallBack)
+	{
+		SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ACheckPoint::OnSphereStartOverlap);	
+	}
 }
 
 // Save Interface
@@ -54,7 +56,7 @@ void ACheckPoint::LoadActor_Implementation()
 // HighLight Interface
 void ACheckPoint::HighLightActor_Implementation()
 {
-	if (CheckPointMeshComponent)
+	if (CheckPointMeshComponent && !IsReached)
 	{
 		CheckPointMeshComponent->SetRenderCustomDepth(true);
 	}

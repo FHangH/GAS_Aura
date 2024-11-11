@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerStart.h"
 #include "Interaction/HighLightInterface.h"
 #include "Interaction/SaveInterface.h"
+#include "Untils/RenderDepth.h"
 #include "CheckPoint.generated.h"
 
 class USphereComponent;
@@ -17,18 +18,24 @@ class GAS_AURA_API ACheckPoint : public APlayerStart, public ISaveInterface, pub
 
 	/* Property */
 private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Aura|CheckPoint", meta=(AllowPrivateAccess=true))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Aura|CheckPoint", meta=(AllowPrivateAccess=true))
 	TObjectPtr<UStaticMeshComponent> CheckPointMeshComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Aura|CheckPoint", meta=(AllowPrivateAccess=true))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Aura|CheckPoint", meta=(AllowPrivateAccess=true))
 	TObjectPtr<USphereComponent> SphereComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Aura|CheckPoint", meta=(AllowPrivateAccess=true))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Aura|CheckPoint", meta=(AllowPrivateAccess=true))
 	TObjectPtr<USceneComponent> MoveToSceneComponent;
 
 public:
-	UPROPERTY(BlueprintReadOnly, SaveGame, Category="Aura|CheckPoint")
+	UPROPERTY(BlueprintReadWrite, SaveGame, Category="Aura|CheckPoint")
 	bool IsReached { false };
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura|CheckPoint")
+	int32 CustomRenderDepth { RENDER_DEPTH_TAN };
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura|CheckPoint")
+	bool IsBindOverlapCallBack { true };
 
 	/* Function */
 public:
@@ -54,6 +61,6 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, Category="Aura|CheckPoint")
 	void CheckPointReached(UMaterialInstanceDynamic* MaterialInstanceDynamic);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category="Aura|CheckPoint")
 	void HandleGlowEffects();
 };
