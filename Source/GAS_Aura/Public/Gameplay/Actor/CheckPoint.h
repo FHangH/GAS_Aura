@@ -4,22 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerStart.h"
+#include "Interaction/HighLightInterface.h"
 #include "Interaction/SaveInterface.h"
 #include "CheckPoint.generated.h"
 
 class USphereComponent;
 
 UCLASS()
-class GAS_AURA_API ACheckPoint : public APlayerStart, public ISaveInterface
+class GAS_AURA_API ACheckPoint : public APlayerStart, public ISaveInterface, public IHighLightInterface
 {
 	GENERATED_BODY()
 
 	/* Property */
 private:
-	UPROPERTY(VisibleAnywhere, Category="Aura|CheckPoint")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Aura|CheckPoint", meta=(AllowPrivateAccess=true))
 	TObjectPtr<UStaticMeshComponent> CheckPointMeshComponent;
 
-	UPROPERTY(VisibleAnywhere, Category="Aura|CheckPoint")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Aura|CheckPoint", meta=(AllowPrivateAccess=true))
 	TObjectPtr<USphereComponent> SphereComponent;
 
 public:

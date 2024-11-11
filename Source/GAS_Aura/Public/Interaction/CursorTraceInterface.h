@@ -6,7 +6,7 @@
 #include "UObject/Interface.h"
 #include "CursorTraceInterface.generated.h"
 
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, BlueprintType, Category="Aura|Interface")
 class UCursorTraceInterface : public UInterface
 {
 	GENERATED_BODY()

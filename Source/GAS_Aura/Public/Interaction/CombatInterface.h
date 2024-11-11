@@ -33,7 +33,7 @@ struct FTaggedMontage
 	TObjectPtr<USoundBase> ImpactSound;
 };
 
-UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
+UINTERFACE(MinimalAPI, BlueprintType, Category="Aura|Interface")
 class UCombatInterface : public UInterface
 {
 	GENERATED_BODY()

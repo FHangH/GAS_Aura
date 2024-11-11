@@ -6,7 +6,7 @@
 #include "UObject/Interface.h"
 #include "HighLightInterface.generated.h"
 
-UINTERFACE()
+UINTERFACE(MinimalAPI, BlueprintType, Category="Aura|Interface")
 class UHighLightInterface : public UInterface
 {
 	GENERATED_BODY()

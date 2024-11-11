@@ -6,7 +6,7 @@
 #include "UObject/Interface.h"
 #include "PlayerInterface.generated.h"
 
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, BlueprintType, Category="Aura|Interface")
 class UPlayerInterface : public UInterface
 {
 	GENERATED_BODY()
