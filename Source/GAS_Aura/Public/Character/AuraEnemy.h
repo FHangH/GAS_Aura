@@ -79,6 +79,7 @@ public:
 	// HighLight Interface
 	virtual void HighLightActor_Implementation() override;
 	virtual void UnHighLightActor_Implementation() override;
+	virtual void SetMoveToLocation_Implementation(FVector& Location) override;
 
 	// Enemy Interface
 	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;

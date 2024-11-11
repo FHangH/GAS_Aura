@@ -377,6 +377,25 @@ void AAuraPlayerController::AbilityInputReleased(const FGameplayTag InputTag)
 	{
 		if (FollowTime <= ShortPressThreshold && GetCharacter())
 		{
+			if (IsValid(ThisActor) && ThisActor->Implements<UHighLightInterface>())
+			{
+				IHighLightInterface::Execute_SetMoveToLocation(ThisActor, CachedDestination);
+			}
+			else if (GetASComponent() && !GetASComponent()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed))
+			{
+				if (ClickNiagaraSystem)
+				{
+					// TODO: Spawn Niagara System At Click Location Not NavPath Last PointLocation (Z not true)
+					auto ClickSpawnLocation = CachedDestination;
+					ClickSpawnLocation.Z = 0.f;
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, ClickSpawnLocation);
+				}
+				else
+				{
+					UE_LOG(Aura, Warning, TEXT("ClickNiagaraSystem is nullptr"));
+				}
+			}
+			
 			const auto NavPath =
 				UNavigationSystemV1::FindPathToLocationSynchronously(
 					this, GetCharacter()->GetActorLocation(), CachedDestination);
@@ -399,21 +418,6 @@ void AAuraPlayerController::AbilityInputReleased(const FGameplayTag InputTag)
 				// Ignore NavPath Last Point，Prevents mouse clicks from being located outside the navigation Mesh
 				CachedDestination = NavPath->PathPoints[NavPath->PathPoints.Num() - 1];
 				bAutoRunning = true;
-			}
-			
-			if (GetASComponent() && !GetASComponent()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed))
-			{
-				if (ClickNiagaraSystem)
-				{
-					// TODO: Spawn Niagara System At Click Location Not NavPath Last PointLocation (Z not true)
-					auto ClickSpawnLocation = CachedDestination;
-					ClickSpawnLocation.Z = 0.f;
-					UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, ClickSpawnLocation);
-				}
-				else
-				{
-					UE_LOG(Aura, Warning, TEXT("ClickNiagaraSystem is nullptr"));
-				}
 			}
 			StartTickTimerHandle_AutoRun();
 		}

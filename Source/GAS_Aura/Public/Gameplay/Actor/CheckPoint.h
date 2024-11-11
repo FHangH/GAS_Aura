@@ -23,6 +23,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Aura|CheckPoint", meta=(AllowPrivateAccess=true))
 	TObjectPtr<USphereComponent> SphereComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Aura|CheckPoint", meta=(AllowPrivateAccess=true))
+	TObjectPtr<USceneComponent> MoveToSceneComponent;
+
 public:
 	UPROPERTY(BlueprintReadOnly, SaveGame, Category="Aura|CheckPoint")
 	bool IsReached { false };
@@ -31,13 +34,20 @@ public:
 public:
 	explicit ACheckPoint(const FObjectInitializer& ObjectInitializer);
 
+protected:
+	virtual void BeginPlay() override;
+
+public:
 	// Save Interface
 	virtual bool ShouldLoadTransform_Implementation() override;
 	virtual void LoadActor_Implementation() override;
 
-protected:
-	virtual void BeginPlay() override;
+	// HighLight Interface
+	virtual void HighLightActor_Implementation() override;
+	virtual void UnHighLightActor_Implementation() override;
+	virtual void SetMoveToLocation_Implementation(FVector& Location) override;
 
+protected:
 	UFUNCTION()
 	virtual void OnSphereStartOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 

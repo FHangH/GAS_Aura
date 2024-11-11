@@ -36,6 +36,16 @@ AAuraEnemy::AAuraEnemy()
 	GetCharacterMovement()->RotationRate = {0.f, 480.f, 0.f};
 
 	BaseWalkSpeed = 250.f;
+
+	if (GetMesh() && WeaponMeshComponent)
+	{
+		GetMesh()->SetRenderCustomDepth(false);
+		GetMesh()->SetCustomDepthStencilValue(RENDER_DEPTH_RED);
+		GetMesh()->MarkRenderStateDirty();
+		WeaponMeshComponent->SetRenderCustomDepth(false);
+		WeaponMeshComponent->SetCustomDepthStencilValue(RENDER_DEPTH_RED);
+		WeaponMeshComponent->MarkRenderStateDirty();
+	}
 }
 
 void AAuraEnemy::BeginPlay()
@@ -143,24 +153,32 @@ void AAuraEnemy::StunTagChanged(const FGameplayTag CallbackTag, const int32 NewC
 	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName{"Stunned"}, bIsStunned);
 }
 
+// HighLight Interface
 void AAuraEnemy::HighLightActor_Implementation()
 {
 	bIsHighLight = true;
-	GetMesh()->SetRenderCustomDepth(true);
-	GetMesh()->SetCustomDepthStencilValue(RENDER_DEPTH_RED);
-	WeaponMeshComponent->SetRenderCustomDepth(true);
-	WeaponMeshComponent->SetCustomDepthStencilValue(RENDER_DEPTH_RED);
+	if (GetMesh() && WeaponMeshComponent)
+	{
+		GetMesh()->SetRenderCustomDepth(bIsHighLight);
+		WeaponMeshComponent->SetRenderCustomDepth(bIsHighLight);
+	}
 }
 
 void AAuraEnemy::UnHighLightActor_Implementation()
 {
 	bIsHighLight = false;
-	GetMesh()->SetRenderCustomDepth(false);
-	GetMesh()->SetCustomDepthStencilValue(RENDER_DEPTH_NULL);
-	WeaponMeshComponent->SetRenderCustomDepth(false);
-	WeaponMeshComponent->SetCustomDepthStencilValue(RENDER_DEPTH_NULL);
+	if (GetMesh() && WeaponMeshComponent)
+	{
+		GetMesh()->SetRenderCustomDepth(bIsHighLight);
+		WeaponMeshComponent->SetRenderCustomDepth(bIsHighLight);
+	}
 }
 
+void AAuraEnemy::SetMoveToLocation_Implementation(FVector& Location)
+{
+}
+
+// Enemy Interface
 void AAuraEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)
 {
 	CombatTarget = InCombatTarget;
@@ -171,6 +189,7 @@ AActor* AAuraEnemy::GetCombatTarget_Implementation() const
 	return CombatTarget;
 }
 
+// Combat Interface
 int32 AAuraEnemy::GetPlayerLevel_Implementation()
 {
 	return Level;

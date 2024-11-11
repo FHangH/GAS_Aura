@@ -22,4 +22,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|HighLight")
 	void UnHighLightActor();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface|HighLight")
+	void SetMoveToLocation(FVector& Location);
 };

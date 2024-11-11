@@ -6,6 +6,7 @@
 #include "Gameplay/GameMode/AuraGameModeBase.h"
 #include "Interaction/PlayerInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "Untils/RenderDepth.h"
 
 ACheckPoint::ACheckPoint(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -15,14 +16,28 @@ ACheckPoint::ACheckPoint(const FObjectInitializer& ObjectInitializer) : Super(Ob
 	CheckPointMeshComponent->SetupAttachment(RootComponent);
 	CheckPointMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	CheckPointMeshComponent->SetCollisionResponseToAllChannels(ECR_Block);
-
+	CheckPointMeshComponent->SetRenderCustomDepth(false);
+	CheckPointMeshComponent->SetCustomDepthStencilValue(RENDER_DEPTH_TAN);
+	CheckPointMeshComponent->MarkRenderStateDirty();
+	
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	SphereComponent->SetupAttachment(CheckPointMeshComponent);
 	SphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	SphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	SphereComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	MoveToSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("MoveToSceneComponent"));
+	MoveToSceneComponent->SetupAttachment(RootComponent);
 }
 
+void ACheckPoint::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ACheckPoint::OnSphereStartOverlap);
+}
+
+// Save Interface
 bool ACheckPoint::ShouldLoadTransform_Implementation()
 {
 	return false;
@@ -36,11 +51,26 @@ void ACheckPoint::LoadActor_Implementation()
 	}
 }
 
-void ACheckPoint::BeginPlay()
+// HighLight Interface
+void ACheckPoint::HighLightActor_Implementation()
 {
-	Super::BeginPlay();
+	if (CheckPointMeshComponent)
+	{
+		CheckPointMeshComponent->SetRenderCustomDepth(true);
+	}
+}
 
-	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ACheckPoint::OnSphereStartOverlap);
+void ACheckPoint::UnHighLightActor_Implementation()
+{
+	if (CheckPointMeshComponent)
+	{
+		CheckPointMeshComponent->SetRenderCustomDepth(false);
+	}
+}
+
+void ACheckPoint::SetMoveToLocation_Implementation(FVector& Location)
+{
+	Location = MoveToSceneComponent->GetComponentLocation();
 }
 
 void ACheckPoint::OnSphereStartOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
